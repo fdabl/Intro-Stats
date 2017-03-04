@@ -1,0 +1,509 @@
+---
+title: "Bayesian inference with JASP"
+author: "Fabian Dablander"
+runtime: shiny
+bibliography: bibliography.bib
+output:
+  ioslides_presentation:
+    css: mistyle.css
+    smaller: yes
+    transition: faster
+---
+
+```{r setup, include=FALSE, echo = FALSE, message = FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, dev.args = list(bg = 'transparent'), fig.align = 'center')
+```
+
+## Outline
+- Challenges of the scientific endeavour
+    - Publication bias
+    - Publish or perish climate
+    - *p*-hacking
+    
+<span style = "color:white"></span>
+    
+- Pitfalls with classical statistics
+    - Short history of statistics
+    - (Re)introduction *p*-values, confidence intervals, statistical power
+    
+<span style = "color:white"></span>
+
+- Introduction to Bayesian inference
+    - Sum and product rule of probability
+    - Parameter estimation, model comparison, model prediction
+    
+## Outline
+- Economic burden of closed-source software
+    - How expensive are SPSS, MATLAB and co?
+    
+<span style = "color:white"></span>
+
+- Introducing JASP
+    - Worked examples
+    - Practice session
+    
+<span style = "color:white"></span>
+
+- Issues with Bayesian inference
+    - How to pick a prior?
+    - What about error rates?
+
+<span style = "color:white"></span>
+
+- Outlook
+    - Where is Bayes going?
+    - Where is JASP going?
+    - Where are *you* going?
+    
+    
+## Statistical models
+- to give the world some structure, we use models
+- say I flip a coin to estimate its bias
+    - what exactly do I mean by bias?
+    - only becomes clear after specifying the <b>functional relationship</b>
+    - of how a latent parameter relates to empirical observation
+    
+- the statistical model, i.e. the likelihood, describes this functional relationship
+
+
+## Bernoulli model
+- in the coin flip case, I assume a <b>Bernoulli</b> model
+
+$$
+P(X = x|\theta) = \theta^x (1 - \theta)^{1 - x}
+$$
+
+- this describes one single coin flip, $x \in \{0, 1\}$
+- to model $n$ coin flips, we assume **i.i.d.** and write
+
+$$
+\begin{align*}
+P(X = \boldsymbol{x}|\theta) &\stackrel{i.i.d.}{=} \prod_{i=1}^n \theta^{x_i} (1 - \theta)^{1 - x_i}
+\end{align*}
+$$
+
+
+## Bernoulli model
+- neglecting the order, we only model the number of **successses:**
+
+$$
+Y = \sum_{i=1}^n x_i
+$$
+
+- noting that there are:
+
+$$
+{n \choose y} = \frac{n!}{y!(n - y)!}
+$$
+
+- possible ways of obtaining $y$ successes yields the **Binomial** model
+
+
+## Binomial model
+- the Binomial likelihood relates the number of successes to the bias parameter
+
+$$
+\begin{align*}
+P(X = x|\theta) &= \theta^{\sum_{i=1}^n x_i} (1 - \theta)^{n - \sum_{i=1}^n x_i} \\
+P(Y = y|\theta) &= {n \choose y} \theta^y (1 - \theta)^{n - y}
+\end{align*}
+$$
+
+- note that instead of the whole data vector $X = \{0, 1, 1, 0, 0, \ldots\}$
+    - we use the statistic $Y = \sum_{i=1}^n x_i$ to summarize the data
+    - $Y$ is called a **sufficient statistic**
+    
+    
+## Likelihoods
+- unify frequentist and Bayesian approaches to statistics
+- how <b>likely is the data</b> given certain parameter values?
+- assume coin flip data: $\{1, 1, 1\}$
+
+$$
+f(Y = 3|n = 3, \theta = .5) = {3 \choose 3} .5^3 (1 - .5)^{3 - 3} = 0.125 \\
+f(Y = 3|n = 3, \theta = .8) = {3 \choose 3} .8^3 (1 - .8)^{3 - 3} = 0.512
+$$
+
+
+
+## Bayesian probability
+- probability as a (normative) measure of degree of belief
+- probability as an extension of logic to include inductive inferences
+- concretely, what does this mean for the coin flip example?
+    - is it *not* the proportion of heads in an infinite series?
+\
+\
+- **intuition**: what if the coin has two heads or two tails?
+    - you would still predict $P(\text{heads}) = .5$ for the first flip
+
+## Rules of probability
+
+$$
+\begin{align}
+P(H, D) &= P(H|D)P(D) = P(D|H)P(H) \\[2ex]
+P(D) &= \sum_{H} P(H, D) = \sum_{H} P(D|H)P(H)
+\end{align}
+$$
+
+- arrive at Bayes' rule by simple rearrangement
+
+$$
+P(H|D) = \frac{P(D|H)P(H)}{P(D)} = \frac{P(D|H)P(H)}{\sum_{H} P(D|H)P(H)}
+$$
+
+
+
+## Confidence intervals
+```{r, echo = FALSE}
+simulate.cis <- function(y, n, times = 100) {
+    p <- y / n
+    cis <- matrix(NA, nrow = times, ncol = 2)
+    
+    for (i in 1:times) {
+        y <- sample(c(1, 0), n, replace = TRUE, prob = c(p, 1-p))
+        
+        p.hat <- mean(y)
+        se <- sd(y) / sqrt(n)
+        
+        cis[i, 1] <- p.hat - 1.96 * se
+        cis[i, 2] <- p.hat + 1.96 * se
+    }
+    
+    within <- apply(cis, 1, function(row) row[1] < p && row[2] > p)
+    cbind(cis, within)
+}
+
+plot.cis <- function(cis, times) {
+    x <- 0:times
+    y <- seq(0, 1, 1/times)
+    
+    plot(x, y, type = 'n', xlab = 'i-th repeated sample',
+         ylab = 'bias', main = '95% CIs for bias estimate')
+    
+    abline(18/24, 0, lwd = 3)
+    
+    arrows(x0 = x, y0 = cis[, 1], x1 = x, length = 0, lwd = 1.2,
+           y1 = cis[, 2], col = ifelse(cis[, 3], 'black', 'red'))
+}
+
+times <- 100
+cis <- simulate.cis(18, 24, times = times)
+```
+
+```{r, echo = TRUE}
+plot.cis(cis, times)
+```
+
+## Likelihood ratios
+```{r, echo = FALSE, height = 3, width = 3}
+library('shiny')
+
+shinyApp(
+  options = list(width = "25%", height = "25%"),
+  ui = shinyUI(fluidPage(
+    sidebarLayout(
+      sidebarPanel(
+        sliderInput("p1", label = "p1",
+                    min = 0, max = 1, value = 0.7, step = 0.01),
+        sliderInput("p2", label = "p2",
+                    min = 0, max = 1, value = 0.5, step = 0.01),
+        sliderInput("k", label = "k",
+                    min = 1, max = 50, value = 7, step = 1),
+        sliderInput("N", label = "N",
+                    min = 1, max = 50, value = 10, step = 1),
+        br(),
+        textOutput("LRatio1")
+        ),
+      mainPanel(
+        plotOutput("LRplot", height="400px")
+        )
+      )
+   )),
+   server = function(input, output) {
+      plot.LR <- function(k, N, p1, p2) {
+        # adapted from blog mentioned above
+        MLE <- dbinom(k, N, k/N)
+        L1 <- dbinom(k, N, prob = p1) / MLE
+        L2 <- dbinom(k, N, prob = p2) / MLE
+        
+        curve((dbinom(k, N, x) / max(dbinom(k, N, x))), xlim = c(0, 1),
+              ylab = "Likelihood", xlab = "Probability of correct answer",
+              las = 1, main = "Likelihood function for binomials", lwd = 3,
+              cex.axis = 1.5, cex.lab = 1.5, cex.main = 1.5)
+        
+        points(p1, L1, cex = 2, pch = 21, bg = "cyan")
+        points(p2, L2, cex = 2, pch = 21, bg = "cyan")
+        lines(c(p1, p2), c(L1, L1), lwd = 3, lty = 2, col = "cyan")
+        lines(c(p2, p2), c(L1, L2), lwd = 3, lty = 2, col = "cyan")
+        abline(v = k/N, lty = 5, lwd = 1, col = "grey73")
+      }
+      
+      get.LR <- function(k, N, p1, p2) {
+        MLE <- dbinom(k, N, k/N)
+        L1 <- dbinom(k, N, prob = p1) / MLE
+        L2 <- dbinom(k, N, prob = p2) / MLE
+        L1 / L2
+      }
+      
+      output$LRplot <- renderPlot({
+        k <- input$k
+        N <- input$N
+        if (k <= N) plot.LR(k, N, input$p1, input$p2)
+      })
+      
+      output$LRatio1 <- renderText({
+        LR_12 <- get.LR(input$k, input$N, input$p1, input$p2)
+        paste("L1 / L2: ", round(LR_12, 3))
+      })
+      
+      output$LRatio2 <- renderText({
+        LR_21 <- 1 / get.LR(input$k, input$N, input$p1, input$p2)
+        paste("L2 / L1: ", round(LR_21, 3))
+      })
+    }
+)
+```
+
+## Bayesian updating
+```{r, echo = FALSE, height = 3, width = 3}
+library('shiny')
+# the code (with a little cleaning up) for the visualisations is from
+# http://alexanderetz.com/2015/07/25/understanding-bayes-updating-priors-via-the-likelihood/
+# Alex Etz runs a really nice blog -- go check it out!
+
+shinyApp(
+  options = list(width = "25%", height = "25%"),
+  ui = shinyUI(fluidPage(
+    sidebarLayout(
+      sidebarPanel(
+        sliderInput("a", label = "a", min = 1, max = 50, value = 1, step = 1),
+        sliderInput("b", label = "b", min = 1, max = 50, value = 1, step = 1),
+        sliderInput("k", label = "k", min = 1, max = 50, value = 7, step = 1),
+        sliderInput("N", label = "N", min = 1, max = 50, value = 10, step = 1),
+        htmlOutput("BF_10")
+        ),
+      mainPanel(
+        plotOutput('update_plot', height='400px')
+        )
+      )
+    )
+  ),
+  server = function(input, output) {
+        update_plot <- function(a = 1, b = 1, k = 0, N = 0, null = NULL, CI = NULL, ymax = 'auto') {
+          x <- seq(.001, .999, .001) ## set up for creating the distributions
+          y1 <- dbeta(x, a, b) # data for prior curve
+          y3 <- dbeta(x, a + k, b + N - k) # data for posterior curve
+          y2 <- dbeta(x, 1 + k, 1 + N - k) # data for likelihood curve, plotted as the posterior from a beta(1,1)
+          y.max <- ifelse(is.numeric(ymax), ymax, 1.25 * max(y1, y2, y3, 1.6))
+          title <- paste0('Beta(', a, ', ', b, ')', ' to Beta(', a + k, ', ', b + N - k, ')')
+          
+          plot(x, y1, xlim = c(0, 1), ylim = c(0, y.max), type = 'l', ylab = 'Density', lty = 2,
+               xlab = 'Probability of success', las = 1, main = title, lwd=3,
+               cex.lab = 1.5, cex.main = 1.5, col = 'skyblue', axes = FALSE)
+          
+          axis(1, at = seq(0, 1, .2)) #adds custom x axis
+          axis(2, las = 1) # custom y axis
+          
+          if (N != 0) {
+              # if there is new data, plot likelihood and posterior
+              lines(x, y2, type = 'l', col = 'darkorange', lwd = 2, lty = 3)
+              lines(x, y3, type = 'l', col = 'darkorchid1', lwd = 5)
+              legend('topleft', c('Prior', 'Posterior', 'Likelihood'),
+                     col = c('skyblue', 'darkorchid1', 'darkorange'), 
+                     lty = c(2, 1, 3), lwd = c(3, 5, 2), bty = 'n',
+                     y.intersp = 1, x.intersp = .4, seg.len =.7)
+                  
+              ## adds null points on prior and posterior curve if null is specified and there is new data
+              if (is.numeric(null)) {
+                      ## Adds points on the distributions at the null value if there is one and if there is new data
+                      points(null, dbeta(null, a, b), pch = 21, bg = 'blue', cex = 1.5)
+                      points(null, dbeta(null, a + k, b + N - k), pch = 21, bg = 'darkorchid', cex = 1.5)
+                      abline(v=null, lty = 5, lwd = 1, col = 'grey73')
+                      ##lines(c(null,null),c(0,1.11*max(y1,y3,1.6))) other option for null line
+                }
+          }
+          
+          ## Specified CI% but no null? Calc and report only CI
+          if (is.numeric(CI) && !is.numeric(null)) {
+                CI.low <- qbeta((1 - CI)/2, a + k, b + N - k)
+                CI.high <- qbeta(1 - (1 - CI)/2, a + k, b + N - k)
+                
+                SEQlow <- seq(0, CI.low, .001)
+                SEQhigh <- seq(CI.high, 1, .001)
+                
+                ## Adds shaded area for x% Posterior CIs
+                cord.x <- c(0, SEQlow, CI.low) ## set up for shading
+                cord.y <- c(0, dbeta(SEQlow, a + k, b + N - k), 0) ## set up for shading
+                polygon(cord.x, cord.y, col='orchid', lty= 3) ## shade left tail
+                cord.xx <- c(CI.high, SEQhigh, 1) 
+                cord.yy <- c(0, dbeta(SEQhigh, a + k, b + N - k), 0)
+                polygon(cord.xx, cord.yy, col='orchid', lty=3) ## shade right tail
+                return(list('Posterior CI lower' = round(CI.low, 3),
+                            'Posterior CI upper' = round(CI.high, 3)))
+          }
+          
+          ## Specified null but not CI%? Calculate and report BF only 
+          if (is.numeric(null) && !is.numeric(CI)){
+              null.H0 <- dbeta(null, a, b)
+              null.H1 <- dbeta(null, a + k, b + N - k)
+              CI.low <- qbeta((1 - CI)/2, a + k, b + N - k)
+              CI.high <- qbeta(1 - (1 - CI)/2, a + k, b + N - k)
+              return(list('BF01 (in favor of H0)' = round(null.H1/null.H0, 3),
+                          'BF10 (in favor of H1)' = round(null.H0/null.H1, 3)))
+          }
+          
+          ## Specified both null and CI%? Calculate and report both
+          if (is.numeric(null) && is.numeric(CI)){
+                  null.H0 <- dbeta(null, a, b)
+                  null.H1 <- dbeta(null, a + k, b + N - k)
+                  CI.low <- qbeta((1 - CI)/2, a + k, b + N - k)
+                  CI.high <- qbeta(1 - (1 - CI)/2, a + k, b + N - k)
+                  
+                  SEQlow <- seq(0, CI.low, .001)
+                  SEQhigh <- seq(CI.high, 1, .001)
+                  
+                  ## Adds shaded area for x% Posterior CIs
+                  cord.x <- c(0, SEQlow, CI.low) ## set up for shading
+                  cord.y <- c(0, dbeta(SEQlow, a + k, b + N - k), 0) ## set up for shading
+                  polygon(cord.x, cord.y, col = 'orchid', lty = 3) ## shade left tail
+                  cord.xx <- c(CI.high, SEQhigh, 1) 
+                  cord.yy <- c(0, dbeta(SEQhigh, a + k, b + N - k), 0)
+                  polygon(cord.xx, cord.yy, col = 'orchid', lty = 3) ## shade right tail
+                  return(list('BF01 (in favor of H0)' = round(null.H1/null.H0, 3),
+                              'BF10 (in favor of H1)' = round(null.H0/null.H1, 3),
+                              'Posterior CI lower' = round(CI.low, 4),
+                              'Posterior CI upper' = round(CI.high, 3)))
+          }
+        }
+        output$update_plot <- renderPlot({
+          null <- .5
+          update_plot(input$a, input$b, input$k, input$N, null = null)
+        })
+        
+        output$BF_10 <- renderText({
+          a <- input$a
+          b <- input$b
+          k <- input$k
+          N <- input$N
+          label <- 'BF<span style="font-size: .6em;">10</span>: '
+          BF10 <- 1 / (dbeta(.5, a + k, b + N - k) / dbeta(.5, a, b))
+          paste(label, round(BF10, 3))
+        })
+  }
+)
+```
+
+
+## Bayesian testing
+- **estimation pre-supposes existence**
+- it is a conceptual error to use estimation for testing (e.g., psi)
+    - have to specify a 'lump of probability' for the general law
+    - and then test against this point value, or null model
+
+## Bayesian testing
+- same coin flip data: $\{1, 1, 1\}$
+
+$$
+f(Y = 3|n = 3, \theta = .5) = {3 \choose 3} .5^3 (1 - .5)^{3 - 3} = 0.125 \\
+f(Y = 3|n = 3, \theta = .8) = {3 \choose 3} .8^3 (1 - .8)^{3 - 3} = 0.512
+$$
+
+- evidence of $\theta = .8$ **versus** $\theta = .5$ is $.512 / .125 = 4.096$
+
+## Bayesian testing
+- comparing point likelihoods is too demanding
+    - requires alternative specified as a point
+    - we aren't really that certain of our prediction!
+\
+\
+- Bayes solution
+    - specify a distribution to quantify this uncertainty
+    - gives the **Bayes factor**
+
+
+## Bayes factor
+- $M_0: \theta = .5$ versus $M_1: \theta \sim \mathcal{Beta(1, 1)}$
+- pit the predictive power of the two models against each other
+    - $p(D|M_0)$ versus $p(D|M_1)$
+    
+\
+\
+- recall Bayes' rule, but conditioning on the model
+$$
+p(\theta|D, M_x) = \frac{p(D|\theta, M_x)p(\theta|M_x)}{p(D|M_x)}
+$$
+
+- where
+
+$$
+p(D|M_x) = \int p(D, \theta|M_x) \mathrm{d}\theta = \int p(D|\theta, M_x)p(\theta|M_x) \mathrm{d}\theta
+$$
+
+## Bayes factor
+- update our beliefs about the models using ... Bayes' rule
+\
+\
+$$
+\underbrace{\frac{P(M_1 \mid D)}{P(M_2 \mid D)}}_{\text{posterior odds}} =
+\underbrace{\frac{P(D \mid M_1)}{P(D \mid M_2)}}_{\text{Bayes factor}} \, \cdot \underbrace{\frac{P(M_1)}{P(M_2)}}_{\text{prior odds}}
+$$
+
+
+## Bayes factor
+- is the coin fair?
+    - $M_0: \theta = .5$ versus $M_1: \theta \sim \mathcal{Beta(1, 1)}$
+\
+\
+- the marginal likelihoods become
+
+$$
+\begin{align}
+p(D|M_0) &= {3 \choose 3} .5^3 (1 - .5)^{3 - 3} = .125 \\
+p(D|M_1) &= \int p(D, \theta|M_1)\mathrm{d}\theta = \int p(D|\theta, M_1)p(\theta|M_1) \mathrm{d}\theta
+\end{align}
+$$
+
+## Bayes factor
+- is the non-plus-ultra of model comparison
+    - complex models can predict many data patterns
+    - thus spread out their prior probability
+    - this gets factored into the marginal likelihood and decreases it
+    - instantiates an **automatic Ockham's razor**
+\
+\
+- looks at the functional form of the model, compared to
+    - $AIC = -2 \log p(\textbf{y}|\hat \theta) + 2\cdot k$
+    - $BIC = -2 \log p(\textbf{y}|\hat \theta) + \log n \cdot k$
+
+
+## Bayes factor
+- can compare non-nested models
+- can support the null hypothesis
+- its interpretation does not depend on the sample size
+- can sequentially test participants, without $p$-hacking
+\
+\
+- use software like JASP or BayesFactor
+    - use a **default prior** approach pioneered by Harold Jeffreys
+    
+## Lindley's Paradox
+```{r}
+k <- 49581
+N <- 98451
+```
+
+<div style = "float:left; width:45%;">
+**$p$-value**
+
+```{r}
+binom.test(k, N)$p.value
+```
+</div>
+<div style = "float:right; width:45%;">
+
+**Bayes factor (Savage-Dickey)**
+
+```{r}
+dbeta(0.5, k + 1, N - k + 1)
+```  
+</div>
