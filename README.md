@@ -17,6 +17,7 @@ Below is a timeline I have used to prepare this workshop. You might find it usef
     - [ ] A Bayesian Perspective on the Reproducibility Project: Psychology
     - [ ] Harold Jeffrey's default Bayes factor hypothesis tests
     - [ ] Bayesian Benefits for the Pragmatic Researcher
+    - [ ] The philosophy of Bayes factors and the quantification of statistical evidence
 - [ ] Make an overview of the analyses supported in JASP (**11th March**)
 - [ ] Estimate the economic burden of proprietary software such as SPSS (**11th March**)
 - [ ] Think of a good introduction example (**12th March**)

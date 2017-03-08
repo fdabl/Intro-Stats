@@ -56,18 +56,32 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, dev.args = 
     - Where are *you* going?
     
     
+## Detective example
+```{r, echo = FALSE, height = 3, width = 3, results = 'asis'}
+library('papaja')
+
+tab <- rbind(c(1/2, 1/4, 1/4), c(1/3, 1/3, 1/3))
+apa_table(
+  tab,
+  caption = 'Probabilities',
+  col.names = c('Self', 'Wife', 'Lover')
+)
+```
+
+
+
+    
 ## Statistical models
-- to give the world some structure, we use models
+- to reduce complexity, we use **statistical models**
 - say I flip a coin to estimate its bias
     - what exactly do I mean by bias?
-    - only becomes clear after specifying the <b>functional relationship</b>
-    - of how a latent parameter relates to empirical observation
+    - only becomes clear after specifying the **functional relationship** of how a latent parameter relates to empirical observation
     
 - the statistical model, i.e. the likelihood, describes this functional relationship
 
 
 ## Bernoulli model
-- in the coin flip case, I assume a <b>Bernoulli</b> model
+- In the coin flip case, I assume a **Bernoulli likelihood**
 
 $$
 P(X = x|\theta) = \theta^x (1 - \theta)^{1 - x}
@@ -75,6 +89,8 @@ $$
 
 - this describes one single coin flip, $x \in \{0, 1\}$
 - to model $n$ coin flips, we assume **i.i.d.** and write
+<span style = "color:white"></span>
+- <span style = "color:red">(this is a very contentious assumption!)</span>
 
 $$
 \begin{align*}
@@ -148,10 +164,12 @@ $$
 - arrive at Bayes' rule by simple rearrangement
 
 $$
-P(H|D) = \frac{P(D|H)P(H)}{P(D)} = \frac{P(D|H)P(H)}{\sum_{H} P(D|H)P(H)}
+\begin{align*}
+P(H, D) &= P(H, D) \\
+P(H|D)P(D) &= P(D|H)P(H) \\
+P(H|D) &= \frac{P(D|H)P(H)}{P(D)} = \frac{P(D|H)P(H)}{\sum_{H} P(D|H)P(H)}
+\end{align*}
 $$
-
-
 
 ## Confidence intervals
 ```{r, echo = FALSE}
@@ -263,6 +281,9 @@ shinyApp(
     }
 )
 ```
+
+## Bayesian updating
+- add a graphical model representation
 
 ## Bayesian updating
 ```{r, echo = FALSE, height = 3, width = 3}
