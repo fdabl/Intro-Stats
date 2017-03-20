@@ -14,21 +14,18 @@ output:
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, dev.args = list(bg = 'transparent'), fig.align = 'center')
 ```
 
-\usepackages{csquotes}
-\newcommand{\param}{\mathbf{\theta}}
-\newcommand{\dat}{\textbf{y}}
-\newcommand{\cmark}{\ding{51}}
-\newcommand{\xmark}{\ding{55}}
+## Setting
+- After a hard day of work, you decide to go out, dancing and drinking
+- you call up three friends to join you
+- Thomas, a Bayesian statistician, agrees to join you a little later; he has to run his simulation
+- Stephen, a philosopher of science and historian, agrees to join, too
+- Ronald, a classical statistician, agrees to join you on the condition that Thomas does not
+- You lie to Ronald, saying that Thomas won't come
+- It will be a fun night, you tell yourself
+
 
 ## Outline
-- Challenges of the scientific endeavour
-    - Publication bias
-    - Publish or perish climate
-    - *p*-hacking
-    
-<span style = "color:white"></span>
-    
-- Pitfalls with classical statistics
+- Dancing in the Dark
     - Short history of statistics
     - (Re)introduction *p*-values, confidence intervals, statistical power
     
@@ -38,109 +35,191 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, dev.args = 
     - Sum and product rule of probability
     - Parameter estimation, model comparison, model prediction
     
-## Outline
-- Economic burden of closed-source software
-    - How expensive are SPSS, MATLAB and co?
-    
 <span style = "color:white"></span>
 
-- Introducing JASP
+- Dumping SPSS and dancing with JASP
     - Worked examples
     - Practice session
     
-<span style = "color:white"></span>
+## Seas of chaos
+- low power
+- lack of theories
+- mindless statistics
+- reproducibility crisis
 
-- Issues with Bayesian inference
-    - How to pick a prior?
-    - What about error rates?
-
-<span style = "color:white"></span>
-
-- Outlook
-    - Where is Bayes going?
-    - Where is JASP going?
-    - Where are *you* going?
     
-    
-## Statistical models
-- to give the world some structure, we use models
-- say I flip a coin to estimate its bias
-    - what exactly do I mean by bias?
-    - only becomes clear after specifying the <b>functional relationship</b>
-    - of how a latent parameter relates to empirical observation
-    
-- the statistical model, i.e. the likelihood, describes this functional relationship
+## Classical statistics
+- *p*-value
+- confidence intervals
+- statistical power
 
 
-## Bernoulli model
-- in the coin flip case, I assume a <b>Bernoulli</b> model
-
-$$
-P(X = x|\theta) = \theta^x (1 - \theta)^{1 - x}
-$$
-
-- this describes one single coin flip, $x \in \{0, 1\}$
-- to model $n$ coin flips, we assume **i.i.d.** and write
+## Dancing in the dark
+- you go for a drink in bar
+- you see people singing and dancing
+- you ask yourself: are there more women or men on the dance floor?
+- fortunately, you have Ronald
+- he proceeds by specfying two hypotheses
+  - $H_0: \theta = .5$
+  - $H_1: \theta \neq .5$
+  
+  
+## Dancing in the dark
+- in order to test the hypotheses, he uses a Binomial model
+- which relates a latent parameter $\theta$ to the observed proportion of women
+- let $y$ be the number of women and $n$ be the total number of dancers
+- the binomial model states that
 
 $$
 \begin{align*}
-P(X = \boldsymbol{x}|\theta) &\stackrel{i.i.d.}{=} \prod_{i=1}^n \theta^{x_i} (1 - \theta)^{1 - x_i}
-\end{align*}
-$$
-
-
-## Bernoulli model
-- neglecting the order, we only model the number of **successses:**
-
-$$
-Y = \sum_{i=1}^n x_i
-$$
-
-- noting that there are:
-
-$$
-{n \choose y} = \frac{n!}{y!(n - y)!}
-$$
-
-- possible ways of obtaining $y$ successes yields the **Binomial** model
-
-
-## Binomial model
-- the Binomial likelihood relates the number of successes to the bias parameter
-
-$$
-\begin{align*}
-P(X = x|\theta) &= \theta^{\sum_{i=1}^n x_i} (1 - \theta)^{n - \sum_{i=1}^n x_i} \\
 P(Y = y|\theta) &= {n \choose y} \theta^y (1 - \theta)^{n - y}
 \end{align*}
 $$
 
-- note that instead of the whole data vector $X = \{0, 1, 1, 0, 0, \ldots\}$
-    - we use the statistic $Y = \sum_{i=1}^n x_i$ to summarize the data
-    - $Y$ is called a **sufficient statistic**
-    
-    
-## Likelihoods
-- unify frequentist and Bayesian approaches to statistics
-- how <b>likely is the data</b> given certain parameter values?
-- assume coin flip data: $\{1, 1, 1\}$
+## Dancing in the dark
+- as a classical statistician, he proposes you count the number of women
+- and men on the dance floor; you arrive at $n = 70$ and $y = 30$
+- it's a Friday night. the club is vibrating
+- Ronald knows the club owner, and knows that on a Friday night, the club is full everytime
+- thus he only needs to treat $y$ as a random variable, $n$ being fixed at 30
+- Ronald, in order to use his probability calculus, needs to make a few assumption
+- firstly
+
+## The data
+- Ronald starts out amicably
+- He asks: what $\theta$ does make the data most likely? and plots the *likelihood curve*
+
+```{r, echo = FALSE}
+library('ggplot2')
+theme_set(theme_bw())
+
+y <- 30
+n <- 70
+
+ggplot(data.frame(theta = c(0, 1)), aes(x = theta)) +
+  stat_function(fun = function(theta) dbinom(y, n, theta), geom = 'line',
+                color = 'firebrick') +
+  xlab(expression(theta)) +
+  # geom_vline(xintercept = y / n) +
+  ggtitle('Likelihood function') +
+  theme(plot.title = element_text(hjust = .5))
+```
+
+## The data
+- his maximum likelihood estimate, $\hat \theta = y / n = .43$ is the most likely value to have generated the data
+- he is very proud of this result, and even made an interactive app
+
+## Likelihood ratios
+```{r, echo = FALSE, height = 3, width = 3}
+library('shiny')
+
+y <- 30
+n <- 70
+
+shinyApp(
+  options = list(width = "25%", height = "25%"),
+  ui = shinyUI(fluidPage(
+    sidebarLayout(
+      sidebarPanel(
+        sliderInput("p1", label = "theta1",
+                    min = 0, max = 1, value = y / n, step = 0.01),
+        sliderInput("p2", label = "theta2",
+                    min = 0, max = 1, value = 0.5, step = 0.01),
+        sliderInput("k", label = "y",
+                    min = 1, max = n, value = y, step = 1),
+        sliderInput("N", label = "N",
+                    min = 1, max = 100, value = n, step = 1),
+        br(),
+        textOutput("LRatio1")
+        ),
+      mainPanel(
+        plotOutput("LRplot", height="400px")
+        )
+      )
+   )),
+   server = function(input, output) {
+      plot.LR <- function(k, N, p1, p2) {
+        # adapted from blog mentioned above
+        MLE <- dbinom(k, N, k/N)
+        L1 <- dbinom(k, N, prob = p1)
+        L2 <- dbinom(k, N, prob = p2)
+        
+        curve((dbinom(k, N, x)), xlim = c(0, 1),
+              ylab = "Likelihood", xlab = expression(theta),
+              las = 1, main = "Likelihood function", lwd = 3,
+              cex.axis = 1.2, cex.lab = 1.5, cex.main = 1.5)
+        
+        points(p1, L1, cex = 2, pch = 21, bg = "cyan")
+        points(p2, L2, cex = 2, pch = 21, bg = "cyan")
+        lines(c(p1, p2), c(L1, L1), lwd = 3, lty = 2, col = "cyan")
+        lines(c(p2, p2), c(L1, L2), lwd = 3, lty = 2, col = "cyan")
+        abline(v = k/N, lty = 5, lwd = 1, col = "grey73")
+      }
+      
+      get.LR <- function(k, N, p1, p2) {
+        MLE <- dbinom(k, N, k/N)
+        L1 <- dbinom(k, N, prob = p1)
+        L2 <- dbinom(k, N, prob = p2)
+        L1 / L2
+      }
+      
+      output$LRplot <- renderPlot({
+        k <- input$k
+        N <- input$N
+        if (k <= N) plot.LR(k, N, input$p1, input$p2)
+      })
+      
+      output$LRatio1 <- renderText({
+        LR_12 <- get.LR(input$k, input$N, input$p1, input$p2)
+        paste("L1 / L2: ", round(LR_12, 3))
+      })
+      
+      output$LRatio2 <- renderText({
+        LR_21 <- 1 / get.LR(input$k, input$N, input$p1, input$p2)
+        paste("L2 / L1: ", round(LR_21, 3))
+      })
+    }
+)
+```
+
+## Sampling distribution
+- In statistics, Ronald says, we are interested in the population parameter $\theta$
+- but we only ever observe sample statistics, estimates $\hat \theta$ from individual experiments
+- let's assume that we do the experiment, just like we did it now, an infinite amount of time, always computing $\hat \theta$
+- what is the distribution of those $\hat \theta$s?
+
+## Sampling distribution of theta
+- using incredibly clever results, Ronald showed that, under $H_0$, the maximum likelihood estimate has a normal distribution centered on the true population parameter
 
 $$
-f(Y = 3|n = 3, \theta = .5) = {3 \choose 3} .5^3 (1 - .5)^{3 - 3} = 0.125 \\
-f(Y = 3|n = 3, \theta = .8) = {3 \choose 3} .8^3 (1 - .8)^{3 - 3} = 0.512
+\hat \theta \sim \text{Normal}(\theta, \frac{\sqrt{N \theta (1 - \theta)}}{N})
 $$
+    
+```{r, echo = FALSE}
+theta <- y / n
+se <- sqrt(n*theta*(1 - theta)) / n
 
+ggplot(data.frame(theta = c(0, n)), aes(x = theta)) +
+  stat_function(fun = function(x) dnorm(x, mean = theta*n, sd = se*n), color = 'firebrick') +
+  xlab(expression(theta)) +
+  ggtitle('Sampling distribution') +
+  theme(plot.title = element_text(hjust = .5))
+```
 
+## Sampling distribution of y
+- using the central limit theorem, the mean of the binomial distribution, $y$, also has an (approximately) normal distribution
 
-## Bayesian probability
-- probability as a (normative) measure of degree of belief
-- probability as an extension of logic to include inductive inferences
-- concretely, what does this mean for the coin flip example?
-    - is it *not* the proportion of heads in an infinite series?
-\
-\
-- **intuition**: what if the coin has two heads or two tails?
-    - you would still predict $P(\text{heads}) = .5$ for the first flip
+$$
+y \sim \text{Normal}(y, \sqrt{N \theta (1 - \theta)})
+$$
+- we can simulate this using the bootstrap
+```{r}
+set.seed(1)
+dboot <- data.frame(theta = rbinom(100000, n, .5) / n)
+ggplot(dboot, aes(x = theta)) +
+  geom_density() +
+  xlab(expression(theta))
+```
 
 ## Rules of probability
 
@@ -200,75 +279,6 @@ cis <- simulate.cis(18, 24, times = times)
 plot.cis(cis, times)
 ```
 
-## Likelihood ratios
-```{r, echo = FALSE, height = 3, width = 3}
-library('shiny')
-
-shinyApp(
-  options = list(width = "25%", height = "25%"),
-  ui = shinyUI(fluidPage(
-    sidebarLayout(
-      sidebarPanel(
-        sliderInput("p1", label = "p1",
-                    min = 0, max = 1, value = 0.7, step = 0.01),
-        sliderInput("p2", label = "p2",
-                    min = 0, max = 1, value = 0.5, step = 0.01),
-        sliderInput("k", label = "k",
-                    min = 1, max = 50, value = 7, step = 1),
-        sliderInput("N", label = "N",
-                    min = 1, max = 50, value = 10, step = 1),
-        br(),
-        textOutput("LRatio1")
-        ),
-      mainPanel(
-        plotOutput("LRplot", height="400px")
-        )
-      )
-   )),
-   server = function(input, output) {
-      plot.LR <- function(k, N, p1, p2) {
-        # adapted from blog mentioned above
-        MLE <- dbinom(k, N, k/N)
-        L1 <- dbinom(k, N, prob = p1) / MLE
-        L2 <- dbinom(k, N, prob = p2) / MLE
-        
-        curve((dbinom(k, N, x) / max(dbinom(k, N, x))), xlim = c(0, 1),
-              ylab = "Likelihood", xlab = "Probability of correct answer",
-              las = 1, main = "Likelihood function for binomials", lwd = 3,
-              cex.axis = 1.5, cex.lab = 1.5, cex.main = 1.5)
-        
-        points(p1, L1, cex = 2, pch = 21, bg = "cyan")
-        points(p2, L2, cex = 2, pch = 21, bg = "cyan")
-        lines(c(p1, p2), c(L1, L1), lwd = 3, lty = 2, col = "cyan")
-        lines(c(p2, p2), c(L1, L2), lwd = 3, lty = 2, col = "cyan")
-        abline(v = k/N, lty = 5, lwd = 1, col = "grey73")
-      }
-      
-      get.LR <- function(k, N, p1, p2) {
-        MLE <- dbinom(k, N, k/N)
-        L1 <- dbinom(k, N, prob = p1) / MLE
-        L2 <- dbinom(k, N, prob = p2) / MLE
-        L1 / L2
-      }
-      
-      output$LRplot <- renderPlot({
-        k <- input$k
-        N <- input$N
-        if (k <= N) plot.LR(k, N, input$p1, input$p2)
-      })
-      
-      output$LRatio1 <- renderText({
-        LR_12 <- get.LR(input$k, input$N, input$p1, input$p2)
-        paste("L1 / L2: ", round(LR_12, 3))
-      })
-      
-      output$LRatio2 <- renderText({
-        LR_21 <- 1 / get.LR(input$k, input$N, input$p1, input$p2)
-        paste("L2 / L1: ", round(LR_21, 3))
-      })
-    }
-)
-```
 
 ## Bayesian updating
 ```{r, echo = FALSE, height = 3, width = 3}
@@ -482,16 +492,9 @@ $$
     - $BIC = -2 \log p(\textbf{y}|\hat \theta) + \log n \cdot k$
 
 
-## Bayes factor
-- can compare non-nested models
-- can support the null hypothesis
-- its interpretation does not depend on the sample size
-- can sequentially test participants, without $p$-hacking
-\
-\
-- use software like JASP or BayesFactor
-    - use a **default prior** approach pioneered by Harold Jeffreys
-    
+## Assumptions of Ronald and Thomas
+
+
 ## Lindley's Paradox
 ```{r}
 k <- 49581
