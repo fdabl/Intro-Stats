@@ -1,11 +1,12 @@
 ---
-title: "Bayesian inference with JASP"
+title: "Notes on Statistics from a Bayesian Perspective"
+subtitle: "A Conceptual and Practical Introduction"
 author: "Fabian Dablander"
-runtime: shiny
+# runtime: shiny
 bibliography: bibliography.bib
 output:
   ioslides_presentation:
-    css: mistyle.css
+    # css: mistyle.css
     smaller: yes
     transition: faster
 ---
@@ -20,48 +21,50 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, dev.args = 
 \newcommand{\cmark}{\ding{51}}
 \newcommand{\xmark}{\ding{55}}
 
+## Motivation
+- How old is statistics?
+- Who invented the *p* value?
+- What is Bayes' theorem?
+
+
 ## Outline
-- Challenges of the scientific endeavour
-    - Publication bias
-    - Publish or perish climate
-    - *p*-hacking
-    
-<span style = "color:white"></span>
-    
-- Pitfalls with classical statistics
-    - Short history of statistics
-    - (Re)introduction *p*-values, confidence intervals, statistical power
+- **1a.** History of statistics
+    - Relation to science
+    - Controversies and personal hatred
     
 <span style = "color:white"></span>
 
-- Introduction to Bayesian inference
+- **1b.** Introduction to probability
+    - Frequentist versus Bayesian motivation
+
+<span style = "color:white"></span>
+    
+- **2.** Statistical models
+    - Example: Murphy's law
+    - (Re)introduction *p*-values, confidence intervals, statistical power
+    
+
+## Outline
+- **3.** Introduction to Bayesian statistics
     - Sum and product rule of probability
     - Parameter estimation, model comparison, model prediction
     
-## Outline
-- Economic burden of closed-source software
-    - How expensive are SPSS, MATLAB and co?
-    
 <span style = "color:white"></span>
 
-- Introducing JASP
+- **4a.** Introducing JASP
     - Worked examples
     - Practice session
     
 <span style = "color:white"></span>
 
-- Issues with Bayesian inference
-    - How to pick a prior?
-    - What about error rates?
-
-<span style = "color:white"></span>
-
-- Outlook
+- **4b.** Outlook
     - Where is Bayes going?
     - Where is JASP going?
     - Where are *you* going?
     
     
+
+# Introduction to Probability
 ## Detective example
 ```{r, echo = FALSE, height = 3, width = 3, results = 'asis'}
 library('papaja')
@@ -75,38 +78,115 @@ apa_table(
 ```
 
 
+# Statistical models
 
-    
+## Some notation
+- Let $X$ and $Y$ denote *random variables*
+- greek letters like $\mu$ and $\sigma^2$ denote model parameters
+- $X \sim \text{N}(\mu, \sigma^2)$ means $X$ is distributed normally with mean $\mu$ and variance $\sigma^2$
+- $5 \approx 4$ means 5 is approximately 4
+- $\sum$ and $\int$ denote summation and integration, respectively
+- $\mathbb{E}[X]$ denotes the expectation or mean of the random variable $X$; $\mathbb{Var}[X]$ its variance
+- $f(X = x; \mu)$ will denote the likelihood of a value given the parameter $\mu$
+- $P(X = x|\theta)$ denotes the (discrete) conditional probability of $X = x$ given $\theta$
+- $p(X = x|\theta)$ denotes the (continuous) conditional probability of $X = x$ given $\theta$
+- $p(X = x)$ denotes the marginal probability of $X = x$
+
+
 ## Statistical models
-- to reduce complexity, we use **statistical models**
-- say I flip a coin to estimate its bias
-    - what exactly do I mean by bias?
-    - only becomes clear after specifying the **functional relationship** of how a latent parameter relates to empirical observation
-    
-- the statistical model, i.e. the likelihood, describes this functional relationship
+- say I have $n = 100$ observations $x = \{x_1, x_2, x_3, \ldots, x_n\}$
+- you ask me about the data; what can I tell you?
+```{r, echo = FALSE}
+library('ggplot2')
+theme_set(papaja::theme_apa())
 
+set.seed(1774)
+x <- rnorm(100, 100, 10)
+```
 
-## Bernoulli model
-- In the coin flip case, I assume a **Bernoulli likelihood**
+```{r}
+x
+```
+
+## Statistical models
+- I introduce a statistical model to reduce complexity
+- A statistical model describes the relationship of one or more **latent parameters** to the observations
+
+```{r, echo = FALSE}
+mu <- mean(x)
+sigma <- sd(x)
+
+ggplot(data.frame(x = x), aes(x = x)) +
+  geom_histogram(aes(y = ..density..), bins = 20, fill = 'grey46', col = 'black') +
+  stat_function(fun = function(y) dnorm(y, mean = mu, sd = sigma), col = 'firebrick', size = 1.5)
+```
+
+## Statistical models
+- I used a normal distribution, assuming that
+$$
+f(x; \mu, \sigma) = \frac{1}{\sqrt{2\pi\sigma^2}} \exp \big (-\frac{1}{2\sigma} (x - \mu)^2 \big)
+$$
+- now I can describe the data with just two numbers
+```{r}
+c(mean(x), sd(x))
+```
+
+## Statistical models
+- Also called **likelihood functions**
+- Note that our statistical model need be good; it can be horribly misspecified!
 
 $$
-P(X = x|\theta) = \theta^x (1 - \theta)^{1 - x}
+f(x; a, b) = \frac{1}{b - a}
 $$
+```{r, echo = FALSE}
+ggplot(data.frame(x = x), aes(x = x)) +
+  geom_histogram(aes(y = ..density..), bins = 20, fill = 'grey46', col = 'black') +
+  stat_function(fun = function(y) dunif(y, min = 50, max = 150), col = 'firebrick', size = 1.5)
+```
 
-- this describes one single coin flip, $x \in \{0, 1\}$
-- to model $n$ coin flips, we assume **i.i.d.** and write
-<span style = "color:white"></span>
-- <span style = "color:red">(this is a very contentious assumption!)</span>
+
+## Statistical models: Practical example
+- Over the last few weeks, bread fell sometimes with the buttery side on the floor
+- on other occasions, it fell on the floor with the dry side
+- Questions
+    - <span style = "color:red">What is the propensity of the bread to fall on the floor with the butter side down?</span>
+    - <span style = "color:red">How do I describe this process? Any suggestions?</span>
+
+
+## Statistical models: Bread and butter
+- First, note that the outcome is binary, $x = \{0, 1\}$
+- Let's introduce a latent parameter, $\theta$
+- A good, tried suggestion would be the following statistical model
 
 $$
 \begin{align*}
-P(X = \boldsymbol{x}|\theta) &\stackrel{i.i.d.}{=} \prod_{i=1}^n \theta^{x_i} (1 - \theta)^{1 - x_i}
+f(x; \theta) &= \theta^x (1 - \theta)^{1 - x} \\[2ex]
+f(x; \theta) &= \begin{cases} \theta & \text{if } x = 1 \\ 1 - \theta & \text{otherwise} \end{cases}
 \end{align*}
 $$
 
+## Statistical models: Bread and butter
+- with this function I can describe one event
+- so how do I describe $n$ events?
+- I make a <span style = "color:red">very contentious assumption</span>: **independent and identically distributed samples**
+- this allows me to just multiply the individual samples
 
-## Bernoulli model
-- neglecting the order, we only model the number of **successses:**
+## Statistical models: Bread and butter
+- assume I have $n = 20$ data points $x = \{x_1, x_2, x_3, \ldots, x_n\}$
+
+$$
+\begin{align*}
+f(x; \theta) &\stackrel{\text{i.i.d.}}{=} f(x_1; \theta) \cdot f(x_2; \theta) \cdot \ldots \cdot f(x_n; \theta) \\
+             &= \prod^n_{i=1} f(x_i; \theta) \\
+             &= \prod^n_{i=1} \theta^{x_i} (1 - \theta)^{1 - x_i} \\
+             &= \theta^{\sum^n_{i = 1} x_i} (1 - \theta)^{\sum^n_{i = 1} 1 - x_i}
+\end{align*}
+$$
+
+## Side note: Binomial model
+- I don't care about the order of the bread falls
+- i.e., I don't care whether $x = \{1, 0 \}$ or $x = \{0, 1\}$
+- Neglecting the order, we only model the number of falls with butter on the floor
 
 $$
 Y = \sum_{i=1}^n x_i
@@ -118,64 +198,171 @@ $$
 {n \choose y} = \frac{n!}{y!(n - y)!}
 $$
 
-- possible ways of obtaining $y$ successes yields the **Binomial** model
+- possible ways of obtaining $Y = y$ successes yields the **Binomial** model
 
 
-## Binomial model
-- the Binomial likelihood relates the number of successes to the bias parameter
+## Side note: Binomial model
+- We don't need the exact information of $x = \{x_1, x_2, x_3, \ldots, x_n\}$
+- $y$ and $n$ are *sufficient* to describe the data
+- The likelihood function changes to be
 
 $$
 \begin{align*}
-P(X = x|\theta) &= \theta^{\sum_{i=1}^n x_i} (1 - \theta)^{n - \sum_{i=1}^n x_i} \\
-P(Y = y|\theta) &= {n \choose y} \theta^y (1 - \theta)^{n - y}
+f(y; \theta, n) &= {n \choose y} \theta^{\sum^n_{i = 1} x_i} (1 - \theta)^{\sum^n_{i = 1} 1 - x_i} \\[1ex]
+                &= {n \choose y} \theta^{y} (1 - \theta)^{n - y} \\
 \end{align*}
 $$
 
-- note that instead of the whole data vector $X = \{0, 1, 1, 0, 0, \ldots\}$
-    - we use the statistic $Y = \sum_{i=1}^n x_i$ to summarize the data
-    - $Y$ is called a **sufficient statistic**
     
+## Statistical models: Bread and butter
+- I observe the following data
+
+```{r, echo = FALSE}
+set.seed(1774)
+
+x <- rbinom(20, 1, prob = .7)
+y <- sum(x)
+n <- length(x)
+
+ggplot(data.frame(x = x), aes(x = x)) +
+  geom_bar()
+```
+
+- I want to learn $\theta$ --- what are good values for it, given the data?
+
+
+## Statistical models: Bread and butter
+- Let's plot the data as a function of $\theta$
+
+```{r, echo = FALSE}
+ggplot(data.frame(x = c(0, 1)), aes(x = x)) +
+  stat_function(fun = function(theta) dbinom(sum(x), length(x), prob = theta)) +
+  ylab('Likelihood') +
+  xlab(expression(theta))
+```
+
     
 ## Likelihoods
-- unify frequentist and Bayesian approaches to statistics
-- how <b>likely is the data</b> given certain parameter values?
-- assume coin flip data: $\{1, 1, 1\}$
-
-$$
-f(Y = 3|n = 3, \theta = .5) = {3 \choose 3} .5^3 (1 - .5)^{3 - 3} = 0.125 \\
-f(Y = 3|n = 3, \theta = .8) = {3 \choose 3} .8^3 (1 - .8)^{3 - 3} = 0.512
-$$
-
-
-
-## Bayesian probability
-- probability as a (normative) measure of degree of belief
-- probability as an extension of logic to include inductive inferences
-- concretely, what does this mean for the coin flip example?
-    - is it *not* the proportion of heads in an infinite series?
-\
-\
-- **intuition**: what if the coin has two heads or two tails?
-    - you would still predict $P(\text{heads}) = .5$ for the first flip
-
-## Rules of probability
-
-$$
-\begin{align}
-P(H, D) &= P(H|D)P(D) = P(D|H)P(H) \\[2ex]
-P(D) &= \sum_{H} P(H, D) = \sum_{H} P(D|H)P(H)
-\end{align}
-$$
-
-- arrive at Bayes' rule by simple rearrangement
+- Answer to: **How likely is the data given certain parameter values?**
+- Let's compare $\theta = .5$ and $\theta = .75$ on our flipping data ($y = 15, n = 20$)
 
 $$
 \begin{align*}
-P(H, D) &= P(H, D) \\
-P(H|D)P(D) &= P(D|H)P(H) \\
-P(H|D) &= \frac{P(D|H)P(H)}{P(D)} = \frac{P(D|H)P(H)}{\sum_{H} P(D|H)P(H)}
+f(Y = 15|n = 20, \theta = .5)  &= {20 \choose 15} .50^{15} (1 - .50)^{20 - 15} \approx 0.0147 \\[1ex]
+f(Y = 15|n = 20, \theta = .75) &= {20 \choose 15} .75^{15} (1 - .75)^{20 - 15} \approx 0.2033
 \end{align*}
 $$
+
+## Likelihoods
+```{r, echo = FALSE}
+p1 <- .5
+p2 <- .75
+llh.p1 <- dbinom(y, n, p1)
+llh.p2 <- dbinom(y, n, p2)
+
+ggplot(data.frame(x = c(0, 1)), aes(x = x)) +
+  stat_function(fun = function(theta) dbinom(sum(x), length(x), prob = theta)) +
+  geom_segment(x = p1, y = -1, xend = p1, yend = llh.p1, col = 'red', linetype = 'dashed') +
+  geom_segment(x = p2, y = -1, xend = p2, yend = llh.p2, col = 'blue', linetype = 'dashed') +
+  geom_point(x = p1, y = llh.p1, size = 2) +
+  geom_point(x = p2, y = llh.p2, size = 2) +
+  ylab('Likelihood') +
+  xlab(expression(theta))
+```
+
+## Likelihood ratios
+```{r, echo = FALSE, height = 3, width = 3}
+library('shiny')
+
+shinyApp(
+  options = list(width = "25%", height = "25%"),
+  ui = shinyUI(fluidPage(
+    sidebarLayout(
+      sidebarPanel(
+        sliderInput("p1", label = "p1",
+                    min = 0, max = 1, value = 0.7, step = 0.01),
+        sliderInput("p2", label = "p2",
+                    min = 0, max = 1, value = 0.5, step = 0.01),
+        sliderInput("k", label = "k",
+                    min = 1, max = 50, value = 7, step = 1),
+        sliderInput("N", label = "N",
+                    min = 1, max = 50, value = 10, step = 1),
+        br(),
+        textOutput("LRatio1")
+        ),
+      mainPanel(
+        plotOutput("LRplot", height="400px")
+        )
+      )
+   )),
+   server = function(input, output) {
+      plot.LR <- function(k, N, p1, p2) {
+        # # adapted from blog mentioned above
+        # MLE <- dbinom(k, N, k/N)
+        # L1 <- dbinom(k, N, prob = p1) / MLE
+        # L2 <- dbinom(k, N, prob = p2) / MLE
+        # 
+        # curve((dbinom(k, N, x) / max(dbinom(k, N, x))), xlim = c(0, 1),
+        #       ylab = "Likelihood", xlab = "Probability of correct answer",
+        #       las = 1, main = "Likelihood function for binomials", lwd = 3,
+        #       cex.axis = 1.5, cex.lab = 1.5, cex.main = 1.5)
+        # 
+        # points(p1, L1, cex = 2, pch = 21, bg = "cyan")
+        # points(p2, L2, cex = 2, pch = 21, bg = "cyan")
+        # lines(c(p1, p2), c(L1, L1), lwd = 3, lty = 2, col = "cyan")
+        # lines(c(p2, p2), c(L1, L2), lwd = 3, lty = 2, col = "cyan")
+        # abline(v = k/N, lty = 5, lwd = 1, col = "grey73")
+        llh.p1 <- dbinom(k, N, p1)
+        llh.p2 <- dbinom(k, N, p2)
+        
+        ggplot(data.frame(x = c(0, 1)), aes(x = x)) +
+          stat_function(fun = function(theta) dbinom(sum(x), length(x), prob = theta)) +
+          geom_segment(x = p1, y = -1, xend = p1, yend = llh.p1, col = 'red', linetype = 'dashed') +
+          geom_segment(x = p2, y = -1, xend = p2, yend = llh.p2, col = 'blue', linetype = 'dashed') +
+          geom_point(x = p1, y = llh.p1, size = 2) +
+          geom_point(x = p2, y = llh.p2, size = 2) +
+          ylab('Likelihood') +
+          xlab(expression(theta))
+      }
+      
+      get.LR <- function(k, N, p1, p2) {
+        MLE <- dbinom(k, N, k/N)
+        L1 <- dbinom(k, N, prob = p1) / MLE
+        L2 <- dbinom(k, N, prob = p2) / MLE
+        L1 / L2
+      }
+      
+      output$LRplot <- renderPlot({
+        k <- input$k
+        N <- input$N
+        if (k <= N) plot.LR(k, N, input$p1, input$p2)
+      })
+      
+      output$LRatio1 <- renderText({
+        LR_12 <- get.LR(input$k, input$N, input$p1, input$p2)
+        paste("L1 / L2: ", round(LR_12, 3))
+      })
+      
+      output$LRatio2 <- renderText({
+        LR_21 <- 1 / get.LR(input$k, input$N, input$p1, input$p2)
+        paste("L2 / L1: ", round(LR_21, 3))
+      })
+    }
+)
+```
+
+
+
+## Classical statistics
+- is what you learned in class
+- parameters are unknown, fixed quantities
+- uses the notions of
+    - repeated sampling
+    - Type I and Type II errors
+    - confidence intervals
+    - *p* values
+    - statistical power
+
 
 ## Confidence intervals
 ```{r, echo = FALSE}
@@ -218,75 +405,39 @@ cis <- simulate.cis(18, 24, times = times)
 plot.cis(cis, times)
 ```
 
-## Likelihood ratios
-```{r, echo = FALSE, height = 3, width = 3}
-library('shiny')
 
-shinyApp(
-  options = list(width = "25%", height = "25%"),
-  ui = shinyUI(fluidPage(
-    sidebarLayout(
-      sidebarPanel(
-        sliderInput("p1", label = "p1",
-                    min = 0, max = 1, value = 0.7, step = 0.01),
-        sliderInput("p2", label = "p2",
-                    min = 0, max = 1, value = 0.5, step = 0.01),
-        sliderInput("k", label = "k",
-                    min = 1, max = 50, value = 7, step = 1),
-        sliderInput("N", label = "N",
-                    min = 1, max = 50, value = 10, step = 1),
-        br(),
-        textOutput("LRatio1")
-        ),
-      mainPanel(
-        plotOutput("LRplot", height="400px")
-        )
-      )
-   )),
-   server = function(input, output) {
-      plot.LR <- function(k, N, p1, p2) {
-        # adapted from blog mentioned above
-        MLE <- dbinom(k, N, k/N)
-        L1 <- dbinom(k, N, prob = p1) / MLE
-        L2 <- dbinom(k, N, prob = p2) / MLE
-        
-        curve((dbinom(k, N, x) / max(dbinom(k, N, x))), xlim = c(0, 1),
-              ylab = "Likelihood", xlab = "Probability of correct answer",
-              las = 1, main = "Likelihood function for binomials", lwd = 3,
-              cex.axis = 1.5, cex.lab = 1.5, cex.main = 1.5)
-        
-        points(p1, L1, cex = 2, pch = 21, bg = "cyan")
-        points(p2, L2, cex = 2, pch = 21, bg = "cyan")
-        lines(c(p1, p2), c(L1, L1), lwd = 3, lty = 2, col = "cyan")
-        lines(c(p2, p2), c(L1, L2), lwd = 3, lty = 2, col = "cyan")
-        abline(v = k/N, lty = 5, lwd = 1, col = "grey73")
-      }
-      
-      get.LR <- function(k, N, p1, p2) {
-        MLE <- dbinom(k, N, k/N)
-        L1 <- dbinom(k, N, prob = p1) / MLE
-        L2 <- dbinom(k, N, prob = p2) / MLE
-        L1 / L2
-      }
-      
-      output$LRplot <- renderPlot({
-        k <- input$k
-        N <- input$N
-        if (k <= N) plot.LR(k, N, input$p1, input$p2)
-      })
-      
-      output$LRatio1 <- renderText({
-        LR_12 <- get.LR(input$k, input$N, input$p1, input$p2)
-        paste("L1 / L2: ", round(LR_12, 3))
-      })
-      
-      output$LRatio2 <- renderText({
-        LR_21 <- 1 / get.LR(input$k, input$N, input$p1, input$p2)
-        paste("L2 / L1: ", round(LR_21, 3))
-      })
-    }
-)
-```
+# Bayesian probability
+
+## Bayesian probability
+- Detective example!
+- probability as a (normative) measure of degree of belief
+- probability as an extension of logic to include inductive inferences
+- concretely, what does this mean for the coin flip example?
+    - is it *not* the proportion of heads in an infinite series?
+\
+\
+- **intuition**: what if the coin has two heads or two tails?
+    - you would still predict $P(\text{heads}) = .5$ for the first flip
+
+## Rules of probability
+
+$$
+\begin{align}
+P(H, D) &= P(H|D)P(D) = P(D|H)P(H) \\[2ex]
+P(D) &= \sum_{H} P(H, D) = \sum_{H} P(D|H)P(H)
+\end{align}
+$$
+
+- arrive at Bayes' rule by simple rearrangement
+
+$$
+\begin{align*}
+P(H, D) &= P(H, D) \\
+P(H|D)P(D) &= P(D|H)P(H) \\
+P(H|D) &= \frac{P(D|H)P(H)}{P(D)} = \frac{P(D|H)P(H)}{\sum_{H} P(D|H)P(H)}
+\end{align*}
+$$
+
 
 ## Bayesian updating
 - add a graphical model representation
@@ -537,7 +688,7 @@ dbeta(0.5, k + 1, N - k + 1)
 
 # JASP
 
-## Current
+## Current analyses
 ```{r, results = 'asis', echo = FALSE}
 analyses <- rbind(
   c('Descriptives', '-', '-'),
@@ -548,7 +699,19 @@ analyses <- rbind(
   c('ANCOVA', 'Yes', 'Yes'),
   c('Repeated Measures ANOVA', 'Yes', 'Yes'),
   c('Linear Regression', 'Yes', 'Yes'),
-  c('Correlation', 'Yes', 'Yes'),
+  c('Correlation', 'Yes', 'Yes')
+)
+
+papaja::apa_table(
+  analyses,
+  caption = 'Analyses available in JASP 0.8.1.',
+  col.names = c('Analysis', 'Bayesian', 'Frequentist')
+)
+```
+
+## Current analyses
+```{r, results = 'asis', echo = FALSE}
+analyses <- rbind(
   c('Binomial Test', 'Yes', 'Yes'),
   c('Contingeny Tables', 'Yes', 'Yes'),
   c('Log-Linear Regression', 'Yes', 'Yes'),
