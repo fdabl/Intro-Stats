@@ -1,12 +1,12 @@
 ---
-title: "Notes on Statistics from a Bayesian Perspective"
+title: "Bayesian Statistics"
 subtitle: "A Conceptual and Practical Introduction"
 author: "Fabian Dablander"
-# runtime: shiny
+runtime: shiny
 bibliography: bibliography.bib
 output:
   ioslides_presentation:
-    # css: mistyle.css
+    css: mistyle.css
     smaller: yes
     transition: faster
 ---
@@ -94,8 +94,8 @@ apa_table(
 
 
 ## Statistical models
-- say I have $n = 100$ observations $x = \{x_1, x_2, x_3, \ldots, x_n\}$
-- you ask me about the data; what can I tell you?
+- Say I have a set of $n = 100$ observations $d = \{x_1, x_2, x_3, \ldots, x_n\}$
+- You ask me about the data; what can I tell you?
 ```{r, echo = FALSE}
 library('ggplot2')
 theme_set(papaja::theme_apa())
@@ -122,18 +122,18 @@ ggplot(data.frame(x = x), aes(x = x)) +
 ```
 
 ## Statistical models
-- I used a normal distribution, assuming that
+- I used a normal distribution for the data $d$, i.e.
 $$
 f(x; \mu, \sigma) = \frac{1}{\sqrt{2\pi\sigma^2}} \exp \big (-\frac{1}{2\sigma} (x - \mu)^2 \big)
 $$
-- now I can describe the data with just two numbers
+- Now I can describe the data with just two numbers --- the mean $\mu$ and the variance $\sigma^2$
 ```{r}
-c(mean(x), sd(x))
+c(mean(x), var(x))
 ```
 
 ## Statistical models
 - Also called **likelihood functions**
-- Note that our statistical model need be good; it can be horribly misspecified!
+- Note that our statistical model need be appropriate; in fact, it can be horribly misspecified!
 
 $$
 f(x; a, b) = \frac{1}{b - a}
@@ -146,33 +146,35 @@ ggplot(data.frame(x = x), aes(x = x)) +
 
 
 ## Statistical models: Practical example
-- Over the last few weeks, bread fell sometimes with the buttery side on the floor
-- on other occasions, it fell on the floor with the dry side
+- A slice of bread with butter falls on the floor
+- It can either land with butter up (**0**) or butter down (**1**)
+
+<span style = "color: white"></span>
+
 - Questions
     - <span style = "color:red">What is the propensity of the bread to fall on the floor with the butter side down?</span>
-    - <span style = "color:red">How do I describe this process? Any suggestions?</span>
+    - <span style = "color:red">How do I describe the data-generating process? Any suggestions?</span>
 
 
 ## Statistical models: Bread and butter
-- First, note that the outcome is binary, $x = \{0, 1\}$
-- Let's introduce a latent parameter, $\theta$
+- First, note that the outcome is binary. The random variable describing the outcome is $X = \{0, 1\}$
 - A good, tried suggestion would be the following statistical model
 
 $$
 \begin{align*}
 f(x; \theta) &= \theta^x (1 - \theta)^{1 - x} \\[2ex]
-f(x; \theta) &= \begin{cases} \theta & \text{if } x = 1 \\ 1 - \theta & \text{otherwise} \end{cases}
+             &= \begin{cases} \theta & \text{if } x = 1 \\ 1 - \theta & \text{otherwise} \end{cases}
 \end{align*}
 $$
+- where $\theta$ is the latent parameter whose value influences the outcome
+
 
 ## Statistical models: Bread and butter
-- with this function I can describe one event
-- so how do I describe $n$ events?
+- How do I describe $n$ events?
 - I make a <span style = "color:red">very contentious assumption</span>: **independent and identically distributed samples**
-- this allows me to just multiply the individual samples
+- Assume I have $n = 20$ data points $d = \{x_1, x_2, x_3, \ldots, x_n\}$
 
 ## Statistical models: Bread and butter
-- assume I have $n = 20$ data points $x = \{x_1, x_2, x_3, \ldots, x_n\}$
 
 $$
 \begin{align*}
@@ -183,41 +185,115 @@ f(x; \theta) &\stackrel{\text{i.i.d.}}{=} f(x_1; \theta) \cdot f(x_2; \theta) \c
 \end{align*}
 $$
 
-## Side note: Binomial model
-- I don't care about the order of the bread falls
-- i.e., I don't care whether $x = \{1, 0 \}$ or $x = \{0, 1\}$
+- We don't care about the outcome order; e.g., whether $x = \{1, 0 \}$ or $x = \{0, 1\}$
+
+
+## Binomial likelihood
 - Neglecting the order, we only model the number of falls with butter on the floor
+- Introducing a new random variable $Y$
 
 $$
 Y = \sum_{i=1}^n x_i
 $$
 
-- noting that there are:
+- and noting that there are
 
 $$
 {n \choose y} = \frac{n!}{y!(n - y)!}
 $$
 
-- possible ways of obtaining $Y = y$ successes yields the **Binomial** model
+- possible ways of obtaining $Y = y$ successes yields the **Binomial likelihood**
 
 
-## Side note: Binomial model
-- We don't need the exact information of $x = \{x_1, x_2, x_3, \ldots, x_n\}$
-- $y$ and $n$ are *sufficient* to describe the data
-- The likelihood function changes to be
+## Binomial likelihood
 
 $$
 \begin{align*}
-f(y; \theta, n) &= {n \choose y} \theta^{\sum^n_{i = 1} x_i} (1 - \theta)^{\sum^n_{i = 1} 1 - x_i} \\[1ex]
-                &= {n \choose y} \theta^{y} (1 - \theta)^{n - y} \\
+f(x; \theta) &\stackrel{\text{i.i.d.}}{=} f(x_1; \theta) \cdot f(x_2; \theta) \cdot \ldots \cdot f(x_n; \theta) \\
+             &= \prod^n_{i=1} f(x_i; \theta) \\
+             &= \prod^n_{i=1} \theta^{x_i} (1 - \theta)^{1 - x_i} \\
+             &= \theta^{\sum^n_{i = 1} x_i} (1 - \theta)^{\sum^n_{i = 1} 1 - x_i} \\[4ex]
+f(y; \theta, n) &= {n \choose y} \theta^{\sum^n_{i = 1} x_i} (1 - \theta)^{\sum^n_{i = 1} 1 - x_i} \hspace{3em} \text{Neglecting order} \\[1ex]
+                &= {n \choose y} \theta^{y} (1 - \theta)^{n - y} \hspace{7em} Y = \sum^n_{i=1} x_i \\
 \end{align*}
 $$
+
+## Binomial likelihood
+- $\theta$ describes how the data will turn out
+- In other words: the likelihood is a distribution for the data
+
+```{r, echo = FALSE}
+n <- 20
+xx <- seq(n)
+d <- data.frame(
+  x = rep(xx, 3),
+  theta = factor(rep(c(.2, .5, .8), each = n)),
+  y = c(dbinom(xx, n, prob = .2), dbinom(xx, n, prob = .5), dbinom(xx, n, prob = .8))
+)
+
+ggplot(d, aes(x = x, y = y, group = theta)) +
+  geom_bar(stat = 'identity', aes(fill = theta)) +
+  facet_wrap(~ theta) +
+  xlab('y') +
+  ylab('Density') +
+  scale_fill_discrete(name = expression(theta))
+```
+
+## Binomial likelihood
+```{r, echo = FALSE, height = 3, width = 3}
+library('shiny')
+mathjax_URL <- 'http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML-full'
+
+shinyApp(
+  options = list(width = "25%", height = "25%"),
+  ui = shinyUI(fluidPage(
+    sidebarLayout(
+      sidebarPanel(
+        tags$head(
+          tags$script(src = mathjax_URL, type = 'text/javascript'),
+          tags$script("MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});", type = 'text/x-mathjax-config')
+    ),
+        sliderInput("p", label = HTML('$$\\theta$$'),
+                    min = 0, max = 1, value = 0.5, step = 0.01),
+        sliderInput("n", label = "n",
+                    min = 1, max = 100, value = 20, step = 1)
+        ),
+      mainPanel(
+        plotOutput("LRplot", height="400px")
+        )
+      )
+   )),
+   server = function(input, output) {
+      plot_dat <- function(n, p) {
+        x <- seq(n)
+        y <- dbinom(x, n, p)
+        d <- data.frame(
+          x = x,
+          theta = p,
+          y = y / max(y)
+        )
+        
+        ggplot(d, aes(x = x, y = y)) +
+          geom_bar(stat = 'identity') +
+          xlab('y') +
+          ylab('Density') +
+          ggtitle(paste0('Data distribution for theta = ', round(p, 2))) +
+          theme(plot.title = element_text(hjust = .5))
+      }
+      
+      output$LRplot <- renderPlot({
+        plot_dat(input$n, input$p)
+      })
+    }
+)
+```
 
     
 ## Statistical models: Bread and butter
 - I observe the following data
+- I want to learn $\theta$ --- what are good values for it, given the data?
 
-```{r, echo = FALSE}
+```{r, echo = FALSE, fig.width = 4, figh.height = 2}
 set.seed(1774)
 
 x <- rbinom(20, 1, prob = .7)
@@ -228,7 +304,6 @@ ggplot(data.frame(x = x), aes(x = x)) +
   geom_bar()
 ```
 
-- I want to learn $\theta$ --- what are good values for it, given the data?
 
 
 ## Statistical models: Bread and butter
@@ -261,34 +336,36 @@ llh.p1 <- dbinom(y, n, p1)
 llh.p2 <- dbinom(y, n, p2)
 
 ggplot(data.frame(x = c(0, 1)), aes(x = x)) +
-  stat_function(fun = function(theta) dbinom(sum(x), length(x), prob = theta)) +
-  geom_segment(x = p1, y = -1, xend = p1, yend = llh.p1, col = 'red', linetype = 'dashed') +
-  geom_segment(x = p2, y = -1, xend = p2, yend = llh.p2, col = 'blue', linetype = 'dashed') +
+  stat_function(fun = function(theta) dbinom(y, n, prob = theta)) +
+  geom_segment(x = p1, y = -1, xend = p1, yend = llh.p1, aes(col = 'red'), linetype = 'dashed') +
+  geom_segment(x = p2, y = -1, xend = p2, yend = llh.p2, aes(col = 'blue'), linetype = 'dashed') +
   geom_point(x = p1, y = llh.p1, size = 2) +
   geom_point(x = p2, y = llh.p2, size = 2) +
+  scale_colour_manual(name = '', values = c('blue', 'red'),
+                      labels = c(expression(hat(theta)[1]), expression(hat(theta)[2]))) +
   ylab('Likelihood') +
   xlab(expression(theta))
 ```
 
 ## Likelihood ratios
 ```{r, echo = FALSE, height = 3, width = 3}
-library('shiny')
-
 shinyApp(
   options = list(width = "25%", height = "25%"),
   ui = shinyUI(fluidPage(
     sidebarLayout(
       sidebarPanel(
-        sliderInput("p1", label = "p1",
-                    min = 0, max = 1, value = 0.7, step = 0.01),
-        sliderInput("p2", label = "p2",
+        tags$head(
+          tags$script(src = mathjax_URL, type = 'text/javascript'),
+          tags$script("MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});", type = 'text/x-mathjax-config')
+    ),
+        sliderInput("p1", label = HTML('$$\\theta_1$$'),
+                    min = 0, max = 1, value = 0.75, step = 0.01),
+        sliderInput("p2", label = HTML('$$\\theta_2$$'),
                     min = 0, max = 1, value = 0.5, step = 0.01),
-        sliderInput("k", label = "k",
-                    min = 1, max = 50, value = 7, step = 1),
-        sliderInput("N", label = "N",
-                    min = 1, max = 50, value = 10, step = 1),
-        br(),
-        textOutput("LRatio1")
+        sliderInput("y", label = "y",
+                    min = 1, max = 50, value = 15, step = 1),
+        sliderInput("n", label = "n",
+                    min = 1, max = 50, value = 20, step = 1)
         ),
       mainPanel(
         plotOutput("LRplot", height="400px")
@@ -296,7 +373,7 @@ shinyApp(
       )
    )),
    server = function(input, output) {
-      plot.LR <- function(k, N, p1, p2) {
+      plot.LR <- function(y, n, p1, p2) {
         # # adapted from blog mentioned above
         # MLE <- dbinom(k, N, k/N)
         # L1 <- dbinom(k, N, prob = p1) / MLE
@@ -312,40 +389,31 @@ shinyApp(
         # lines(c(p1, p2), c(L1, L1), lwd = 3, lty = 2, col = "cyan")
         # lines(c(p2, p2), c(L1, L2), lwd = 3, lty = 2, col = "cyan")
         # abline(v = k/N, lty = 5, lwd = 1, col = "grey73")
-        llh.p1 <- dbinom(k, N, p1)
-        llh.p2 <- dbinom(k, N, p2)
+        llh.p1 <- dbinom(y, n, p1)
+        llh.p2 <- dbinom(y, n, p2)
         
         ggplot(data.frame(x = c(0, 1)), aes(x = x)) +
-          stat_function(fun = function(theta) dbinom(sum(x), length(x), prob = theta)) +
-          geom_segment(x = p1, y = -1, xend = p1, yend = llh.p1, col = 'red', linetype = 'dashed') +
-          geom_segment(x = p2, y = -1, xend = p2, yend = llh.p2, col = 'blue', linetype = 'dashed') +
+          stat_function(fun = function(theta) dbinom(y, n, prob = theta)) +
+          geom_segment(x = p1, y = -1, xend = p1, yend = llh.p1, aes(col = 'red'), linetype = 'dashed') +
+          geom_segment(x = p2, y = -1, xend = p2, yend = llh.p2, aes(col = 'blue'), linetype = 'dashed') +
           geom_point(x = p1, y = llh.p1, size = 2) +
           geom_point(x = p2, y = llh.p2, size = 2) +
+          scale_colour_manual(name = '', values = c('blue', 'red'),
+                              labels = c(expression(hat(theta)[1]), expression(hat(theta)[2]))) +
           ylab('Likelihood') +
-          xlab(expression(theta))
+          xlab(expression(theta)) +
+          ggtitle(paste0('Likelihood ratio of f(x; theta_1) / f(x; theta_2) = ', get.LR(y, n, p1, p2)))
       }
       
-      get.LR <- function(k, N, p1, p2) {
-        MLE <- dbinom(k, N, k/N)
-        L1 <- dbinom(k, N, prob = p1) / MLE
-        L2 <- dbinom(k, N, prob = p2) / MLE
-        L1 / L2
+      get.LR <- function(y, n, p1, p2) {
+        MLE <- dbinom(y, n, k/N)
+        L1 <- dbinom(y, n, prob = p1) / MLE
+        L2 <- dbinom(y, n, prob = p2) / MLE
+        round(L1 / L2, 2)
       }
       
       output$LRplot <- renderPlot({
-        k <- input$k
-        N <- input$N
-        if (k <= N) plot.LR(k, N, input$p1, input$p2)
-      })
-      
-      output$LRatio1 <- renderText({
-        LR_12 <- get.LR(input$k, input$N, input$p1, input$p2)
-        paste("L1 / L2: ", round(LR_12, 3))
-      })
-      
-      output$LRatio2 <- renderText({
-        LR_21 <- 1 / get.LR(input$k, input$N, input$p1, input$p2)
-        paste("L2 / L1: ", round(LR_21, 3))
+        plot.LR(input$y, input$n, input$p1, input$p2)
       })
     }
 )
@@ -456,8 +524,8 @@ shinyApp(
       sidebarPanel(
         sliderInput("a", label = "a", min = 1, max = 50, value = 1, step = 1),
         sliderInput("b", label = "b", min = 1, max = 50, value = 1, step = 1),
-        sliderInput("k", label = "k", min = 1, max = 50, value = 7, step = 1),
-        sliderInput("N", label = "N", min = 1, max = 50, value = 10, step = 1),
+        sliderInput("k", label = "y", min = 1, max = 50, value = 7, step = 1),
+        sliderInput("N", label = "n", min = 1, max = 50, value = 10, step = 1),
         htmlOutput("BF_10")
         ),
       mainPanel(
@@ -686,8 +754,8 @@ dbeta(0.5, k + 1, N - k + 1)
 ```  
 </div>
 
-# JASP
 
+# JASP
 ## Current analyses
 ```{r, results = 'asis', echo = FALSE}
 analyses <- rbind(
