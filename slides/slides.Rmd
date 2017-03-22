@@ -2,11 +2,11 @@
 title: "Bayesian Statistics"
 subtitle: "A Conceptual and Practical Introduction"
 author: "Fabian Dablander"
-runtime: shiny
+# runtime: shiny
 bibliography: bibliography.bib
 output:
   ioslides_presentation:
-    css: mistyle.css
+    # css: mistyle.css
     smaller: yes
     transition: faster
 ---
@@ -65,7 +65,52 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, dev.args = 
     
 
 # Introduction to Probability
-## Detective example
+
+## Probability theory
+- Is based on Set theory
+- $\mathcal{S} = \{0, 1, 2, 3\}$ denotes the *sample space*
+- $\mathcal{A} = \{0, 1\}$ and $\mathcal{B} = \{1, 2\}$ denote an events; $\mathcal{A}, \mathcal{B} \subset \mathcal{S}$
+
+$$
+\begin{align*}
+\mathcal{A^c} &= \{2\} \\
+\mathcal{B^c} &= \{0\} \\
+\mathcal{A} \cap \mathcal{B} &= \{0, 1\} \\
+\mathcal{A} \cup \mathcal{B} &= \{0, 1, 2\}
+\end{align*}
+$$
+
+## Probability theory
+- Naive view assumes equally likely outcomes, resulting in 
+
+$$
+P(A) = \frac{|A|}{|S|}
+$$
+
+- where $P(.)$ is a function that takes a set and returns a real number on the interval [0, 1]
+- In order to be a valid probability function, the function must satisfy certain constraints
+
+
+## Probability theory
+- Kolmogorov's axioms (1933)
+
+$$
+\begin{align*}
+P(\mathcal{S}) = 1, \,  P(\emptyset) = 0 \\
+P(\bigcup^{\infty}_{i = 1}\mathcal{A}_i) = \sum^{\infty}_{i=1}\mathcal{A}_i
+\end{align*}
+$$
+
+
+## Probability theory: Counting
+- Deck of 52 Poker cards
+- Questions
+    - <span style = "color: red">What is the probability of drawing an ace?</span>
+    - <span style = "color: red">What is the probability of drawing an red ace?</span>
+
+
+## Probability theory: Conditioning
+> **Conditioning is the Soul of Statistics**
 ```{r, echo = FALSE, height = 3, width = 3, results = 'asis'}
 library('papaja')
 
@@ -78,8 +123,14 @@ apa_table(
 ```
 
 
-# Statistical models
+## Probability theory: Recap
+- It is a branch of mathematics, and as such uncontroversial
+- However, there are different interpretations of probability
+    - *Frequentist view:* Probability is long-running frequency
+    - *Bayesian view:* Probability as degree of belief
 
+
+# Statistical models
 ## Some notation
 - Let $X$ and $Y$ denote *random variables*
 - greek letters like $\mu$ and $\sigma^2$ denote model parameters
@@ -290,8 +341,7 @@ shinyApp(
 
     
 ## Statistical models: Bread and butter
-- I observe the following data
-- I want to learn $\theta$ --- what are good values for it, given the data?
+- I want to learn $\theta$ --- what are good values for it, given the data below?
 
 ```{r, echo = FALSE, fig.width = 4, figh.height = 2}
 set.seed(1774)
@@ -420,74 +470,155 @@ shinyApp(
 ```
 
 
+# Classical and Bayesian statistics
+## A neutral Bird's eye view
+  Ronald Fisher                     Neyman-Pearson                       Bayesian
+----------------------              ---------------------------          ---------------------------
+Probability as long-run frequency   Probability as long-run frequency    Probability as degree of belief
+*p*-value                           *p*-value                            Bayes factors
+$\alpha$                            $\alpha, \beta$                      -
+Parameters are fixed                Parameters are fixed                 Parameters are random
+Pre-data                            Pre-data                             Post-data
+Epistemic approach                  Behavioural approach                 Epistemic approach
+Various estimators                  Various estimators                   Bayes' rule
+-                                   Confidence Intervals                 Credible intervals
+Point estimates                     Point estimates                      Posterior distributions
 
-## Classical statistics
-- is what you learned in class
-- parameters are unknown, fixed quantities
-- uses the notions of
-    - repeated sampling
-    - Type I and Type II errors
-    - confidence intervals
-    - *p* values
-    - statistical power
+
+## A polemic Bird's eye view
+  Classical Statistics     Bayesian Statistics
+----------------------     ---------------------------
+Ad-hoc                     Axiomatic
+Incoherent                 Coherent
+Paradoxical                Intuitive
+Irrational                 Rational
+Ugly                       Pretty
+Irrelevant                 Relevant
+what's taught              what's not taught
+
+<div id="contrast">borrowed from [EJ Wagenmakers](https://docs.google.com/file/d/0B-Ww24m3ZkEyMEpudlVsX3pRVzA/edit)</div>
+
+## Practical example
+- **Data example**
+    - We observe $n = 20$ pieces of bread with butter falling down
+    - $y = 15$ land on the floor with the butter down
+    - Questions
+        - <span style = 'color: red'>Estimation</span>: What are likely values for $\theta$?
+        - <span style = 'color: red'>Testing</span>: Is bread with butter more likely to fall butter down?
+        - <span style = 'color: red'>Prediction</span>: How likely is the next piece to fall butter down?
+        
+Problem           Classical statistics   Bayesian statistics
+-----------       --------------------   --------------------
+Estimation        Maximum Likelihood     Update beliefs using **Bayes' rule**
+Testing           *p*-value              Compare model predictions using **Bayes' rule**
+Prediction        Plug-in Estimate       Account for uncertainty using **Bayes' rule**
+
+
+# Classical statistics
+
+## Bread and Butter: Estimation
+- Use the maximum likelihood estimate $\hat{\theta} = \frac{y}{n}$
+
+```{r, echo = FALSE}
+y <- 15
+n <- 20
+
+ggplot(data.frame(x = c(0, 1)), aes(x = x)) +
+  stat_function(fun = function(theta) dbinom(y, n, prob = theta)) +
+  geom_segment(x = y/n, xend = y/n, y = -1, yend = dbinom(y, n, prob = y/n), color = 'red', linetype = 'dashed') +
+  geom_point(x = y/n, y = dbinom(y, n, prob = y/n), size = 2) +
+  ylab('Likelihood') +
+  xlab(expression(theta))
+```
+
+
+## Bread and Butter: Estimation
+- Use the value that maximizes the likelihood function
+
+$$
+\begin{align*}
+f(x; \theta, n) &= {n \choose y}\theta^{y}(1 - \theta)^{n - y} \\
+\text{log}(f(x; \theta, n)) &= \text{log} {n \choose y} + y \text{log}(\theta) + (n - y)\text{log}(1 - \theta) \\
+\frac{\text{log}(f(x; \theta, n))}{\partial \theta} &\stackrel{!}{=} 0 \\
+&\Rightarrow \theta_{\text{MLE}} = \frac{y}{n}
+\end{align*}
+$$
+
+## Bread and Butter: Estimation
+- The main assumption of classical statistics in two sentences
+
+> We assume that we sample repeatedly from a population; each time we compute an estimate based on
+> the sample. The distribution of these estimates --- the sampling distribution --- gives the precision
+> of the specific estimate.
+
+- In other words
+
+> We conduct an experiment. We then assume that we conduct exactly the same experiment over and over again. For
+> each such experiment, we compute a statistic (say the mean). Plotting these statistics yields the sampling distribution
+> (of the mean).
+
+## Bread and Butter: Estimation
+```{r}
+conduct_experiment <- function(y, n) rbinom(n, 1, prob = y / n)
+
+replicate(10, conduct_experiment(y, n))
+```
+
+## Bread and Butter: Estimation
+```{r}
+sampling_distribution <- apply(replicate(1000, conduct_experiment(y, n)), 2, mean)
+```
+
+```{r, echo = FALSE}
+hist(sampling_distribution, col = 'grey70', xlab = expression(theta), main = 'Sampling distribution')
+```
 
 
 ## Confidence intervals
 ```{r, echo = FALSE}
-simulate.cis <- function(y, n, times = 100) {
-    p <- y / n
+simulate_cis <- function(x, n, times = 100, n_boot = 1000) {
+    p <- sum(x) / n
     cis <- matrix(NA, nrow = times, ncol = 2)
     
-    for (i in 1:times) {
-        y <- sample(c(1, 0), n, replace = TRUE, prob = c(p, 1-p))
-        
-        p.hat <- mean(y)
-        se <- sd(y) / sqrt(n)
-        
-        cis[i, 1] <- p.hat - 1.96 * se
-        cis[i, 2] <- p.hat + 1.96 * se
+    for (i in seq(times)) {
+      dat <- sample(c(0, 1), size = n, prob = c(1-p, p), replace = TRUE)
+      
+      p.hat <- mean(dat)
+      se <- sd(dat) / sqrt(n)
+      
+      cis[i, 1] <- p.hat - 1.96 * se
+      cis[i, 2] <- p.hat + 1.96 * se
     }
     
     within <- apply(cis, 1, function(row) row[1] < p && row[2] > p)
-    cbind(cis, within)
+    cbind(cis, within, p)
 }
 
-plot.cis <- function(cis, times) {
-    x <- 0:times
-    y <- seq(0, 1, 1/times)
-    
-    plot(x, y, type = 'n', xlab = 'i-th repeated sample',
-         ylab = 'bias', main = '95% CIs for bias estimate')
-    
-    abline(18/24, 0, lwd = 3)
-    
-    arrows(x0 = x, y0 = cis[, 1], x1 = x, length = 0, lwd = 1.2,
-           y1 = cis[, 2], col = ifelse(cis[, 3], 'black', 'red'))
+plot_cis <- function(cis, times) {
+  p <- cis[1, 4]
+  x <- seq(0, times)
+  z <- seq(0, 1, 1/times)
+  
+  plot(x, z, type = 'n', xlab = 'i-th repeated sample',
+       ylab = 'bias', main = '95% CIs for bias estimate')
+  
+  abline(p, 0, lwd = 3)
+  
+  arrows(x0 = x, y0 = cis[, 1], x1 = x, length = 0, lwd = 1.2,
+         y1 = cis[, 2], col = ifelse(cis[, 3], 'black', 'red'))
 }
 
 times <- 100
-cis <- simulate.cis(18, 24, times = times)
+cis <- simulate_cis(y, n, times = times)
 ```
 
-```{r, echo = TRUE}
-plot.cis(cis, times)
+```{r, echo = FALSE}
+plot_cis(cis, times)
 ```
 
 
-# Bayesian probability
-
-## Bayesian probability
-- Detective example!
-- probability as a (normative) measure of degree of belief
-- probability as an extension of logic to include inductive inferences
-- concretely, what does this mean for the coin flip example?
-    - is it *not* the proportion of heads in an infinite series?
-\
-\
-- **intuition**: what if the coin has two heads or two tails?
-    - you would still predict $P(\text{heads}) = .5$ for the first flip
-
-## Rules of probability
+# Bayesian statistics
+## Bayesian statistics
 
 $$
 \begin{align}
@@ -639,24 +770,7 @@ shinyApp(
 )
 ```
 
-
-## Bayesian testing
-- **estimation pre-supposes existence**
-- it is a conceptual error to use estimation for testing (e.g., psi)
-    - have to specify a 'lump of probability' for the general law
-    - and then test against this point value, or null model
-
-## Bayesian testing
-- same coin flip data: $\{1, 1, 1\}$
-
-$$
-f(Y = 3|n = 3, \theta = .5) = {3 \choose 3} .5^3 (1 - .5)^{3 - 3} = 0.125 \\
-f(Y = 3|n = 3, \theta = .8) = {3 \choose 3} .8^3 (1 - .8)^{3 - 3} = 0.512
-$$
-
-- evidence of $\theta = .8$ **versus** $\theta = .5$ is $.512 / .125 = 4.096$
-
-## Bayesian testing
+## Bayesian testing: Extending likelihoods
 - comparing point likelihoods is too demanding
     - requires alternative specified as a point
     - we aren't really that certain of our prediction!
@@ -796,10 +910,3 @@ papaja::apa_table(
   col.names = c('Analysis', 'Bayesian', 'Frequentist')
 )
 ```
-
-## Under Development
-- Machine learning module
-- Informative hypothesis testing module
-
-## Future Additions
-- Multilevel models
