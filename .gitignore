@@ -2,3 +2,5 @@
 .Rhistory
 .RData
 .Ruserdata
+slides/model-graphs/*.log
+slides/model-graphs/*.gz
