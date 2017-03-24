@@ -25,22 +25,26 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, dev.args = 
 - How old is statistics?
 - Who invented the *p* value?
 - What is Bayes' theorem?
-
+- add a picture of stats tests (rethinking)
+- add a picture of wansink
+- add some stuff about the post-factual world
+- statistics and drawing sound inferences from data is important as ever!
+- create an exercise sheet
 
 ## Outline
 - **1a.** History of statistics
     - Relation to science
-    - Controversies and personal hatred
+    - Controversies and enigmatic players
     
 <span style = "color:white"></span>
 
 - **1b.** Introduction to probability
-    - Frequentist versus Bayesian motivation
+    - Frequentist versus Bayesian interpretation
 
 <span style = "color:white"></span>
     
 - **2.** Statistical models
-    - Example: Murphy's law
+    - Bread and butter
     - (Re)introduction *p*-values, confidence intervals, statistical power
     
 
@@ -182,6 +186,7 @@ $$
 c(mean(x), var(x))
 ```
 
+
 ## Statistical models
 - Also called **likelihood functions**
 - Note that our statistical model need be appropriate; in fact, it can be horribly misspecified!
@@ -194,6 +199,10 @@ ggplot(data.frame(x = x), aes(x = x)) +
   geom_histogram(aes(y = ..density..), bins = 20, fill = 'grey46', col = 'black') +
   stat_function(fun = function(y) dunif(y, min = 50, max = 150), col = 'firebrick', size = 1.5)
 ```
+
+## Statistical models: Notation
+- Statistical models can be specified as **directed acyclic graphs**
+- gaussian and uniform graphical model
 
 
 ## Statistical models: Practical example
@@ -268,6 +277,10 @@ f(y; \theta, n) &= {n \choose y} \theta^{\sum^n_{i = 1} x_i} (1 - \theta)^{\sum^
                 &= {n \choose y} \theta^{y} (1 - \theta)^{n - y} \hspace{7em} Y = \sum^n_{i=1} x_i \\
 \end{align*}
 $$
+
+## Binomial likelihood
+- binomial graphical model
+
 
 ## Binomial likelihood
 - $\theta$ describes how the data will turn out
@@ -570,7 +583,7 @@ sampling_distribution <- apply(replicate(1000, conduct_experiment(y, n)), 2, mea
 ```
 
 ```{r, echo = FALSE}
-hist(sampling_distribution, col = 'grey70', xlab = expression(theta), main = 'Sampling distribution')
+hist(sampling_distribution, col = 'grey70', xlab = expression(theta), main = 'Sampling distribution of theta')
 ```
 
 

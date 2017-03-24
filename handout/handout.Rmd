@@ -1,0 +1,220 @@
+---
+title: "Introduction to (Bayesian) Statistics"
+output:
+  pdf_document:
+    includes:
+      in_header: header.tex
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, dev.args = list(bg = 'transparent'), fig.align = 'center', fig.width = 3, fig.height = 2)
+```
+
+
+## Motivation
+Science and society are in crisis. The former battles with low statistical power (Cohen, 1962; Button et al., 2013) and failures to replicate (OSC, 2015) caused
+by a perverse "publish or perish" culture which encourages questionable research practices and overselling exploratory findings as the truth; society faces challenges on a grand scale such as climate change, the rise of nationalism and fascism, and increased loss of jobs due to automation. The "post-modern" society has been transformed into the "post-truth" society, with "leaders" such as Steve Bannon; experts are questioned, "alternative facts" proclaimed, and science waved aside.
+
+But regardless of the detractors, rational thinking and the scientific method are the best tools available to make sense of the complex world we live in; and statistics is their steady companion; it's the Sancho Panza to the Don Quixote. Many scientists and students, however, have an insufficient grasp of statistics; but they are not to blame. Classical statistical concepts such as the *p*-value and confidence intervals are very unintuitive --- even to seasoned statisticians.
+
+In this workshop, I eschew the standard way of teaching statistics in psychology, i.e., introducing loosely connected tests in a cookbook-oriented fashion. Instead I provide an introduction to statistics from "first principles". All materials are available on <span style = "color: blue">[https://github.com/fdabl/Intro-Stats](https://github.com/fdabl/Intro-Stats)</span>. This handout provides a precis of the workshop and some practical exercises for you to work through in order to get a deeper understanding of the material.
+
+
+## History of Statistics
+The history of statistics is intertwined with the history of probability. Probability was not put on solid mathematical foundation before 1933, when Andrey Kolmogorov. It first evolved through the applications of games of chance in the 18th century. Jakob Bernoulli ...
+
+
+## Mathematical concepts
+Imagine having breakfast with a friend; clumsy as she is, her bread with butter slips out of her hands and falls on the floor. She is so embarrased that you, too, let your bread with butter slip out of your hands. What are the possible outcomes of this mishap?
+ 
+### Sets
+The theory of probability is based on sets --- unordered collections of things. Let $\mathcal{S}$ denote the set of all outcomes; call it the *sample space*. Either the bread falls on the floor with butter down (denote this by $1$), or the bread falls on the floor butter up (denote this by $0$). The elements or outcomes of our situation above are $\mathcal{S} = \{(0, 0), (0, 1), (1, 0), (1, 1)\}$. Let $\mathcal{A}$ denote the *event* that the bread lands butter down at least once; therefore, $\mathcal{A} = \{(0, 1), (1, 0), (1, 1)\}$. The complement of $\mathcal{A}$ is $\mathcal{A}^c = \{(0, 0)\}$ --- the event that bread never lands butter down. Note that both $\mathcal{A}$ and $\mathcal{A}^c$ are subsets of $\mathcal{S}$, $\mathcal{A} \subset \mathcal{S}, \mathcal{A}^c \subset \mathcal{S}$. The intersection of $\mathcal{A}$ and $\mathcal{A}^c$ is $\mathcal{A} \cap \mathcal{A}^c = \emptyset$; the union is $\mathcal{A} \cup \mathcal{A}^c = \{(0, 0), (0, 1), (1, 0), (1, 1)\} =  \mathcal{S}$.
+
+### Probability
+Assuming that all outcomes are equally likely, we arrive at the *naive interpretation* of probability
+
+$$
+P(\mathcal{A}) = \frac{|\mathcal{A}|}{|\mathcal{S}|}
+$$
+where $P(.)$ denotes the probability function. You can think of it as measuring the size of the set. In our example, $P(\mathcal{A}) = \frac{1}{2}$. More generally, we can introduce two axioms and call every $P(.)$ a probability function if it fulfills these two axioms.
+
+$$
+\begin{split}
+P(\mathcal{S}) = 1, \,  P(\emptyset) = 0 \\
+P(\bigcup^{\infty}_{i = 1}\mathcal{A}_i) = \sum^{\infty}_{i=1}\mathcal{A}_i
+\end{split}
+$$
+From these two axioms, three important properties can be deduced.
+
+$$
+\begin{split}
+P(\mathcal{A}^c) &= 1 - P(\mathcal{A}^c) \\
+P(\mathcal{A \cup B}) &= P(\mathcal{A}) + P(\mathcal{B}) - P(\mathcal{A \cap B}) \\
+P(\mathcal{A}) &\leq P(\mathcal{B}) \, \, \, \, \, \, \, \text{  if   } \mathcal{A} \subset \mathcal{B}
+\end{split}
+$$
+Can you see how?
+
+\begin{center}
+  \begin{tikzpicture}[fill=lightgray]
+    % left hand
+    \scope
+            (-2,-2) rectangle (2,2)
+            (1,0) circle (1);
+      \fill[blue, opacity = .5] (0,0) circle (1);
+    \endscope
+    
+    % right hand
+    \scope
+            (-2,-2) rectangle (2,2)
+            (0,0) circle (1);
+      \fill[red, opacity = .5] (1,0) circle (1);
+    \endscope
+  
+    % outline
+    \draw (0,0) circle (1) (0,1)  node [text=black,above] {$\mathcal{A}$}
+          (1,0) circle (1) (1,1)  node [text=black,above] {$\mathcal{B}$}
+          (1,0) circle (1) (1,1)  node [text=black,below, xshift = -.50cm, yshift = -.65cm] {$\mathcal{A \cap B}$}
+          (-2,-2) rectangle (3,2) node [text=black,above] {$\mathcal{S}$};
+  \end{tikzpicture}
+\end{center}
+
+### Random variables
+### Distributions
+
+
+## Statistical modeling
+Assume I observe $x = \{x_1, x_2, \ldots, x_n\}$ data points. How would I best describe them to you? In order to reduce complexity, I introduce a statistical model which captures reality in a simplifying manner using a small set of *parameters*.
+
+```{r, echo = FALSE}
+library('ggplot2')
+theme_set(papaja::theme_apa())
+
+set.seed(1774)
+x <- rnorm(100, 100, 10)
+```
+
+### Normal model
+*The* standard statistical model is the normal distribution. It's functional form is
+
+$$
+f(x; \mu, \sigma) = \frac{1}{\sqrt{2\pi\sigma^2}} \exp \big (-\frac{1}{2\sigma} (x - \mu)^2 \big)
+$$
+
+where $\mu$ describes the mean and $\sigma$ the standard deviation of the data. Statistical models can be written as directedacyclical graphs, which provides us with powerful notation.
+
+\begin{center}
+  \begin{tikzpicture}[node distance = 2cm, double distance = 2pt, minimum size=.8cm, thick]
+    \node[circle, draw=black, fill=lightgray] (mu) {$\mu$};
+    \node[circle, draw=black, fill=lightgray, right of=mu] (sigma) {$\sigma$};
+    \node[rectangle, below of=mu, draw=black, fill=lightgray, xshift = 1cm] (x) {$x_i$};
+    
+    \draw[->] (mu)--(x);
+    \draw[->] (sigma)--(x);
+    
+    \begin{pgfonlayer}{background}
+        \node [thick,
+               draw=black!90,fit={($(x.south)+(0,-20pt)$)
+                                  (mu.west)
+                                  (mu.north)
+                                  (sigma.east)}] {};
+     \end{pgfonlayer}
+      
+     \node[below of=x] (TrialAnchor) {};
+     \node[left of = TrialAnchor, xshift = 1.6cm, yshift = 1cm] (TrialLabel) {$i \in \{1, \ldots, n\}$};
+     
+     \begin{scope}[xshift = 5cm, node distance = 1cm]
+         \node[] at(0, 0) (mu) {$\mu = \frac{1}{n} \sum_{i=1}^n x_i$};
+         \node[below of = mu] (sigma) {$\sigma = \frac{1}{n} \sum_{i=1}^n (x_i - \mu)^2$};
+         \node[below of = sigma] (x) {$x_i \sim \mbox{Norm(}\mu, \sigma)$};
+      \end{scope}
+      
+  \end{tikzpicture}
+\end{center}
+
+We can fit such a model to the data.
+
+```{r, echo = FALSE}
+mu <- mean(x)
+sigma <- sd(x)
+
+ggplot(data.frame(x = x), aes(x = x)) +
+  geom_histogram(aes(y = ..density..), bins = 20, fill = 'grey46', col = 'black') +
+  stat_function(fun = function(y) dnorm(y, mean = mu, sd = sigma), col = 'firebrick', size = 1) +
+  ggtitle('Gaussian fit') +
+  theme(plot.title = element_text(size = 10, hjust = .5, margin = margin(0, 0, 2, 0)),
+        axis.title.y = element_text(size = 10, margin = margin(0, 2, 0, 0)),
+        axis.title.x = element_text(size = 10, margin = margin(2, 0, 0, 0)),
+        axis.text.y = element_text(size = 6, margin = margin(0, 1, 0, 0)),
+        axis.text.x = element_text(size = 6, margin = margin(1, 0, 0, 0)))
+```
+
+In general, however, we cannot take for granted that the model is a good fit to the data. Model criticism and thinking hard about the data-generating process must be part of every statistical modeling enterprise.
+
+
+## Data analysis
+You have many friends. People just want to hang out with you. However, this has a downside: lots of bread with butter falls on the floor! Last week alone you and your friends managed to have $n = 20$ slices of bread fall on the floor. The outcomes were
+
+$$
+x = \{0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1\}
+$$
+
+You ask yourself three questions: is a slice of bread with butter equally likely to fall on the floor butter up or butter down? What is the most likely value for the proportion? And what is the probability that the next slice of bread will fall butter down on the floor? The first question is one of **hypothesis testing**, the second one **parameter estimation**, and the third concerns itself with **model prediction**.
+
+Before you can even start, you have to think about a statistical model; what process would best describe how the data came about? You start with a simpler problem; one slice of bread with butter falling down. You realize that the outcome is binary, $x \in \{0, 1\}$, and suggest the following model
+
+$$
+f(x; \theta) = \theta^x (1 - \theta)^{1 - x} \\[2ex]
+             = \begin{cases} \theta & \text{if } x = 1 \\ 1 - \theta & \text{otherwise} \end{cases}
+$$
+
+But we have to deal with $n$ slices of bread falling down, not just with one. You assume that the outcomes are (conditionally) independent; that is, assuming you know the true value of $\theta$, you gain no information about the next outcome by observing the last one. This allows you to use the multiplication rule of probability. You arrive at
+
+$$
+\begin{split}
+f(x; \theta) &\stackrel{\text{i.i.d.}}{=} f(x_1; \theta) \cdot f(x_2; \theta) \cdot \ldots \cdot f(x_n; \theta) \\
+             &\vdots \\
+             &= \theta^{\sum^n_{i = 1} x_i} (1 - \theta)^{n - \sum^n_{i = 1} x_i}
+\end{split}
+$$
+
+You look at the last equation and you realize: the function only depends on the sum of the $x_i$! Quickly, you introduce a new random variable $Y = \sum_{i=1}^n x_i$ and rewrite the likelihood function as
+
+$$
+f(y; \theta, n) = \theta^{y} (1 - \theta)^{n - y}
+$$
+
+Thus instead of carrying the whole data vector $x$ in your backpack, you can sufficiently summarize your data just with $n = 20$ and $y = 15$. Smirking, you make another observation. *I don't care about the order of the outcomes!*, you exclaim. It doesn't matter whether you observe 
+
+$$
+\begin{split}
+&x = \{0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1\} \\
+&x = \{1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0\} \\
+&\text{etc.}
+\end{split}
+$$
+
+You realize that there are $n\cdot(n - 1)\cdot \ldots \cdot (n - y + 1)$ such sequences. Show that
+
+$$
+n\cdot(n - 1)\cdot \ldots (n - y + 1) \stackrel{!}{=} {n \choose y}
+$$
+
+The likelihood function is a distribution over possible data patterns.
+
+```{r, echo = FALSE, fig.width = 5, fig.height = 3}
+n <- 20
+xx <- seq(n)
+d <- data.frame(
+  x = rep(xx, 3),
+  theta = factor(rep(c(.2, .5, .8), each = n)),
+  y = c(dbinom(xx, n, prob = .2), dbinom(xx, n, prob = .5), dbinom(xx, n, prob = .8))
+)
+
+ggplot(d, aes(x = x, y = y, group = theta)) +
+  geom_bar(stat = 'identity', aes(fill = theta)) +
+  facet_wrap(~ theta) +
+  xlab('y') +
+  ylab('Density') +
+  scale_fill_discrete(name = expression(theta))
+```
