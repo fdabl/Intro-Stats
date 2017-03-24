@@ -1,0 +1,31 @@
+\documentclass[10pt, letterpaper]{article}
+
+\usepackage{tikz} 
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.9}
+\usetikzlibrary{arrows,shapes,automata,backgrounds,petri,fit,decorations.pathmorphing, calc}
+
+\begin{document}
+
+\begin{tikzpicture}[node distance = 2cm, double distance = 2pt, minimum size=.8cm, thick]
+  \node[circle, draw=black, fill=lightgray] (a) {$\alpha$};
+  \node[circle, draw=black, right of = a, fill=lightgray] (b) {$\beta$};
+  \node[circle, draw=black, below of = a, xshift = 1cm] (theta) {$\theta$};
+  \node[rectangle, below of=theta, draw=black, fill=lightgray] (y) {$y$};
+  \node[rectangle, draw=black, fill=lightgray, left of=y, node distance = 1.5cm] (n) {$n$};
+  
+  \draw[->] (a)--(theta);
+  \draw[->] (b)--(theta);
+  \draw[->] (theta)--(y);
+  \draw[->] (n)--(y);
+   
+  \begin{scope}[xshift = 4.5cm, node distance = 1cm]
+      \node[] at(0, 0) (a) {$\alpha = \beta = 1$};
+      \node[below of = a] (n) {$n = 20$};
+      \node[below of = n] (theta) {$\theta \sim \mbox{Beta}(a, b)$};
+      \node[below of = theta] (y) {$y \sim \mbox{Binomial}(\theta, n)$};
+   \end{scope}
+    
+\end{tikzpicture}
+
+\end{document}

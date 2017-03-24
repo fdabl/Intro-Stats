@@ -554,3 +554,87 @@ papaja::apa_table(
 
 ## Future Additions
 - Multilevel models
+
+
+# From Azerbaijan
+# Introduction to Probability
+## Probability theory
+- Is based on Set theory
+- $\mathcal{S} = \{0, 1, 2, 3\}$ denotes the *sample space*
+- $\mathcal{A} = \{0, 1\}$ and $\mathcal{B} = \{1, 2\}$ denote an events; $\mathcal{A}, \mathcal{B} \subset \mathcal{S}$
+
+$$
+\begin{align*}
+\mathcal{A^c} &= \{2\} \\
+\mathcal{B^c} &= \{0\} \\
+\mathcal{A} \cap \mathcal{B} &= \{0, 1\} \\
+\mathcal{A} \cup \mathcal{B} &= \{0, 1, 2\}
+\end{align*}
+$$
+
+## Probability theory
+- Naive view assumes equally likely outcomes, resulting in 
+
+$$
+P(A) = \frac{|A|}{|S|}
+$$
+
+- where $P(.)$ is a function that takes a set and returns a real number on the interval [0, 1]
+- In order to be a valid probability function, the function must satisfy certain constraints
+
+
+## Probability theory
+- Kolmogorov's axioms (1933)
+
+$$
+\begin{align*}
+P(\mathcal{S}) = 1, \,  P(\emptyset) = 0 \\
+P(\bigcup^{\infty}_{i = 1}\mathcal{A}_i) = \sum^{\infty}_{i=1}\mathcal{A}_i
+\end{align*}
+$$
+
+
+## Probability theory: Counting
+- Deck of 52 Poker cards
+- Questions
+    - <span style = "color: red">What is the probability of drawing an ace?</span>
+    - <span style = "color: red">What is the probability of drawing an red ace?</span>
+
+
+## Probability theory: Conditioning
+> **Conditioning is the Soul of Statistics**
+```{r, echo = FALSE, height = 3, width = 3, results = 'asis'}
+library('papaja')
+
+tab <- rbind(c(1/2, 1/4, 1/4), c(1/3, 1/3, 1/3))
+apa_table(
+  tab,
+  caption = 'Probabilities',
+  col.names = c('Self', 'Wife', 'Lover')
+)
+```
+
+
+## Some notation
+- Let $X$ and $Y$ denote *random variables*
+- greek letters like $\mu$ and $\sigma^2$ denote model parameters
+- $X \sim \text{N}(\mu, \sigma^2)$ means $X$ is distributed normally with mean $\mu$ and variance $\sigma^2$
+- $5 \approx 4$ means 5 is approximately 4
+- $\sum$ and $\int$ denote summation and integration, respectively
+- $\mathbb{E}[X]$ denotes the expectation or mean of the random variable $X$; $\mathbb{Var}[X]$ its variance
+- $f(X = x; \mu)$ will denote the likelihood of a value given the parameter $\mu$
+- $P(X = x|\theta)$ denotes the (discrete) conditional probability of $X = x$ given $\theta$
+- $p(X = x|\theta)$ denotes the (continuous) conditional probability of $X = x$ given $\theta$
+- $p(X = x)$ denotes the marginal probability of $X = x$
+
+## Bread and Butter: Estimation
+- Use the value that maximizes the likelihood function
+
+$$
+\begin{align*}
+f(x; \theta, n) &= {n \choose y}\theta^{y}(1 - \theta)^{n - y} \\
+\text{log}(f(x; \theta, n)) &= \text{log} {n \choose y} + y \text{log}(\theta) + (n - y)\text{log}(1 - \theta) \\
+\frac{\text{log}(f(x; \theta, n))}{\partial \theta} &\stackrel{!}{=} 0 \\
+&\Rightarrow \theta_{\text{MLE}} = \frac{y}{n}
+\end{align*}
+$$

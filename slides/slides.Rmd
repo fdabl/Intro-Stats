@@ -2,7 +2,7 @@
 title: "Bayesian Statistics"
 subtitle: "A Conceptual and Practical Introduction"
 author: "Fabian Dablander"
-# runtime: shiny
+runtime: shiny
 bibliography: bibliography.bib
 output:
   ioslides_presentation:
@@ -31,6 +31,22 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, dev.args = 
 - statistics and drawing sound inferences from data is important as ever!
 - create an exercise sheet
 
+
+## Motivation
+![](images/statistical-tests.png)
+
+## Outcome
+- Oblique
+    - Get a feeling for *statistical modeling*
+    - Get a feeling for statistics as a (young) discipline
+- Concrete
+    - Be able to state the differences between classical and Bayesian statistics
+    - Be able to apply simple Bayesian models to your data
+- Wishful
+    - Become hungry for statistical developments
+    - Read the linked resources to dive deeper
+
+
 ## Outline
 - **1a.** History of statistics
     - Relation to science
@@ -39,6 +55,7 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, dev.args = 
 <span style = "color:white"></span>
 
 - **1b.** Introduction to probability
+    - Why most published research is false
     - Frequentist versus Bayesian interpretation
 
 <span style = "color:white"></span>
@@ -50,12 +67,11 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, dev.args = 
 
 ## Outline
 - **3.** Introduction to Bayesian statistics
-    - Sum and product rule of probability
     - Parameter estimation, model comparison, model prediction
     
 <span style = "color:white"></span>
 
-- **4a.** Introducing JASP
+- **4a.** Some cool applications
     - Worked examples
     - Practice session
     
@@ -65,89 +81,18 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, dev.args = 
     - Where is Bayes going?
     - Where is JASP going?
     - Where are *you* going?
-    
-    
 
-# Introduction to Probability
-
-## Probability theory
-- Is based on Set theory
-- $\mathcal{S} = \{0, 1, 2, 3\}$ denotes the *sample space*
-- $\mathcal{A} = \{0, 1\}$ and $\mathcal{B} = \{1, 2\}$ denote an events; $\mathcal{A}, \mathcal{B} \subset \mathcal{S}$
-
-$$
-\begin{align*}
-\mathcal{A^c} &= \{2\} \\
-\mathcal{B^c} &= \{0\} \\
-\mathcal{A} \cap \mathcal{B} &= \{0, 1\} \\
-\mathcal{A} \cup \mathcal{B} &= \{0, 1, 2\}
-\end{align*}
-$$
+# History of statistics
+## Overview
 
 ## Probability theory
-- Naive view assumes equally likely outcomes, resulting in 
-
-$$
-P(A) = \frac{|A|}{|S|}
-$$
-
-- where $P(.)$ is a function that takes a set and returns a real number on the interval [0, 1]
-- In order to be a valid probability function, the function must satisfy certain constraints
-
-
-## Probability theory
-- Kolmogorov's axioms (1933)
-
-$$
-\begin{align*}
-P(\mathcal{S}) = 1, \,  P(\emptyset) = 0 \\
-P(\bigcup^{\infty}_{i = 1}\mathcal{A}_i) = \sum^{\infty}_{i=1}\mathcal{A}_i
-\end{align*}
-$$
-
-
-## Probability theory: Counting
-- Deck of 52 Poker cards
-- Questions
-    - <span style = "color: red">What is the probability of drawing an ace?</span>
-    - <span style = "color: red">What is the probability of drawing an red ace?</span>
-
-
-## Probability theory: Conditioning
-> **Conditioning is the Soul of Statistics**
-```{r, echo = FALSE, height = 3, width = 3, results = 'asis'}
-library('papaja')
-
-tab <- rbind(c(1/2, 1/4, 1/4), c(1/3, 1/3, 1/3))
-apa_table(
-  tab,
-  caption = 'Probabilities',
-  col.names = c('Self', 'Wife', 'Lover')
-)
-```
-
-
-## Probability theory: Recap
-- It is a branch of mathematics, and as such uncontroversial
+- It is a branch of mathematics based on set theory, and as such uncontroversial
 - However, there are different interpretations of probability
     - *Frequentist view:* Probability is long-running frequency
     - *Bayesian view:* Probability as degree of belief
 
 
 # Statistical models
-## Some notation
-- Let $X$ and $Y$ denote *random variables*
-- greek letters like $\mu$ and $\sigma^2$ denote model parameters
-- $X \sim \text{N}(\mu, \sigma^2)$ means $X$ is distributed normally with mean $\mu$ and variance $\sigma^2$
-- $5 \approx 4$ means 5 is approximately 4
-- $\sum$ and $\int$ denote summation and integration, respectively
-- $\mathbb{E}[X]$ denotes the expectation or mean of the random variable $X$; $\mathbb{Var}[X]$ its variance
-- $f(X = x; \mu)$ will denote the likelihood of a value given the parameter $\mu$
-- $P(X = x|\theta)$ denotes the (discrete) conditional probability of $X = x$ given $\theta$
-- $p(X = x|\theta)$ denotes the (continuous) conditional probability of $X = x$ given $\theta$
-- $p(X = x)$ denotes the marginal probability of $X = x$
-
-
 ## Statistical models
 - Say I have a set of $n = 100$ observations $d = \{x_1, x_2, x_3, \ldots, x_n\}$
 - You ask me about the data; what can I tell you?
@@ -164,8 +109,12 @@ x
 ```
 
 ## Statistical models
-- I introduce a statistical model to reduce complexity
+- Introduce a statistical model to reduce complexity
 - A statistical model describes the relationship of one or more **latent parameters** to the observations
+
+$$
+f(x; \mu, \sigma) = \frac{1}{\sqrt{2\pi\sigma^2}} \exp \big (-\frac{1}{2\sigma} (x - \mu)^2 \big)
+$$
 
 ```{r, echo = FALSE}
 mu <- mean(x)
@@ -177,19 +126,18 @@ ggplot(data.frame(x = x), aes(x = x)) +
 ```
 
 ## Statistical models
-- I used a normal distribution for the data $d$, i.e.
-$$
-f(x; \mu, \sigma) = \frac{1}{\sqrt{2\pi\sigma^2}} \exp \big (-\frac{1}{2\sigma} (x - \mu)^2 \big)
-$$
-- Now I can describe the data with just two numbers --- the mean $\mu$ and the variance $\sigma^2$
+- I used a normal distribution for the data
+- Now I can describe the data with just two numbers --- the mean $\mu$ and the standard deviation $\sigma$
+
 ```{r}
-c(mean(x), var(x))
+c(mean(x), sd(x))
 ```
+
+- But there are other possible statistical models I could use!
 
 
 ## Statistical models
-- Also called **likelihood functions**
-- Note that our statistical model need be appropriate; in fact, it can be horribly misspecified!
+- Statistical models need not be appropriate; in fact, they can be horribly misspecified!
 
 $$
 f(x; a, b) = \frac{1}{b - a}
@@ -205,7 +153,7 @@ ggplot(data.frame(x = x), aes(x = x)) +
 - gaussian and uniform graphical model
 
 
-## Statistical models: Practical example
+## Bread and butter
 - A slice of bread with butter falls on the floor
 - It can either land with butter up (**0**) or butter down (**1**)
 
@@ -216,7 +164,7 @@ ggplot(data.frame(x = x), aes(x = x)) +
     - <span style = "color:red">How do I describe the data-generating process? Any suggestions?</span>
 
 
-## Statistical models: Bread and butter
+## Bread and butter
 - First, note that the outcome is binary. The random variable describing the outcome is $X = \{0, 1\}$
 - A good, tried suggestion would be the following statistical model
 
@@ -353,7 +301,7 @@ shinyApp(
 ```
 
     
-## Statistical models: Bread and butter
+## Bread and butter
 - I want to learn $\theta$ --- what are good values for it, given the data below?
 
 ```{r, echo = FALSE, fig.width = 4, figh.height = 2}
@@ -368,20 +316,8 @@ ggplot(data.frame(x = x), aes(x = x)) +
 ```
 
 
-
-## Statistical models: Bread and butter
-- Let's plot the data as a function of $\theta$
-
-```{r, echo = FALSE}
-ggplot(data.frame(x = c(0, 1)), aes(x = x)) +
-  stat_function(fun = function(theta) dbinom(sum(x), length(x), prob = theta)) +
-  ylab('Likelihood') +
-  xlab(expression(theta))
-```
-
-    
-## Likelihoods
-- Answer to: **How likely is the data given certain parameter values?**
+## Bread and butter
+- **How likely is the data given certain parameter values?**
 - Let's compare $\theta = .5$ and $\theta = .75$ on our flipping data ($y = 15, n = 20$)
 
 $$
@@ -391,7 +327,18 @@ f(Y = 15|n = 20, \theta = .75) &= {20 \choose 15} .75^{15} (1 - .75)^{20 - 15} \
 \end{align*}
 $$
 
-## Likelihoods
+## Bread and butter
+- Let's plot the likelihood of the data as a function of $\theta$
+
+```{r, echo = FALSE}
+ggplot(data.frame(x = c(0, 1)), aes(x = x)) +
+  stat_function(fun = function(theta) dbinom(sum(x), length(x), prob = theta)) +
+  ylab('Likelihood') +
+  xlab(expression(theta))
+```
+
+
+## Bread and butter
 ```{r, echo = FALSE}
 p1 <- .5
 p2 <- .75
@@ -546,23 +493,9 @@ ggplot(data.frame(x = c(0, 1)), aes(x = x)) +
 
 
 ## Bread and Butter: Estimation
-- Use the value that maximizes the likelihood function
-
-$$
-\begin{align*}
-f(x; \theta, n) &= {n \choose y}\theta^{y}(1 - \theta)^{n - y} \\
-\text{log}(f(x; \theta, n)) &= \text{log} {n \choose y} + y \text{log}(\theta) + (n - y)\text{log}(1 - \theta) \\
-\frac{\text{log}(f(x; \theta, n))}{\partial \theta} &\stackrel{!}{=} 0 \\
-&\Rightarrow \theta_{\text{MLE}} = \frac{y}{n}
-\end{align*}
-$$
-
-## Bread and Butter: Estimation
 - The main assumption of classical statistics in two sentences
 
-> We assume that we sample repeatedly from a population; each time we compute an estimate based on
-> the sample. The distribution of these estimates --- the sampling distribution --- gives the precision
-> of the specific estimate.
+> We assume that we sample repeatedly from a population; each time we compute an estimate based on the sample. The distribution of these estimates --- the sampling distribution --- gives the precision of the specific estimate.
 
 - In other words
 
@@ -573,7 +506,6 @@ $$
 ## Bread and Butter: Estimation
 ```{r}
 conduct_experiment <- function(y, n) rbinom(n, 1, prob = y / n)
-
 replicate(10, conduct_experiment(y, n))
 ```
 
@@ -783,7 +715,7 @@ shinyApp(
 )
 ```
 
-## Bayesian testing: Extending likelihoods
+## Bayesian inference: Extending likelihoods
 - comparing point likelihoods is too demanding
     - requires alternative specified as a point
     - we aren't really that certain of our prediction!
@@ -882,7 +814,27 @@ dbeta(0.5, k + 1, N - k + 1)
 </div>
 
 
-# JASP
+# Cool applications
+
+## Harry Potter Sorting Hat Quiz
+![](images/descriptives-big5.png)
+
+## Harry Potter Sorting Hat Quiz
+$$
+\begin{split}
+M_0 &: \mu_{\text{G}} = \mu_{\text{S}} = \mu_{\text{R}} = \mu_{\text{H}} \\
+M_f &: \mu_{\text{G}}, \, \mu_{\text{S}} , \, \mu_{\text{R}} , \, \mu_{\text{H}} \\
+M_r &: \mu_{\text{G}} > (\mu_{\text{S}} , \, \mu_{\text{R}} , \, \mu_{\text{H}})
+\end{split}
+$$
+
+- Trick to compute the Bayes factor ...
+
+## Markov chain Monte Carlo with People
+![](images/MCMCP-model.png)
+
+
+# Practicals with JASP
 ## Current analyses
 ```{r, results = 'asis', echo = FALSE}
 analyses <- rbind(
