@@ -36,15 +36,15 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, dev.args = 
 ![](images/statistical-tests.png)
 
 ## Outcome
-- Oblique
+- **Oblique**
     - Get a feeling for *statistical modeling*
     - Get a feeling for statistics as a (young) discipline
-- Concrete
+- **Concrete**
     - Be able to state the differences between classical and Bayesian statistics
     - Be able to apply simple Bayesian models to your data
-- Wishful
+- **Wish for**
     - Become hungry for statistical developments
-    - Read the linked resources to dive deeper
+    - Read the linked resources at https://github.com/fdabl/Intro-Stats to dive deeper
 
 
 ## Outline
@@ -84,6 +84,55 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, dev.args = 
 
 # History of statistics
 ## Overview
+
+# Introduction to Probability
+
+## Probability theory
+- Is based on Set theory
+- $\mathcal{S} = \{0, 1, 2, 3\}$ denotes the *sample space*
+- $\mathcal{A} = \{0, 1\}$ and $\mathcal{B} = \{1, 2\}$ denote an events; $\mathcal{A}, \mathcal{B} \subset \mathcal{S}$
+
+$$
+\begin{align*}
+\mathcal{A^c} &= \{2\} \\
+\mathcal{B^c} &= \{0\} \\
+\mathcal{A} \cap \mathcal{B} &= \{0, 1\} \\
+\mathcal{A} \cup \mathcal{B} &= \{0, 1, 2\}
+\end{align*}
+$$
+
+## Probability theory
+- Naive view assumes equally likely outcomes, resulting in 
+
+$$
+P(A) = \frac{|A|}{|S|}
+$$
+
+- where $P(.)$ is a function that takes a set and returns a real number on the interval [0, 1]
+- In order to be a valid probability function, the function must satisfy certain constraints
+
+
+## Probability theory
+- Kolmogorov's axioms (1933)
+
+$$
+\begin{align*}
+P(\mathcal{S}) = 1, \,  P(\emptyset) = 0 \\
+P(\bigcup^{\infty}_{i = 1}\mathcal{A}_i) = \sum^{\infty}_{i=1}\mathcal{A}_i
+\end{align*}
+$$
+
+- Some neat properties result
+
+$$
+\begin{split}
+P(\mathcal{A}^c) &= 1 - P(\mathcal{A}^c) \\
+P(\mathcal{A \cup B}) &= P(\mathcal{A}) + P(\mathcal{B}) - P(\mathcal{A \cap B}) \\
+P(\mathcal{A}) &\leq P(\mathcal{B}) \, \, \, \, \, \, \, \text{  if   } \mathcal{A} \subset \mathcal{B}
+\end{split}
+$$
+
+![](images/venn-diagram.png)
 
 ## Probability theory
 - It is a branch of mathematics based on set theory, and as such uncontroversial
@@ -150,7 +199,10 @@ ggplot(data.frame(x = x), aes(x = x)) +
 
 ## Statistical models: Notation
 - Statistical models can be specified as **directed acyclic graphs**
-- gaussian and uniform graphical model
+
+<span style = "color: white"></span>
+
+![](images/uniform-normal-models.png)
 
 
 ## Bread and butter
@@ -227,7 +279,7 @@ f(y; \theta, n) &= {n \choose y} \theta^{\sum^n_{i = 1} x_i} (1 - \theta)^{\sum^
 $$
 
 ## Binomial likelihood
-- binomial graphical model
+![](images/binomial-model.png)
 
 
 ## Binomial likelihood
@@ -254,6 +306,8 @@ ggplot(d, aes(x = x, y = y, group = theta)) +
 ## Binomial likelihood
 ```{r, echo = FALSE, height = 3, width = 3}
 library('shiny')
+library('latex2exp')
+
 mathjax_URL <- 'http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML-full'
 
 shinyApp(
@@ -289,7 +343,7 @@ shinyApp(
           geom_bar(stat = 'identity') +
           xlab('y') +
           ylab('Density') +
-          ggtitle(paste0('Data distribution for theta = ', round(p, 2))) +
+          ggtitle(TeX(paste0('Data distribution for ', '$\\theta$ = ', round(p, 2)))) +
           theme(plot.title = element_text(hjust = .5))
       }
       
@@ -334,7 +388,8 @@ $$
 ggplot(data.frame(x = c(0, 1)), aes(x = x)) +
   stat_function(fun = function(theta) dbinom(sum(x), length(x), prob = theta)) +
   ylab('Likelihood') +
-  xlab(expression(theta))
+  xlab(expression(theta)) +
+  annotate('text', x = .15, y = .18, label = 'y = 15\nn = 20', size = 6)
 ```
 
 
@@ -412,7 +467,9 @@ shinyApp(
                               labels = c(expression(hat(theta)[1]), expression(hat(theta)[2]))) +
           ylab('Likelihood') +
           xlab(expression(theta)) +
-          ggtitle(paste0('Likelihood ratio of f(x; theta_1) / f(x; theta_2) = ', get.LR(y, n, p1, p2)))
+          ggtitle(TeX(paste0('Likelihood ratio of ',
+                             '$\\frac{f(y; n, \\theta_1)}{f(y; n, \\theta_2)}$ = ',
+                             get.LR(y, n, p1, p2))))
       }
       
       get.LR <- function(y, n, p1, p2) {
@@ -511,11 +568,12 @@ replicate(10, conduct_experiment(y, n))
 
 ## Bread and Butter: Estimation
 ```{r}
-sampling_distribution <- apply(replicate(1000, conduct_experiment(y, n)), 2, mean)
+sampling_distribution <- apply(replicate(10000, conduct_experiment(y, n)), 2, mean)
 ```
 
-```{r, echo = FALSE}
-hist(sampling_distribution, col = 'grey70', xlab = expression(theta), main = 'Sampling distribution of theta')
+```{r, echo = FALSE, fig.width = 7, fig.height = 5}
+title <- TeX(paste0('Sampling distribution of ', '$\\theta$'))
+hist(sampling_distribution, col = 'grey70', xlab = expression(theta), main = title, xlim = c(0, 1))
 ```
 
 
@@ -545,7 +603,7 @@ plot_cis <- function(cis, times) {
   z <- seq(0, 1, 1/times)
   
   plot(x, z, type = 'n', xlab = 'i-th repeated sample',
-       ylab = 'bias', main = '95% CIs for bias estimate')
+       ylab = TeX('$\\theta$'), main = TeX(paste0('95% CIs for ', '$\\theta$')))
   
   abline(p, 0, lwd = 3)
   
@@ -563,28 +621,41 @@ plot_cis(cis, times)
 
 
 # Bayesian statistics
-## Bayesian statistics
 
+## Bayesian estimation
+- Use Bayes' rule
 $$
-\begin{align}
-P(H, D) &= P(H|D)P(D) = P(D|H)P(H) \\[2ex]
-P(D) &= \sum_{H} P(H, D) = \sum_{H} P(D|H)P(H)
-\end{align}
+\underbrace{p(\theta|y)}_{\text{Posterior}} = \frac{\overbrace{f(y; \theta)}^{\text{Likelihood}}\overbrace{p(\theta)}^{\text{Prior}}}{\underbrace{p(y)}_{\text{Marginal Likelihood}}}
 $$
 
-- arrive at Bayes' rule by simple rearrangement
+- where, applying the law of total probability
 
 $$
-\begin{align*}
-P(H, D) &= P(H, D) \\
-P(H|D)P(D) &= P(D|H)P(H) \\
-P(H|D) &= \frac{P(D|H)P(H)}{P(D)} = \frac{P(D|H)P(H)}{\sum_{H} P(D|H)P(H)}
-\end{align*}
+p(y) = \int_{\Theta} f(y; \theta)p(\theta) \mathrm{d}\theta
 $$
 
+- Use a Beta-distribution as our prior
 
-## Bayesian updating
-- add a graphical model representation
+$$
+p(\theta|\alpha, \beta) = \frac{1}{\text{Beta}(\alpha, \beta)} \theta^{\alpha - 1}(1 - \theta)^{\beta - 1}
+$$
+
+## Bayesian graphical model
+![](images/binomial-model-bayes.png)
+
+
+## Bayesian estimation
+$$
+\begin{split}
+p(\theta|y) &= \frac{f(y; \theta)p(\theta)}{\int_{\Theta}f(y; \theta)p(\theta)\mathrm{d}\theta} \\[1ex]
+p(\theta|y) &= \frac{{n \choose y} \theta^y (1 - \theta)^{n - y} \frac{1}{\mathcal{B}(a, b)} \theta^{\alpha - 1}(1 - \theta)^{\beta - 1}}{\int_{\Theta}{n \choose y} \theta^y (1 - \theta)^{n - y} \frac{1}{\mathcal{B}(a, b)} \theta^{\alpha - 1}(1 - \theta)^{\beta - 1}\mathrm{d}\theta}
+\end{split}
+$$
+- with some rearranging, we find that
+
+$$
+p(\theta|y) = \frac{1}{\text{Beta}(y + \alpha, n - y + \beta)} \theta^{y + \alpha - 1}(1 - \theta)^{n - y + \beta - 1}
+$$
 
 ## Bayesian updating
 ```{r, echo = FALSE, height = 3, width = 3}
@@ -600,8 +671,8 @@ shinyApp(
       sidebarPanel(
         sliderInput("a", label = "a", min = 1, max = 50, value = 1, step = 1),
         sliderInput("b", label = "b", min = 1, max = 50, value = 1, step = 1),
-        sliderInput("k", label = "y", min = 1, max = 50, value = 7, step = 1),
-        sliderInput("N", label = "n", min = 1, max = 50, value = 10, step = 1),
+        sliderInput("k", label = "y", min = 1, max = 50, value = 15, step = 1),
+        sliderInput("N", label = "n", min = 1, max = 50, value = 20, step = 1),
         htmlOutput("BF_10")
         ),
       mainPanel(
@@ -620,7 +691,7 @@ shinyApp(
           title <- paste0('Beta(', a, ', ', b, ')', ' to Beta(', a + k, ', ', b + N - k, ')')
           
           plot(x, y1, xlim = c(0, 1), ylim = c(0, y.max), type = 'l', ylab = 'Density', lty = 2,
-               xlab = 'Probability of success', las = 1, main = title, lwd=3,
+               xlab = TeX('$\\theta$'), las = 1, main = title, lwd=3,
                cex.lab = 1.5, cex.main = 1.5, col = 'skyblue', axes = FALSE)
           
           axis(1, at = seq(0, 1, .2)) #adds custom x axis
@@ -715,58 +786,89 @@ shinyApp(
 )
 ```
 
-## Bayesian inference: Extending likelihoods
-- comparing point likelihoods is too demanding
-    - requires alternative specified as a point
-    - we aren't really that certain of our prediction!
-\
-\
-- Bayes solution
-    - specify a distribution to quantify this uncertainty
-    - gives the **Bayes factor**
-
-
-## Bayes factor
-- $M_0: \theta = .5$ versus $M_1: \theta \sim \mathcal{Beta(1, 1)}$
-- pit the predictive power of the two models against each other
-    - $p(D|M_0)$ versus $p(D|M_1)$
-    
-\
-\
-- recall Bayes' rule, but conditioning on the model
-$$
-p(\theta|D, M_x) = \frac{p(D|\theta, M_x)p(\theta|M_x)}{p(D|M_x)}
-$$
-
-- where
+## Bayesian model comparison
+- In classical statistics, we test
 
 $$
-p(D|M_x) = \int p(D, \theta|M_x) \mathrm{d}\theta = \int p(D|\theta, M_x)p(\theta|M_x) \mathrm{d}\theta
+H_0: \theta = .5 \\
+H_1: \theta \neq .5 \\
 $$
 
-## Bayes factor
-- update our beliefs about the models using ... Bayes' rule
-\
-\
-$$
-\underbrace{\frac{P(M_1 \mid D)}{P(M_2 \mid D)}}_{\text{posterior odds}} =
-\underbrace{\frac{P(D \mid M_1)}{P(D \mid M_2)}}_{\text{Bayes factor}} \, \cdot \underbrace{\frac{P(M_1)}{P(M_2)}}_{\text{prior odds}}
-$$
-
-
-## Bayes factor
-- is the coin fair?
-    - $M_0: \theta = .5$ versus $M_1: \theta \sim \mathcal{Beta(1, 1)}$
-\
-\
-- the marginal likelihoods become
+- but the model which instantiates $H_1$ makes no predictions whatsoever!
+- We could use likelihoods to compare the hypotheses, such as
 
 $$
-\begin{align}
-p(D|M_0) &= {3 \choose 3} .5^3 (1 - .5)^{3 - 3} = .125 \\
-p(D|M_1) &= \int p(D, \theta|M_1)\mathrm{d}\theta = \int p(D|\theta, M_1)p(\theta|M_1) \mathrm{d}\theta
-\end{align}
+H_0: \theta = .5 \\
+H_1: \theta = .75 \\
 $$
+
+- but this is too demanding; why .75? Why not .80? Or .30?
+
+
+## Bayesian model comparison
+- We are uncertain about alternative values for $\theta$
+- Bayes solution: quantify our uncertainty with a prior distribution
+
+$$
+\begin{split}
+H_0&: \theta = .5 \\
+H_1&: \theta \sim \mathcal{Beta}(1, 1)
+\end{split}
+$$
+
+- Now both models make predictions!
+- Bayesian model comparison pits the predictive accuracy of two models against each other
+
+- For $M_0$, this results in
+$$
+\begin{split}
+p(y|M_0) &= \int_{\Theta} p(y, \theta|M_0)\mathrm{d}\theta \\[1ex]
+         &= \int_{\Theta} p(y|M_0, \theta)p(\theta|M_0)\mathrm{d}\theta \\[1ex]
+         &= f(y|M_0, \theta = .5) \\[2ex]
+         &= {20 \choose 15} .50^{15} (1 - .50)^{20 - 15} \approx 0.0147
+\end{split}
+$$
+
+## Bayesian model comparison
+- For $M_1$, it's a bit more complicated
+
+$$
+\begin{split}
+p(y|M_1) &= \int_{\Theta} p(y, \theta|M_1)\mathrm{d}\theta \\[1ex]
+         &= \int_{\Theta} p(y|M_1, \theta)p(\theta|M_1)\mathrm{d}\theta \\[1ex]
+         &= \int_{\Theta} {20 \choose 15} \theta^{15} (1 - \theta)^{20 - 15} \frac{1}{\mathcal{B}(a, b)}\theta^{\alpha - 1}(1 - \theta)^{\beta - 1}\mathrm{d}\theta \\[1ex]
+         &\approx \frac{1}{N} \sum_{\theta \sim \text{Beta}(\alpha, \beta)}^N {20 \choose 15} \theta^{15} (1 - \theta)^{20 - 15} \\[1ex]
+         &\approx 0.047
+\end{split}
+$$
+
+## Bayesian model comparison
+- How do we update our beliefs across models?
+$$
+\begin{split}
+\underbrace{\frac{p(M_0 \mid y)}{p(M_1 \mid y)}}_{\text{posterior odds}} &=
+\underbrace{\frac{p(y \mid M_0)}{p(y \mid M_1)}}_{\text{Bayes factor}} \, \cdot \underbrace{\frac{p(M_0)}{p(M_1)}}_{\text{prior odds}} \\[1ex]
+\frac{p(M_0|y)}{p(M_1|y)} &= \frac{.0147}{.0477} \cdot \frac{1/2}{1/2}
+\approx .31
+\end{split}
+$$
+
+```{r, echo = FALSE, fig.width = 5, fig.height = 3}
+post_m0 <- 1 / (1 + .31)
+post_m1 <- 1 - post_m0
+
+d <- data.frame(p = c(1/2, post_m0, 1/2, post_m1),
+                m = factor(rep(c('M_0', 'M_1'), each = 2)),
+                distribution = relevel(factor(rep(c('prior', 'posterior'), 2)), ref = 'prior'))
+
+ggplot(d, aes(x = m, y = p, fill = distribution)) +
+  geom_bar(stat = 'identity') +
+  xlab('Model') +
+  ylab('Posterior probability') +
+  facet_wrap(~ distribution) +
+  theme(legend.position = 'none')
+```
+
 
 ## Bayes factor
 - is the non-plus-ultra of model comparison
@@ -781,16 +883,6 @@ $$
     - $BIC = -2 \log p(\textbf{y}|\hat \theta) + \log n \cdot k$
 
 
-## Bayes factor
-- can compare non-nested models
-- can support the null hypothesis
-- its interpretation does not depend on the sample size
-- can sequentially test participants, without $p$-hacking
-\
-\
-- use software like JASP or BayesFactor
-    - use a **default prior** approach pioneered by Harold Jeffreys
-    
 ## Lindley's Paradox
 ```{r}
 k <- 49581
@@ -806,7 +898,7 @@ binom.test(k, N)$p.value
 </div>
 <div style = "float:right; width:45%;">
 
-**Bayes factor (Savage-Dickey)**
+**Bayes factor**
 
 ```{r}
 dbeta(0.5, k + 1, N - k + 1)
@@ -814,7 +906,22 @@ dbeta(0.5, k + 1, N - k + 1)
 </div>
 
 
-# Cool applications
+# Some examples
+
+## Simulator sickness and age
+```{r, echo = FALSE}
+ss_dat <- read.csv('../data/ss_dat.csv')
+
+ggplot(ss_dat, aes(x = age, y = diff_ssq)) +
+  geom_smooth(method = 'lm', se = FALSE, color = 'skyblue') +
+  geom_point() +
+  xlab('Age') +
+  ylab('Simulator Sickness Score (Post - Pre)')
+```
+
+## Simulator sickness and age
+![](images/simulator-sickess-jasp.png)
+
 
 ## Harry Potter Sorting Hat Quiz
 ![](images/descriptives-big5.png)
@@ -835,6 +942,13 @@ $$
 
 
 # Practicals with JASP
+
+## JASP
+- Undergoes rapid development in Eric-Jan Wagenmakers' lab in Amsterdam
+- Has over 20 team members coming from psychology, statistics, and computer science
+- Its aim is to supersede SPSS and provide Bayesian analysis to the world
+
+
 ## Current analyses
 ```{r, results = 'asis', echo = FALSE}
 analyses <- rbind(

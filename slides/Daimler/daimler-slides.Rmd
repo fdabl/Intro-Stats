@@ -557,41 +557,6 @@ papaja::apa_table(
 
 
 # From Azerbaijan
-# Introduction to Probability
-## Probability theory
-- Is based on Set theory
-- $\mathcal{S} = \{0, 1, 2, 3\}$ denotes the *sample space*
-- $\mathcal{A} = \{0, 1\}$ and $\mathcal{B} = \{1, 2\}$ denote an events; $\mathcal{A}, \mathcal{B} \subset \mathcal{S}$
-
-$$
-\begin{align*}
-\mathcal{A^c} &= \{2\} \\
-\mathcal{B^c} &= \{0\} \\
-\mathcal{A} \cap \mathcal{B} &= \{0, 1\} \\
-\mathcal{A} \cup \mathcal{B} &= \{0, 1, 2\}
-\end{align*}
-$$
-
-## Probability theory
-- Naive view assumes equally likely outcomes, resulting in 
-
-$$
-P(A) = \frac{|A|}{|S|}
-$$
-
-- where $P(.)$ is a function that takes a set and returns a real number on the interval [0, 1]
-- In order to be a valid probability function, the function must satisfy certain constraints
-
-
-## Probability theory
-- Kolmogorov's axioms (1933)
-
-$$
-\begin{align*}
-P(\mathcal{S}) = 1, \,  P(\emptyset) = 0 \\
-P(\bigcup^{\infty}_{i = 1}\mathcal{A}_i) = \sum^{\infty}_{i=1}\mathcal{A}_i
-\end{align*}
-$$
 
 
 ## Probability theory: Counting
