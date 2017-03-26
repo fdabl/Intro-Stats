@@ -6,7 +6,6 @@ runtime: shiny
 bibliography: bibliography.bib
 output:
   ioslides_presentation:
-    # css: mistyle.css
     smaller: yes
     transition: faster
 ---
@@ -71,9 +70,10 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, dev.args = 
     
 <span style = "color:white"></span>
 
-- **4a.** Some cool applications
-    - Worked examples
-    - Practice session
+- **4a.** Some applications
+    - Simulator sickness and age
+    - Harry Potter and Personality
+    - Markov chain Monte Carlo with People
     
 <span style = "color:white"></span>
 
@@ -133,6 +133,15 @@ P(\mathcal{A}) &\leq P(\mathcal{B}) \, \, \, \, \, \, \, \text{  if   } \mathcal
 $$
 
 ![](images/venn-diagram.png)
+
+
+## Why most published research is false
+- What is the probability that my hypothesis is true, given that I have observed $p < \alpha$?
+
+$$
+P(H_1|p < \alpha) = \frac{P(p < \alpha|H_1)P(H_1)}{P(p < \alpha|H_1)P(H_1) + P(p < \alpha|H_0)P(H_0)}
+$$
+
 
 ## Probability theory
 - It is a branch of mathematics based on set theory, and as such uncontroversial
@@ -602,7 +611,7 @@ plot_cis <- function(cis, times) {
   x <- seq(0, times)
   z <- seq(0, 1, 1/times)
   
-  plot(x, z, type = 'n', xlab = 'i-th repeated sample',
+  plot(x, z, type = 'n', xlab = 'i-th Experiment',
        ylab = TeX('$\\theta$'), main = TeX(paste0('95% CIs for ', '$\\theta$')))
   
   abline(p, 0, lwd = 3)
@@ -837,7 +846,7 @@ $$
 p(y|M_1) &= \int_{\Theta} p(y, \theta|M_1)\mathrm{d}\theta \\[1ex]
          &= \int_{\Theta} p(y|M_1, \theta)p(\theta|M_1)\mathrm{d}\theta \\[1ex]
          &= \int_{\Theta} {20 \choose 15} \theta^{15} (1 - \theta)^{20 - 15} \frac{1}{\mathcal{B}(a, b)}\theta^{\alpha - 1}(1 - \theta)^{\beta - 1}\mathrm{d}\theta \\[1ex]
-         &\approx \frac{1}{N} \sum_{\theta \sim \text{Beta}(\alpha, \beta)}^N {20 \choose 15} \theta^{15} (1 - \theta)^{20 - 15} \\[1ex]
+         &\approx \frac{1}{N} \sum_{\theta \sim \text{Beta}(\alpha, \beta)}^N {20 \choose 15} \theta^{15} (1 - \theta)^{20 - 15} \hspace{3em} \text{Monte Carlo integration} \\[1ex]
          &\approx 0.047
 \end{split}
 $$
@@ -892,21 +901,21 @@ N <- 98451
 <div style = "float:left; width:45%;">
 **$p$-value**
 
-```{r}
+```{r, echo = FALSE}
 binom.test(k, N)$p.value
 ```
 </div>
 <div style = "float:right; width:45%;">
 
-**Bayes factor**
+**$BF_{01}$**
 
-```{r}
+```{r, echo = FALSE}
 dbeta(0.5, k + 1, N - k + 1)
 ```  
 </div>
 
 
-# Some examples
+# Some applications
 
 ## Simulator sickness and age
 ```{r, echo = FALSE}
@@ -920,7 +929,145 @@ ggplot(ss_dat, aes(x = age, y = diff_ssq)) +
 ```
 
 ## Simulator sickness and age
+- What did we actually do? What is our statistical model?
 ![](images/simulator-sickess-jasp.png)
+
+## Simulator sickness and age
+- Our statistical model is a multivariate Gaussian distribution for the standardized variable $X = [x_1, x_2]$
+
+$$
+f(x|\Sigma) = \frac{1}{\sqrt{2\pi}} |\Sigma|^{-1} \exp \big (\frac{1}{2}x^T\Sigma^{-1}x \big)
+$$
+
+```{r}
+X <- ss_dat[, c('age', 'diff_ssq')]
+Xs <- scale(X)
+head(cbind(X, Xs))
+```
+
+
+## Simulator sickness and age
+```{r, echo = FALSE}
+library('mvtnorm')
+
+shinyApp(
+  options = list(width = "25%", height = "25%"),
+  ui = shinyUI(fluidPage(
+    sidebarLayout(
+      sidebarPanel(
+        tags$head(
+          tags$script(src = mathjax_URL, type = 'text/javascript'),
+          tags$script("MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});", type = 'text/x-mathjax-config')
+    ),
+        sliderInput("rho", label = HTML('$$\\rho$$'),
+                    min = 0, max = .99, value = 0, step = 0.01)
+        ),
+      mainPanel(
+        plotOutput("mvn_plot", height="500px", width="600px")
+        )
+      )
+   )),
+   server = function(input, output) {
+      plot_dat <- function(rho) {
+        mu <- c(0, 0)
+        sigma <- matrix(c(1, rho, rho, 1), nrow = 2)
+        X <- expand.grid(x1 = seq(-3, 3, length.out = 300), x2 = seq(-3, 3, length.out = 300))
+        d <- cbind(X, prob = dmvnorm(X, mean = mu, sigma = sigma))
+
+        ggplot(d, aes(x = x1, y = x2, z = prob)) +
+          geom_contour() +
+          coord_fixed(xlim = c(-3, 3), ylim = c(-3, 3), ratio = 1) +
+          xlab(TeX('X_1')) +
+          ylab(TeX('X_2')) +
+          ggtitle(TeX(paste0('$\\rho = $', round(rho, 2)))) +
+          theme(plot.title = element_text(hjust = .5))
+      }
+      
+      output$mvn_plot <- renderPlot({
+        plot_dat(input$rho)
+      })
+    }
+)
+```
+
+## Simulator sickness and age
+- The shape of the multivariate Gaussian is determined by
+
+$$
+\Sigma = \begin{pmatrix} 1 & \rho \\ \rho & 1 \end{pmatrix}
+$$
+- We want to compare
+
+$$
+\begin{split}
+H_0&: \rho = 0 \\
+H_1&: \rho \sim \text{Beta}(1, 1)
+\end{split}
+$$
+
+- For $M_0$, this is just the simple likelihood for $\rho = 0$
+
+$$
+\begin{split}
+p(d|M_0) &= \frac{1}{\sqrt{2\pi}} \exp \big (\frac{1}{2}x^T\begin{pmatrix} 1 & 0 \\ 0 & 1 \end{pmatrix} ^{-1}x \big) \\[1ex]
+         &\approx 8.414\mathrm{e}^{-35}
+\end{split}
+$$
+
+```{r, echo = FALSE, eval = FALSE}
+prod(dmvnorm(Xs, mean = c(0, 0), sigma = matrix(c(1, 0, 0, 1), nrow = 2)))
+```
+
+## Simulator sickness and age
+- Again, $M_1$ is a bit more complicated as it involves integration
+
+$$
+\begin{split}
+p(d|M_1) &= \int_{\rho} p(d, \rho|M_1)\mathrm{d}\rho \\[1ex]
+         &= \int_{\rho} p(d|M_1, \rho)p(\rho|M_1)\mathrm{d}\rho \\[1ex]
+         &= \int_{\rho} f(x;\Sigma)\text{Beta}(\alpha, \beta)\mathrm{d}\rho \\[1ex]
+         &= \int_{\rho} \frac{1}{\sqrt{2\pi}} |\Sigma|^{-1} \exp \big (\frac{1}{2}x^T\Sigma^{-1}x \big) \frac{1}{\mathcal{B}(\alpha, \beta)}\rho^{\alpha - 1}(1 - \rho)^{\beta - 1} \mathrm{d}\rho \\[1ex]
+         &\approx \frac{1}{N} \sum_{\rho_i \sim \text{Beta}(\alpha, \beta)} ^N f(x;\Sigma_{\rho_i})  \hspace{3em} \text{Monte Carlo integration} \\[1ex]
+         &\approx 8.917\mathrm{e}^{-36}
+\end{split}
+$$
+
+```{r, echo = FALSE, eval = FALSE}
+N <- 100000
+rho <- rbeta(N, 1, 1)
+f <- function(x, rho) dmvnorm(x, mean = c(0, 0), sigma = matrix(c(1, rho, rho, 1), nrow = 2))
+
+marginal_likelihood <- 0
+for (i in seq(N)) {
+  rho_i <- rho[i]
+  marginal_likelihood <- marginal_likelihood + prod(f(Xs, rho_i))
+}
+
+marginal_likelihood / N
+```
+
+## Simulator sickness and age
+- Thus we arrive at
+
+$$
+\text{BF}_{01} = \frac{8.414\mathrm{e}^{-35}}{8.917\mathrm{e}^{-36}} = 9.436
+$$
+
+- But wait! With JASP, we arrived at 
+
+$$
+\text{BF}_{01} = 1.978
+$$
+
+- How is that possible? We have used the same prior for $M_1$: $\rho \sim \text{Beta}(1, 1)$!
+
+
+## Simulator sickness and age
+- <span style = "color: red">The statistical models differed!</span>
+    - Pearson correlation does not require the variables to be normally distributed
+    - It only requires continuous random variables
+    - JASP did not make the assumption of normality; I did
+- Learning outcome: <span style = "color: red">The statistical model is at least as important as the prior!</span>
 
 
 ## Harry Potter Sorting Hat Quiz
@@ -976,11 +1123,11 @@ analyses <- rbind(
   c('Binomial Test', 'Yes', 'Yes'),
   c('Contingeny Tables', 'Yes', 'Yes'),
   c('Log-Linear Regression', 'Yes', 'Yes'),
-  c('Summary Stats', 'Yes', 'No'),
-  c('Reliability Analysis', 'No', 'Yes'),
-  c('Principal Component Analysis', 'No', 'Yes'),
-  c('Exploratory Factor Analysis', 'No', 'Yes'),
-  c('Structural Equation Modeling', 'No', 'Yes')
+  c('Summary Stats', 'Yes', 'Not yet'),
+  c('Reliability Analysis', 'Not yet', 'Yes'),
+  c('Principal Component Analysis', 'Not yet', 'Yes'),
+  c('Exploratory Factor Analysis', 'Not yet', 'Yes'),
+  c('Structural Equation Modeling', 'Not yet', 'Yes')
 )
 
 papaja::apa_table(

@@ -6,7 +6,7 @@ This two hour workshop will be presented at the 31st EFPSA Congress in Qakh, Aze
 
 ## Further resources
 - Papers
-    - Introduction to Bayesian Inference for Psychology ([2017](https://osf.io/preprints/psyarxiv/q46q3)) by Etz and Vandekerckhove
+    - Bayesian Benefits for the Pragmatic Researcher ([2016](http://journals.sagepub.com/doi/pdf/10.1177/0963721416643289)) by Wagenmakers, Morey, and Lee
     - How to become a Bayesian in eight easy steps ([2016](https://osf.io/8wkpd/)) by Etz, Gronau, Dablander, Edelsbrunner, and Baribault
     - The philosophy of Bayes factors and the quantification of statistical evidence ([2016](https://www.sciencedirect.com/science/article/pii/S0022249615000723)) by Morey, Romeijn, and Rouder
 - Textbooks
