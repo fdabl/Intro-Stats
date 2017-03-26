@@ -134,8 +134,41 @@ $$
 
 ![](images/venn-diagram.png)
 
+## How likely is it that today is somebody's birthday?
+- The sample space is $\mathcal{S} = \{1, 2, \ldots, 365\}$
+- There are $k$ people in the room; therefore
+
+$$
+P(\text{somebody's birthday}) = k \cdot \frac{1}{365}
+$$
+
+## Birthday Problem
+- Use $P(A^c) = 1 - P(A)$ to simplify the problem
+
+$$
+\begin{split}
+P(\text{two or more people share birthdays}) &= 1 - P(\text{nobody shares birthdays}) \\[1ex]
+                                             &= 1 - \frac{365 \cdot (365 - 1) \cdot \ldots \cdot (365 - k + 1)}{365^k}
+\end{split}
+$$
+
+```{r, echo = FALSE, fig.width = 6, fig.height = 4}
+library('ggplot2')
+theme_set(papaja::theme_apa())
+
+k <- seq(0, 50)
+f <- function(k) 1 - ((choose(365, k) * factorial(k)) / 365^k)
+d <- data.frame(k = k, prob = f(k))
+
+ggplot(d, aes(x = k, y = prob)) +
+  geom_line() +
+  ylab('Probability') +
+  geom_hline(yintercept = .5, linetype = 'dashed')
+```
+
 
 ## Why most published research is false
+- Add a table with type I and type II error etc.
 - What is the probability that my hypothesis is true, given that I have observed $p < \alpha$?
 
 $$
@@ -155,9 +188,6 @@ $$
 - Say I have a set of $n = 100$ observations $d = \{x_1, x_2, x_3, \ldots, x_n\}$
 - You ask me about the data; what can I tell you?
 ```{r, echo = FALSE}
-library('ggplot2')
-theme_set(papaja::theme_apa())
-
 set.seed(1774)
 x <- rnorm(100, 100, 10)
 ```
@@ -211,7 +241,9 @@ ggplot(data.frame(x = x), aes(x = x)) +
 
 <span style = "color: white"></span>
 
-![](images/uniform-normal-models.png)
+<center>
+<img src="images/uniform-normal-models.png" />
+</center>
 
 
 ## Bread and butter
@@ -283,7 +315,7 @@ f(x; \theta) &\stackrel{\text{i.i.d.}}{=} f(x_1; \theta) \cdot f(x_2; \theta) \c
              &= \prod^n_{i=1} \theta^{x_i} (1 - \theta)^{1 - x_i} \\
              &= \theta^{\sum^n_{i = 1} x_i} (1 - \theta)^{\sum^n_{i = 1} 1 - x_i} \\[4ex]
 f(y; \theta, n) &= {n \choose y} \theta^{\sum^n_{i = 1} x_i} (1 - \theta)^{\sum^n_{i = 1} 1 - x_i} \hspace{3em} \text{Neglecting order} \\[1ex]
-                &= {n \choose y} \theta^{y} (1 - \theta)^{n - y} \hspace{7em} Y = \sum^n_{i=1} x_i \\
+                &= {n \choose y} \theta^{y} (1 - \theta)^{n - y} \hspace{7em} \text{Introducing  } Y = \sum^n_{i=1} x_i \\
 \end{align*}
 $$
 
@@ -478,7 +510,8 @@ shinyApp(
           xlab(expression(theta)) +
           ggtitle(TeX(paste0('Likelihood ratio of ',
                              '$\\frac{f(y; n, \\theta_1)}{f(y; n, \\theta_2)}$ = ',
-                             get.LR(y, n, p1, p2))))
+                             get.LR(y, n, p1, p2)))) +
+          theme(plot.title = element_text(hjust = .5))
       }
       
       get.LR <- function(y, n, p1, p2) {
@@ -533,11 +566,11 @@ what's taught              what's not taught
         - <span style = 'color: red'>Testing</span>: Is bread with butter more likely to fall butter down?
         - <span style = 'color: red'>Prediction</span>: How likely is the next piece to fall butter down?
         
-Problem           Classical statistics   Bayesian statistics
------------       --------------------   --------------------
-Estimation        Maximum Likelihood     Update beliefs using **Bayes' rule**
-Testing           *p*-value              Compare model predictions using **Bayes' rule**
-Prediction        Plug-in Estimate       Account for uncertainty using **Bayes' rule**
+Problem           Classical statistics     Bayesian statistics
+-----------       --------------------     --------------------
+Estimation        Maximum Likelihood, CIs  Posterior distribution (**Bayes' rule**)
+Testing           *p*-value                Bayes factor (**Bayes' rule**)
+Prediction        Plug-in Estimate         Account for uncertainty using **Bayes' rule**
 
 
 # Classical statistics
@@ -807,8 +840,11 @@ $$
 - We could use likelihoods to compare the hypotheses, such as
 
 $$
+\begin{split}
+H_0&: \theta = .5 \\
+H_1&: \theta = .75
+\end{split}
 H_0: \theta = .5 \\
-H_1: \theta = .75 \\
 $$
 
 - but this is too demanding; why .75? Why not .80? Or .30?
@@ -930,7 +966,10 @@ ggplot(ss_dat, aes(x = age, y = diff_ssq)) +
 
 ## Simulator sickness and age
 - What did we actually do? What is our statistical model?
-![](images/simulator-sickess-jasp.png)
+
+<center>
+<img src="images/simulator-sickness-jasp.png" />
+</center>
 
 ## Simulator sickness and age
 - Our statistical model is a multivariate Gaussian distribution for the standardized variable $X = [x_1, x_2]$
@@ -1027,7 +1066,7 @@ p(d|M_1) &= \int_{\rho} p(d, \rho|M_1)\mathrm{d}\rho \\[1ex]
          &= \int_{\rho} p(d|M_1, \rho)p(\rho|M_1)\mathrm{d}\rho \\[1ex]
          &= \int_{\rho} f(x;\Sigma)\text{Beta}(\alpha, \beta)\mathrm{d}\rho \\[1ex]
          &= \int_{\rho} \frac{1}{\sqrt{2\pi}} |\Sigma|^{-1} \exp \big (\frac{1}{2}x^T\Sigma^{-1}x \big) \frac{1}{\mathcal{B}(\alpha, \beta)}\rho^{\alpha - 1}(1 - \rho)^{\beta - 1} \mathrm{d}\rho \\[1ex]
-         &\approx \frac{1}{N} \sum_{\rho_i \sim \text{Beta}(\alpha, \beta)} ^N f(x;\Sigma_{\rho_i})  \hspace{3em} \text{Monte Carlo integration} \\[1ex]
+         &\approx \frac{1}{N} \sum_{\rho_i \sim \text{Beta}(\alpha, \beta)} ^N \frac{1}{\sqrt{2\pi}} |\Sigma|^{-1} \exp \big (\frac{1}{2}x^T\begin{pmatrix} 1 & \rho_i \\ \rho_i & 1 \end{pmatrix}^{-1}x \big) \\[1ex]
          &\approx 8.917\mathrm{e}^{-36}
 \end{split}
 $$
@@ -1047,17 +1086,15 @@ marginal_likelihood / N
 ```
 
 ## Simulator sickness and age
-- Thus we arrive at
-
 $$
 \text{BF}_{01} = \frac{8.414\mathrm{e}^{-35}}{8.917\mathrm{e}^{-36}} = 9.436
 $$
 
 - But wait! With JASP, we arrived at 
 
-$$
-\text{BF}_{01} = 1.978
-$$
+<center>
+<img src="images/simulator-sickness-jasp.png" />
+</center>
 
 - How is that possible? We have used the same prior for $M_1$: $\rho \sim \text{Beta}(1, 1)$!
 
@@ -1066,7 +1103,7 @@ $$
 - <span style = "color: red">The statistical models differed!</span>
     - Pearson correlation does not require the variables to be normally distributed
     - It only requires continuous random variables
-    - JASP did not make the assumption of normality; I did
+    - JASP did not make the assumption of normality --- but I did
 - Learning outcome: <span style = "color: red">The statistical model is at least as important as the prior!</span>
 
 

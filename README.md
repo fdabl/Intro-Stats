@@ -15,7 +15,7 @@ This two hour workshop will be presented at the 31st EFPSA Congress in Qakh, Aze
     - Bayesian Cognitive Modeling ([2013](https://bayesmodels.com/)) by Lee & Wagenmakers
 - Popular Science Books
     - The Theory that would not die ([2011](http://www.mcgrayne.com/the_theory_that_would_not_die__how_bayes__rule_cracked_the_enigma_code__hunted_d_107493.htm)) by McGrayne
-    - Superforcasting ([2016](https://www.goodreads.com/book/show/23995360-superforecasting)) by Tedlock & Gardner
+    - Superforecasting ([2016](https://www.goodreads.com/book/show/23995360-superforecasting)) by Tedlock & Gardner
     - Statistics Done Wrong ([2015](https://www.statisticsdonewrong.com/)) by Alex Reinhart
 - Blogs
     - [The Etz-Files](https://alexanderetz.com/) by Alexander Etz

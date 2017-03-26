@@ -202,7 +202,9 @@ $$
 
 The likelihood function is a distribution over possible data patterns.
 
-```{r, echo = FALSE, fig.width = 5, fig.height = 3}
+```{r, echo = FALSE, fig.width = 5, fig.height = 2}
+library('latex2exp')
+
 n <- 20
 xx <- seq(n)
 d <- data.frame(
@@ -216,5 +218,109 @@ ggplot(d, aes(x = x, y = y, group = theta)) +
   facet_wrap(~ theta) +
   xlab('y') +
   ylab('Density') +
-  scale_fill_discrete(name = expression(theta))
+  scale_fill_discrete(name = expression(theta)) +
+  theme(plot.title = element_text(size = 10, hjust = .5, margin = margin(0, 0, 2, 0)),
+        axis.title.y = element_text(size = 10, margin = margin(0, 2, 0, 0)),
+        axis.title.x = element_text(size = 10, margin = margin(2, 0, 0, 0)),
+        axis.text.y = element_text(size = 6, margin = margin(0, 1, 0, 0)),
+        axis.text.x = element_text(size = 6, margin = margin(1, 0, 0, 0)),
+        strip.text.x = element_blank(),
+        legend.key.size = unit(.3, 'cm'))
 ```
+
+Parameter estimation proceeds by evoking Bayes' rule on the parameter $\theta$
+
+$$
+p(\theta|y, n) = \frac{f(y; \theta, n)p(\theta)}{\int_{\Theta}f(y; \theta, n)p(\theta)\mathrm{d}\theta}
+$$
+
+We are agnostic towards any value of $\theta$ prior to data collection, and thus specify a uniform distribution.
+
+
+```{r, echo = FALSE, fig.width = 5, fig.height = 2}
+y <- 15
+n <- 20
+
+ggplot(data.frame(x = c(0, 1)), aes(x = x)) +
+  stat_function(fun = function(theta) dbeta(theta, 1, 1)/10, aes(col = 'red'), linetype = 'dotted') + 
+  stat_function(fun = function(theta) dbinom(y, n, prob = theta), aes(col = 'blue'), linetype = 'dashed') +
+  stat_function(fun = function(theta) dbeta(theta, y + 1, n - y + 1)/10, aes(col = 'green')) +
+  ylab('Density') +
+  xlab(expression(theta)) +
+  scale_colour_manual(name = '', labels = c('Prior', 'Likelihood', 'Posterior'),
+                      values =  c('skyblue', 'darkorchid1', 'darkorange')) +
+  theme(plot.title = element_text(size = 10, hjust = .5, margin = margin(0, 0, 2, 0)),
+        axis.title.y = element_text(size = 10, margin = margin(0, 2, 0, 0)),
+        axis.title.x = element_text(size = 10, margin = margin(2, 0, 0, 0)),
+        axis.text.y = element_text(size = 6, margin = margin(0, 1, 0, 0)),
+        axis.text.x = element_text(size = 6, margin = margin(1, 0, 0, 0)),
+        strip.text.x = element_blank(),
+        legend.key.size = unit(.3, 'cm'))
+```
+
+A uniform distribution can be written as a Beta distribution with parameters $\alpha = 1, \beta = 1$.
+
+$$
+p(\theta|\alpha, \beta) = \frac{1}{\mathcal{B}(a, b)} \theta^{\alpha - 1}(1 - \theta)^{\beta - 1}
+$$
+
+Now we just turn the Bayesian handle, plugging in the functional forms
+
+$$
+\begin{split}
+p(\theta|y, n) &= \frac{f(y; \theta, n)p(\theta)}{\int_{\Theta}f(y; \theta, n)p(\theta)\mathrm{d}\theta} \\[1ex]
+p(\theta|y, n) &= \frac{{n \choose y} \theta^y (1 - \theta)^{n - y} \frac{1}{\mathcal{B}(a, b)} \theta^{\alpha - 1}(1 - \theta)^{\beta - 1}}{\int_{\Theta}{n \choose y} \theta^y (1 - \theta)^{n - y} \frac{1}{\mathcal{B}(a, b)} \theta^{\alpha - 1}(1 - \theta)^{\beta - 1}\mathrm{d}\theta}
+\end{split}
+$$
+
+With some rearranging we find that
+
+$$
+p(\theta|y, n) \sim \text{Beta}(y + \alpha, n - y + \beta)
+$$
+
+Can you write down the graphical model?
+
+\begin{center}
+  \begin{tikzpicture}[node distance = 2cm, double distance = 2pt, minimum size=.8cm, thick]
+    \node[circle, draw=black, fill=lightgray] (a) {$\alpha$};
+    \node[circle, draw=black, right of = a, fill=lightgray] (b) {$\beta$};
+    \node[circle, draw=black, below of = a, xshift = 1cm] (theta) {$\theta$};
+    \node[rectangle, below of=theta, draw=black, fill=lightgray] (y) {$y$};
+    \node[rectangle, draw=black, fill=lightgray, left of=y, node distance = 1.5cm] (n) {$n$};
+    
+    \draw[->] (a)--(theta);
+    \draw[->] (b)--(theta);
+    \draw[->] (theta)--(y);
+    \draw[->] (n)--(y);
+     
+    \begin{scope}[xshift = 4.5cm, node distance = 1cm]
+        \node[] at(0, 0) (a) {$\alpha = \beta = 1$};
+        \node[below of = a] (n) {$n = 20$};
+        \node[below of = n] (theta) {$\theta \sim \mbox{Beta}(a, b)$};
+        \node[below of = theta] (y) {$y \sim \mbox{Binomial}(\theta, n)$};
+     \end{scope}
+      
+  \end{tikzpicture}
+\end{center}
+
+## Hypothesis testing
+Does the bread land equally often butter down or butter up? We compare two models that instantiate the hypotheses
+
+$$
+\begin{split}
+M_0 &: \theta = .5 \\
+M_1 &: \theta \sim \text{Beta}(1, 1)
+\end{split}
+$$
+
+Bayesian hypothesis testing means evaluating the predictions of different models. The model which predicts the data most strongest gets the most boost in probability. We require a prior over $\theta$ for $M_1$ because otherwise the model would not make any predictions; $M_x: \theta \neq \theta$, as in classical statistics, is misspecified.
+
+Applying Bayes' rule on models leads to
+
+$$
+\begin{split}
+p(\theta|y, n, M_0) &= \frac{f(y; \theta, n, M_0)p(\theta|M_0)}{\int_{\Theta}f(y; \theta, n, M_0)p(\theta|M_0)\mathrm{d}\theta} \\[1ex]
+p(\theta|y, n, M_1) &= \frac{f(y; \theta, n, M_1)p(\theta|M_1)}{\int_{\Theta}f(y; \theta, n, M_1)p(\theta|M_1)\mathrm{d}\theta} \\[1ex]
+\end{split}
+$$
