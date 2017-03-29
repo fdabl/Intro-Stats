@@ -1087,13 +1087,13 @@ p(d|M_1) &= \int_{\rho} p(d, \rho|M_1)\mathrm{d}\rho \\[1ex]
          &= \int_{\rho} f(x;\Sigma)\text{Beta}(\alpha, \beta)\mathrm{d}\rho \\[1ex]
          &= \int_{\rho} \frac{1}{\sqrt{2\pi}} |\Sigma|^{-1} \exp \big (\frac{1}{2}x^T\Sigma^{-1}x \big) \frac{1}{\mathcal{B}(\alpha, \beta)}\rho^{\alpha - 1}(1 - \rho)^{\beta - 1} \mathrm{d}\rho \\[1ex]
          &\approx \frac{1}{N} \sum_{\rho_i \sim \text{Beta}(\alpha, \beta)} ^N \frac{1}{\sqrt{2\pi}} |\Sigma|^{-1} \exp \big (\frac{1}{2}x^T\begin{pmatrix} 1 & \rho_i \\ \rho_i & 1 \end{pmatrix}^{-1}x \big) \\[1ex]
-         &\approx 8.917\mathrm{e}^{-36}
+         &\approx 4.278\mathrm{e}^{-35}
 \end{split}
 $$
 
 ```{r, echo = FALSE, eval = FALSE}
 N <- 100000
-rho <- rbeta(N, 1, 1)
+rho <- runif(N, -1, 1)
 f <- function(x, rho) dmvnorm(x, mean = c(0, 0), sigma = matrix(c(1, rho, rho, 1), nrow = 2))
 
 marginal_likelihood <- 0
@@ -1107,25 +1107,8 @@ marginal_likelihood / N
 
 ## Simulator sickness and age
 $$
-\text{BF}_{01} = \frac{8.414\mathrm{e}^{-35}}{8.917\mathrm{e}^{-36}} = 9.436
+\text{BF}_{01} = \frac{8.414\mathrm{e}^{-35}}{4.278\mathrm{e}^{-35}} = 1.966
 $$
-
-- But wait! With JASP, we arrived at 
-
-<center>
-<img src="images/simulator-sickness-jasp.png" />
-</center>
-
-- How is that possible? We have used the same prior for $M_1$: $\rho \sim \text{Beta}(1, 1)$!
-
-
-## Simulator sickness and age
-- <span style = "color: red">The statistical models differed!</span>
-    - Pearson correlation does not require the variables to be normally distributed
-    - It only requires continuous random variables
-    - JASP did not make the assumption of normality --- but I did
-- Learning outcome: <span style = "color: red">The statistical model is at least as important as the prior!</span>
-
 
 ## Harry Potter Sorting Hat Quiz
 ![](images/descriptives-big5.png)
