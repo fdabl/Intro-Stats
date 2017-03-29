@@ -34,7 +34,7 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, dev.args = 
 ## Motivation
 ![](images/statistical-tests.png)
 
-## Outcome
+## Learning outcome
 - **Oblique**
     - Get a feeling for *statistical modeling*
     - Get a feeling for statistics as a (young) discipline
@@ -49,7 +49,7 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, dev.args = 
 ## Outline
 - **1a.** History of statistics
     - Relation to science
-    - Controversies and enigmatic players
+    - Controversies and enigmatic key players
     
 <span style = "color:white"></span>
 
@@ -88,7 +88,7 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, dev.args = 
 # Introduction to Probability
 
 ## Probability theory
-- Is based on Set theory
+- Is based on set theory
 - $\mathcal{S} = \{0, 1, 2, 3\}$ denotes the *sample space*
 - $\mathcal{A} = \{0, 1\}$ and $\mathcal{B} = \{1, 2\}$ denote an events; $\mathcal{A}, \mathcal{B} \subset \mathcal{S}$
 
@@ -121,7 +121,11 @@ P(\mathcal{S}) = 1, \,  P(\emptyset) = 0 \\
 P(\bigcup^{\infty}_{i = 1}\mathcal{A}_i) = \sum^{\infty}_{i=1}\mathcal{A}_i
 \end{align*}
 $$
+<center>
+<img src="images/venn-diagram.png" </img>
+</center>
 
+## Probability theory
 - Some neat properties result
 
 $$
@@ -132,8 +136,6 @@ P(\mathcal{A}) &\leq P(\mathcal{B}) \, \, \, \, \, \, \, \text{  if   } \mathcal
 \end{split}
 $$
 
-![](images/venn-diagram.png)
-
 ## How likely is it that today is somebody's birthday?
 - The sample space is $\mathcal{S} = \{1, 2, \ldots, 365\}$
 - There are $k$ people in the room; therefore
@@ -141,6 +143,8 @@ $$
 $$
 P(\text{somebody's birthday}) = k \cdot \frac{1}{365}
 $$
+
+- How likely is it that at least two people share birthdays?
 
 ## Birthday Problem
 - Use $P(A^c) = 1 - P(A)$ to simplify the problem
@@ -168,6 +172,10 @@ ggplot(d, aes(x = k, y = prob)) +
 
 
 ## Why most published research is false
+```{r, echo = FALSE}
+table <- rbind(c('Reject Null Hypothesis', '\alpha', '1 - \beta'), c('Do not reject Null', '1 - \alpha', '\beta'))
+table
+```
 - Add a table with type I and type II error etc.
 - What is the probability that my hypothesis is true, given that I have observed $p < \alpha$?
 
@@ -951,6 +959,17 @@ dbeta(0.5, k + 1, N - k + 1)
 </div>
 
 
+## Bayesian prediction
+- What is the probability that the next slice of bread will fall butter down?
+
+$$
+\begin{split}
+p(y' = 1|d) &= \int_{\theta} p(y' = 1, \theta|d) \mathrm{d}\theta \\
+            &= \int_{\theta} p(y' = 1|d, \theta) p(\theta|d) \mathrm{d}\theta \\[1ex]
+            &= \int_{\theta} \theta^{y'} (1 - \theta)^{1 - y'} \frac{1}{\mathcal{B}(y + \alpha, n - y + \beta)} \theta^{\alpha + y - 1}(1 - \theta)^{n - y + \beta - 1}\mathrm{d}\theta
+\end{split}
+$$
+
 # Some applications
 
 ## Simulator sickness and age
@@ -965,14 +984,15 @@ ggplot(ss_dat, aes(x = age, y = diff_ssq)) +
 ```
 
 ## Simulator sickness and age
-- What did we actually do? What is our statistical model?
 
 <center>
 <img src="images/simulator-sickness-jasp.png" />
 </center>
 
+- What did we actually do? What is our statistical model?
+
 ## Simulator sickness and age
-- Our statistical model is a multivariate Gaussian distribution for the standardized variable $X = [x_1, x_2]$
+- Propose as statistical model a multivariate Gaussian distribution for the standardized variable $X = [x_1, x_2]$
 
 $$
 f(x|\Sigma) = \frac{1}{\sqrt{2\pi}} |\Sigma|^{-1} \exp \big (\frac{1}{2}x^T\Sigma^{-1}x \big)
@@ -1030,7 +1050,7 @@ shinyApp(
 ```
 
 ## Simulator sickness and age
-- The shape of the multivariate Gaussian is determined by
+- The shape of the multivariate Gaussian is determined by the correlation matrix
 
 $$
 \Sigma = \begin{pmatrix} 1 & \rho \\ \rho & 1 \end{pmatrix}
@@ -1058,7 +1078,7 @@ prod(dmvnorm(Xs, mean = c(0, 0), sigma = matrix(c(1, 0, 0, 1), nrow = 2)))
 ```
 
 ## Simulator sickness and age
-- Again, $M_1$ is a bit more complicated as it involves integration
+- Again, for $M_1$ it's a bit more complicated as it involves integration over $\rho$
 
 $$
 \begin{split}
