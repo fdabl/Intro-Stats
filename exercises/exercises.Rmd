@@ -1,0 +1,155 @@
+---
+title: "Exercises for 'Introduction to Bayesian Statistics'"
+output:
+  pdf_document:
+    includes:
+      in_header: header.tex
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, dev.args = list(bg = 'transparent'), fig.align = 'center', fig.width = 3, fig.height = 2)
+```
+
+# Probability
+### 1. Axioms
+$$
+\begin{split}
+P(\mathcal{S}) = 1, \,  P(\emptyset) = 0 \\
+P(\bigcup^{\infty}_{i = 1}\mathcal{A}_i) = \sum^{\infty}_{i=1}\mathcal{A}_i
+\end{split}
+$$
+From these two axioms, three important properties can be deduced.
+
+$$
+\begin{split}
+P(\mathcal{A}^c) &= 1 - P(\mathcal{A}^c) \\
+P(\mathcal{A \cup B}) &= P(\mathcal{A}) + P(\mathcal{B}) - P(\mathcal{A \cap B}) \\
+P(\mathcal{A}) &\leq P(\mathcal{B}) \, \, \, \, \, \, \, \text{  if   } \mathcal{A} \subset \mathcal{B}
+\end{split}
+$$
+
+Using the Venn diagram below, show that
+
+$$
+P(\mathcal{A} \cup \mathcal{B}) = P(\mathcal{A}) + P(\mathcal{B}) - P(\mathcal{A} \cap \mathcal{B})
+$$
+
+\begin{center}
+  \begin{tikzpicture}[fill=lightgray]
+    % left hand
+    \scope
+            (-2,-2) rectangle (2,2)
+            (1,0) circle (1);
+      \fill[blue, opacity = .5] (0,0) circle (1);
+    \endscope
+    
+    % right hand
+    \scope
+            (-2,-2) rectangle (2,2)
+            (0,0) circle (1);
+      \fill[red, opacity = .5] (1,0) circle (1);
+    \endscope
+  
+    % outline
+    \draw (0,0) circle (1) (0,1)  node [text=black,above] {$\mathcal{A}$}
+          (1,0) circle (1) (1,1)  node [text=black,above] {$\mathcal{B}$}
+          (1,0) circle (1) (1,1)  node [text=black,below, xshift = -.50cm, yshift = -.65cm] {$\mathcal{A \cap B}$}
+          (-2,-2) rectangle (3,2) node [text=black,above] {$\mathcal{S}$};
+  \end{tikzpicture}
+\end{center}
+
+
+### 2. Example
+Consider the following two-dimensional matrix:
+
+```{r, echo = FALSE, message = FALSE}
+  # require('gtools')
+  # x = matrix(rdirichlet(1, rep(1, 12)), nrow = 3)
+  x = matrix(c(0.22, 0, 0.16, 0.21, 0.14, 0.15, 0, 0.06, 0, 0.01, 0.01, 0.04), nrow = 3)
+  rownames(x) = c("blue", 'green', 'brown')
+  colnames(x) = c("blond", 'brown', 'red', 'black')
+  show(x)
+```
+
+a. Calculate the marginal probabilities.
+b. Calculate the conditional probability of eye color given blond hair.
+
+### 3. Intuitions about (conditional) probability
+
+Imagine that there are three cards: one is red on either side, the other is white on either side, and the third is red on one side and white on the other. Suppose a confederate draws a card from this set of three totally at random, and shows a totally random side of that card to you.
+
+a. What is the probability that what you see is red?
+b. What is the probability that, given that you see red, the other side of the card that the confederate holds is white?
+c. Write down a two-dimensional probability matrix to support your answers.
+d. Now imagine that the confederate draws a card at random but then presents "red" with probability $\frac{1}{4}$ if there is a red side. What is the conditional probability that the other side of the card is white if you are shown red? (Best use a new two-dimensional probability matrix in support of your answer.)
+
+### Random variables
+
+1) By hand, compute the mode, median, mean, and the standard deviation of the following values
+
+```{r, echo = FALSE}
+library('ggplot2')
+set.seed(1774)
+rbinom(10, 10, .5)
+```
+
+# Distributions
+
+### Guessing game
+For this exercise you should consult Wikipedia.
+a. See the following distribution below. Do you think this variable is Poisson, Exponential, Gaussian, Binomial, or Gamma distributed?
+
+```{r, echo = FALSE, fig.width = 5, fig.height = 4}
+set.seed(1774)
+hist(rpois(10000, 6), col = 'grey70', main = '', xlab = '')
+```
+
+b. For each of the options, list your reasons for why you chose, or not chose, it as an answer.
+c. How do these distributions differ? How do they arrive in nature? Give an example for each distribution!
+
+# Classical and Bayesian statistics
+## Overview
+Make a table listing the differences and commonalities of classical and Bayesian statistics.
+
+## 2. Classical concepts
+a. Define the *p*-value.
+b. Define a confidence interval, give a practical example.
+c. What is statistical power? How do you determine it?
+
+## 3. Bayesian concepts
+a. What is Bayes' rule? How do you derive it?
+b. What is the difference between prior, likelihood, and posterior?
+c. What is a Bayes factor? How do you compute it?
+
+## 1. Coin flips 
+Given three coin flips, all coming up heads, what is the probability that the next coin flip will show heads? Give the prediction via maximum likelihood and -- assuming an uninformative prior -- Bayesian inference (use the mean, median, and mode of the posterior). Discuss your findings.
+
+## 3. A night at the club
+Jack & Jill debate whether they should enter club Whatever tonight. They only want to go if the women/men ratio is about even. Otherwise the sphere just isn't, like, right, you know. Before they decide to pay, they screen the crowd that is lining up at the entrance. It is now 1:30 and there's 28 people in line, of which 9 female, 16 men, and three unidentifiable. How should they test whether the women/men ratio is even in this particular case? Should they use estimation, model comparison, or $p$-value testing? If you cannot decide, discuss pros and cons for each. (Think about how they should construe a likelihood function, whether a reasonable prior is at hand, whether the sampling procedure is reasonably clear, whether model complexity plays a role, etc. Suppose for the sake of argument, that computational complexity is not a problem: Jack & Jill have brought their laptops, of course.)
+
+# Statistical modeling
+## Coin flips
+Is the damn coin fair, or is it not? Assume you observe the data
+```{r, echo = FALSE}
+c(1, 1, 1, 1, 1)
+```
+
+a. Draw the Gaussian graphical model and your prior specification.
+b. What is the maximum likelihood estimate for $\theta$, given the data? Is it a reasonable estimate? Why, why not?
+c. Compute the posterior distribution using Bayes' rule.
+d. What is the mean of this posterior distribution? Contrast this Bayesian estimate with the maximum likelihood estimate.
+e. Show that the mode of the posterior distribution under an uninformative prior is equivalent to the maximum likelihood estimate.
+
+## Univariate Gaussian, Variance known
+Assume you want to test whether an IQ score of a prison inmate differs from 100. You assume you know the standard deviation; the only thing you want to infer is the mean, $\mu$. You observe the following data
+
+```{r, echo = FALSE}
+c(101, 112, 107)
+```
+
+a. Draw the Gaussian graphical model specifying the statistical model. What are your priors?
+b. Sketch how you would arrive at the posterior distribution.
+
+## Multivariate Gaussian
+Assume $X$ is a bivariate Gaussian random variable with $\mu = (0, 0)$ and $\Sigma = \begin{pmatrix} 1 & \rho \\ \rho & 1 \end{pmatrix}$. Draw the graphical model using an uninformative prior over $\rho$.
+

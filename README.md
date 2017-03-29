@@ -21,3 +21,5 @@ This two hour workshop will be presented at the 31st EFPSA Congress in Qakh, Aze
     - [The Etz-Files](https://alexanderetz.com/) by Alexander Etz
     - [The 20% Statistician](https://daniellakens.blogspot.de/) by Daniel Lakens
     - [Statistical Modeling, Causal Inference, and Social Science](http://andrewgelman.com/) by Andrew Gelman
+- Online resources
+    - [A First Lesson in Bayesian Inference](http://87.106.45.173:3838/felix/BayesLessons/BayesianLesson1.Rmd) by Eric-Jan Wagenmakers
