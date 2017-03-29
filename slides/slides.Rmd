@@ -6,6 +6,7 @@ runtime: shiny
 bibliography: bibliography.bib
 output:
   ioslides_presentation:
+    css: styles.css
     smaller: yes
     transition: faster
 ---
@@ -172,17 +173,25 @@ ggplot(d, aes(x = k, y = prob)) +
 
 
 ## Why most published research is false
-```{r, echo = FALSE}
-table <- rbind(c('Reject Null Hypothesis', '\alpha', '1 - \beta'), c('Do not reject Null', '1 - \alpha', '\beta'))
-table
-```
-- Add a table with type I and type II error etc.
+
++--------------------------+---------------+------------------+
+|                          |$\mathcal{H}_0$|  $\mathcal{H}_1$ |
++--------------------------+---------------+------------------+
+| reject $\mathcal{H}_0$   | $\alpha$      |    $1 - \beta$   |
++--------------------------+---------------+------------------+
+| keep $\mathcal{H}_0$     | 1 - $\alpha$  |      $\beta$     |
++--------------------------+---------------+------------------+
+
+## Why most published research is false
 - What is the probability that my hypothesis is true, given that I have observed $p < \alpha$?
 
 $$
 P(H_1|p < \alpha) = \frac{P(p < \alpha|H_1)P(H_1)}{P(p < \alpha|H_1)P(H_1) + P(p < \alpha|H_0)P(H_0)}
 $$
 
+
+## Why most published research is false {.flexbox .vcenter .emphasize}
+[Demo](http://shinyapps.org/apps/PPV/)
 
 ## Probability theory
 - It is a branch of mathematics based on set theory, and as such uncontroversial
@@ -553,15 +562,15 @@ Point estimates                     Point estimates                      Posteri
 
 
 ## A polemic Bird's eye view
-  Classical Statistics     Bayesian Statistics
-----------------------     ---------------------------
-Ad-hoc                     Axiomatic
-Incoherent                 Coherent
-Paradoxical                Intuitive
-Irrational                 Rational
-Ugly                       Pretty
-Irrelevant                 Relevant
-what's taught              what's not taught
+ Classical Statistics |     Bayesian Statistics
+---------------------:|:---------------------------
+Ad-hoc                |    Axiomatic
+Incoherent            |    Coherent
+Paradoxical           |    Intuitive
+Irrational            |    Rational
+Ugly                  |    Pretty
+Irrelevant            |    Relevant
+what's taught         |    what's not taught
 
 <div id="contrast">borrowed from [EJ Wagenmakers](https://docs.google.com/file/d/0B-Ww24m3ZkEyMEpudlVsX3pRVzA/edit)</div>
 
@@ -584,7 +593,7 @@ Prediction        Plug-in Estimate         Account for uncertainty using **Bayes
 # Classical statistics
 
 ## Bread and Butter: Estimation
-- Use the maximum likelihood estimate $\hat{\theta} = \frac{y}{n}$
+- Many different estimators, but most popluar is maximum likelihood estimate; $\hat{\theta} = \frac{y}{n}$
 
 ```{r, echo = FALSE}
 y <- 15
@@ -669,6 +678,8 @@ cis <- simulate_cis(y, n, times = times)
 plot_cis(cis, times)
 ```
 
+## Confidence intervals {.flexbox .vcenter .emphasize}
+[Demo](http://rpsychologist.com/d3/CI/)
 
 # Bayesian statistics
 
@@ -681,7 +692,7 @@ $$
 - where, applying the law of total probability
 
 $$
-p(y) = \int_{\Theta} f(y; \theta)p(\theta) \mathrm{d}\theta
+p(y) = \int_{\theta} f(y; \theta)p(\theta) \mathrm{d}\theta
 $$
 
 - Use a Beta-distribution as our prior
@@ -690,6 +701,14 @@ $$
 p(\theta|\alpha, \beta) = \frac{1}{\text{Beta}(\alpha, \beta)} \theta^{\alpha - 1}(1 - \theta)^{\beta - 1}
 $$
 
+## Beta distributions
+```{r}
+params <- rbind(c(1/2, 1/2), expand.grid(c(1, 2, 5), c(1, 2, 5)))
+names(params) <- c('a', 'b')
+params
+```
+
+
 ## Bayesian graphical model
 ![](images/binomial-model-bayes.png)
 
@@ -697,8 +716,8 @@ $$
 ## Bayesian estimation
 $$
 \begin{split}
-p(\theta|y) &= \frac{f(y; \theta)p(\theta)}{\int_{\Theta}f(y; \theta)p(\theta)\mathrm{d}\theta} \\[1ex]
-p(\theta|y) &= \frac{{n \choose y} \theta^y (1 - \theta)^{n - y} \frac{1}{\mathcal{B}(a, b)} \theta^{\alpha - 1}(1 - \theta)^{\beta - 1}}{\int_{\Theta}{n \choose y} \theta^y (1 - \theta)^{n - y} \frac{1}{\mathcal{B}(a, b)} \theta^{\alpha - 1}(1 - \theta)^{\beta - 1}\mathrm{d}\theta}
+p(\theta|y) &= \frac{f(y; \theta)p(\theta)}{\int_{\theta}f(y; \theta)p(\theta)\mathrm{d}\theta} \\[1ex]
+p(\theta|y) &= \frac{{n \choose y} \theta^y (1 - \theta)^{n - y} \frac{1}{\mathcal{B}(a, b)} \theta^{\alpha - 1}(1 - \theta)^{\beta - 1}}{\int_{\theta}{n \choose y} \theta^y (1 - \theta)^{n - y} \frac{1}{\mathcal{B}(a, b)} \theta^{\alpha - 1}(1 - \theta)^{\beta - 1}\mathrm{d}\theta}
 \end{split}
 $$
 - with some rearranging, we find that
@@ -875,8 +894,8 @@ $$
 - For $M_0$, this results in
 $$
 \begin{split}
-p(y|M_0) &= \int_{\Theta} p(y, \theta|M_0)\mathrm{d}\theta \\[1ex]
-         &= \int_{\Theta} p(y|M_0, \theta)p(\theta|M_0)\mathrm{d}\theta \\[1ex]
+p(y|M_0) &= \int_{\theta} p(y, \theta|M_0)\mathrm{d}\theta \\[1ex]
+         &= \int_{\theta} p(y|M_0, \theta)p(\theta|M_0)\mathrm{d}\theta \\[1ex]
          &= f(y|M_0, \theta = .5) \\[2ex]
          &= {20 \choose 15} .50^{15} (1 - .50)^{20 - 15} \approx 0.0147
 \end{split}
@@ -887,9 +906,9 @@ $$
 
 $$
 \begin{split}
-p(y|M_1) &= \int_{\Theta} p(y, \theta|M_1)\mathrm{d}\theta \\[1ex]
-         &= \int_{\Theta} p(y|M_1, \theta)p(\theta|M_1)\mathrm{d}\theta \\[1ex]
-         &= \int_{\Theta} {20 \choose 15} \theta^{15} (1 - \theta)^{20 - 15} \frac{1}{\mathcal{B}(a, b)}\theta^{\alpha - 1}(1 - \theta)^{\beta - 1}\mathrm{d}\theta \\[1ex]
+p(y|M_1) &= \int_{\theta} p(y, \theta|M_1)\mathrm{d}\theta \\[1ex]
+         &= \int_{\theta} p(y|M_1, \theta)p(\theta|M_1)\mathrm{d}\theta \\[1ex]
+         &= \int_{\theta} {20 \choose 15} \theta^{15} (1 - \theta)^{20 - 15} \frac{1}{\mathcal{B}(a, b)}\theta^{\alpha - 1}(1 - \theta)^{\beta - 1}\mathrm{d}\theta \\[1ex]
          &\approx \frac{1}{N} \sum_{\theta \sim \text{Beta}(\alpha, \beta)}^N {20 \choose 15} \theta^{15} (1 - \theta)^{20 - 15} \hspace{3em} \text{Monte Carlo integration} \\[1ex]
          &\approx 0.047
 \end{split}
@@ -935,6 +954,10 @@ ggplot(d, aes(x = m, y = p, fill = distribution)) +
     - $AIC = -2 \log p(\textbf{y}|\hat \theta) + 2\cdot k$
     - $BIC = -2 \log p(\textbf{y}|\hat \theta) + \log n \cdot k$
 
+## Bayes factor
+<center>
+<img src="images/bayes-factor-labels.png" />
+</center>
 
 ## Lindley's Paradox
 ```{r}
@@ -989,7 +1012,7 @@ ggplot(ss_dat, aes(x = age, y = diff_ssq)) +
 <img src="images/simulator-sickness-jasp.png" />
 </center>
 
-- What did we actually do? What is our statistical model?
+- What did we actually do? What is our <span style="color: red">statistical model?</span>
 
 ## Simulator sickness and age
 - Propose as statistical model a multivariate Gaussian distribution for the standardized variable $X = [x_1, x_2]$
@@ -1005,7 +1028,7 @@ head(cbind(X, Xs))
 ```
 
 
-## Simulator sickness and age
+## Bivariate Gaussian Distribution
 ```{r, echo = FALSE}
 library('mvtnorm')
 
@@ -1068,7 +1091,7 @@ $$
 
 $$
 \begin{split}
-p(d|M_0) &= \frac{1}{\sqrt{2\pi}} \exp \big (\frac{1}{2}x^T\begin{pmatrix} 1 & 0 \\ 0 & 1 \end{pmatrix} ^{-1}x \big) \\[1ex]
+p(d|M_0) &= \frac{1}{\sqrt{2\pi}} \exp \big (-\frac{1}{2}x^T\begin{pmatrix} 1 & 0 \\ 0 & 1 \end{pmatrix} ^{-1}x \big) \\[1ex]
          &\approx 8.414\mathrm{e}^{-35}
 \end{split}
 $$
@@ -1084,9 +1107,9 @@ $$
 \begin{split}
 p(d|M_1) &= \int_{\rho} p(d, \rho|M_1)\mathrm{d}\rho \\[1ex]
          &= \int_{\rho} p(d|M_1, \rho)p(\rho|M_1)\mathrm{d}\rho \\[1ex]
-         &= \int_{\rho} f(x;\Sigma)\text{Beta}(\alpha, \beta)\mathrm{d}\rho \\[1ex]
-         &= \int_{\rho} \frac{1}{\sqrt{2\pi}} |\Sigma|^{-1} \exp \big (\frac{1}{2}x^T\Sigma^{-1}x \big) \frac{1}{\mathcal{B}(\alpha, \beta)}\rho^{\alpha - 1}(1 - \rho)^{\beta - 1} \mathrm{d}\rho \\[1ex]
-         &\approx \frac{1}{N} \sum_{\rho_i \sim \text{Beta}(\alpha, \beta)} ^N \frac{1}{\sqrt{2\pi}} |\Sigma|^{-1} \exp \big (\frac{1}{2}x^T\begin{pmatrix} 1 & \rho_i \\ \rho_i & 1 \end{pmatrix}^{-1}x \big) \\[1ex]
+         &= \int_{\rho} f(x;\Sigma)\text{Unif}(-1, 1)\mathrm{d}\rho \\[1ex]
+         &= \int_{\rho} \frac{1}{\sqrt{2\pi}} |\Sigma|^{-1} \exp \big (\frac{1}{2}x^T\Sigma^{-1}x \big) \frac{1}{2} \mathrm{d}\rho \\[1ex]
+         &\approx \frac{1}{N} \sum_{\rho_i \sim \text{Unif}(-1, 1)} ^N \frac{1}{\sqrt{2\pi}} |\Sigma|^{-1} \exp \big (\frac{1}{2}x^T\begin{pmatrix} 1 & \rho_i \\ \rho_i & 1 \end{pmatrix}^{-1}x \big) \\[1ex]
          &\approx 4.278\mathrm{e}^{-35}
 \end{split}
 $$
@@ -1109,6 +1132,10 @@ marginal_likelihood / N
 $$
 \text{BF}_{01} = \frac{8.414\mathrm{e}^{-35}}{4.278\mathrm{e}^{-35}} = 1.966
 $$
+
+<center>
+<img src="images/simulator-sickness-jasp.png" />
+</center>
 
 ## Harry Potter Sorting Hat Quiz
 ![](images/descriptives-big5.png)
