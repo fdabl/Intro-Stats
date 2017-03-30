@@ -91,13 +91,13 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, dev.args = 
 ## Probability theory
 - Is based on set theory
 - $\mathcal{S} = \{0, 1, 2, 3\}$ denotes the *sample space*
-- $\mathcal{A} = \{0, 1\}$ and $\mathcal{B} = \{1, 2\}$ denote an events; $\mathcal{A}, \mathcal{B} \subset \mathcal{S}$
+- $\mathcal{A} = \{0, 1\}$ and $\mathcal{B} = \{1, 2\}$ denote events; $\mathcal{A}, \mathcal{B} \subset \mathcal{S}$
 
 $$
 \begin{align*}
-\mathcal{A^c} &= \{2\} \\
-\mathcal{B^c} &= \{0\} \\
-\mathcal{A} \cap \mathcal{B} &= \{0, 1\} \\
+\mathcal{A^c} &= \{2, 3\} \\
+\mathcal{B^c} &= \{0, 3\} \\
+\mathcal{A} \cap \mathcal{B} &= \{1\} \\
 \mathcal{A} \cup \mathcal{B} &= \{0, 1, 2\}
 \end{align*}
 $$
@@ -317,7 +317,7 @@ $$
 - and noting that there are
 
 $$
-{n \choose y} = \frac{n!}{y!(n - y)!}
+n\cdot(n - 1)\cdot \ldots \cdot (n - y + 1) = \frac{n!}{y!(n - y)!} = {n \choose y}
 $$
 
 - possible ways of obtaining $Y = y$ successes yields the **Binomial likelihood**
@@ -453,18 +453,18 @@ ggplot(data.frame(x = c(0, 1)), aes(x = x)) +
 
 ## Bread and butter
 ```{r, echo = FALSE}
-p1 <- .5
-p2 <- .75
+p1 <- .75
+p2 <- .5
 llh.p1 <- dbinom(y, n, p1)
 llh.p2 <- dbinom(y, n, p2)
 
 ggplot(data.frame(x = c(0, 1)), aes(x = x)) +
   stat_function(fun = function(theta) dbinom(y, n, prob = theta)) +
-  geom_segment(x = p1, y = -1, xend = p1, yend = llh.p1, aes(col = 'red'), linetype = 'dashed') +
-  geom_segment(x = p2, y = -1, xend = p2, yend = llh.p2, aes(col = 'blue'), linetype = 'dashed') +
+  geom_segment(x = p1, y = -1, xend = p1, yend = llh.p1, aes(col = 'blue'), linetype = 'dashed') +
+  geom_segment(x = p2, y = -1, xend = p2, yend = llh.p2, aes(col = 'red'), linetype = 'dashed') +
   geom_point(x = p1, y = llh.p1, size = 2) +
   geom_point(x = p2, y = llh.p2, size = 2) +
-  scale_colour_manual(name = '', values = c('blue', 'red'),
+  scale_colour_manual(name = '', values = c('red', 'blue'),
                       labels = c(expression(hat(theta)[1]), expression(hat(theta)[2]))) +
   ylab('Likelihood') +
   xlab(expression(theta))
@@ -517,11 +517,11 @@ shinyApp(
         
         ggplot(data.frame(x = c(0, 1)), aes(x = x)) +
           stat_function(fun = function(theta) dbinom(y, n, prob = theta)) +
-          geom_segment(x = p1, y = -1, xend = p1, yend = llh.p1, aes(col = 'red'), linetype = 'dashed') +
-          geom_segment(x = p2, y = -1, xend = p2, yend = llh.p2, aes(col = 'blue'), linetype = 'dashed') +
+          geom_segment(x = p1, y = -1, xend = p1, yend = llh.p1, aes(col = 'blue'), linetype = 'dashed') +
+          geom_segment(x = p2, y = -1, xend = p2, yend = llh.p2, aes(col = 'red'), linetype = 'dashed') +
           geom_point(x = p1, y = llh.p1, size = 2) +
           geom_point(x = p2, y = llh.p2, size = 2) +
-          scale_colour_manual(name = '', values = c('blue', 'red'),
+          scale_colour_manual(name = '', values = c('red', 'blue'),
                               labels = c(expression(hat(theta)[1]), expression(hat(theta)[2]))) +
           ylab('Likelihood') +
           xlab(expression(theta)) +
@@ -695,17 +695,48 @@ $$
 p(y) = \int_{\theta} f(y; \theta)p(\theta) \mathrm{d}\theta
 $$
 
-- Use a Beta-distribution as our prior
+- Use a Beta distribution as our prior
 
 $$
 p(\theta|\alpha, \beta) = \frac{1}{\text{Beta}(\alpha, \beta)} \theta^{\alpha - 1}(1 - \theta)^{\beta - 1}
 $$
 
 ## Beta distributions
-```{r}
-params <- rbind(c(1/2, 1/2), expand.grid(c(1, 2, 5), c(1, 2, 5)))
-names(params) <- c('a', 'b')
-params
+```{r, echo = FALSE, height = 3, width = 3}
+shinyApp(
+  options = list(width = "25%", height = "25%"),
+  ui = shinyUI(fluidPage(
+    sidebarLayout(
+      sidebarPanel(
+        tags$head(
+          tags$script(src = mathjax_URL, type = 'text/javascript'),
+          tags$script("MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});", type = 'text/x-mathjax-config')
+    ),
+        sliderInput("a", label = 'a',
+                    min = .5, max = 20, value = 1, step = .5),
+        sliderInput("b", label = "b",
+                    min = .5, max = 20, value = 1, step = .5)
+        ),
+      mainPanel(
+        plotOutput("LRplot", height="400px")
+        )
+      )
+   )),
+   server = function(input, output) {
+      plot_dat <- function(a, b) {
+        ggplot(data.frame(x = c(0, 1)), aes(x = x)) +
+          stat_function(fun = function(x) dbeta(x, a, b)) +
+          xlab(expression(theta)) +
+          ylab('Density') +
+          ggtitle(paste0('Beta(', a, ', ', b, ')')) +
+          theme(plot.title = element_text(hjust = .5))
+      }
+      
+      output$LRplot <- renderPlot({
+        plot_dat(input$a, input$b)
+      })
+    }
+)
 ```
 
 
@@ -871,7 +902,6 @@ $$
 H_0&: \theta = .5 \\
 H_1&: \theta = .75
 \end{split}
-H_0: \theta = .5 \\
 $$
 
 - but this is too demanding; why .75? Why not .80? Or .30?
@@ -884,7 +914,7 @@ $$
 $$
 \begin{split}
 H_0&: \theta = .5 \\
-H_1&: \theta \sim \mathcal{Beta}(1, 1)
+H_1&: \theta \sim \mathcal{Beta}(\alpha, \beta)
 \end{split}
 $$
 
@@ -908,8 +938,8 @@ $$
 \begin{split}
 p(y|M_1) &= \int_{\theta} p(y, \theta|M_1)\mathrm{d}\theta \\[1ex]
          &= \int_{\theta} p(y|M_1, \theta)p(\theta|M_1)\mathrm{d}\theta \\[1ex]
-         &= \int_{\theta} {20 \choose 15} \theta^{15} (1 - \theta)^{20 - 15} \frac{1}{\mathcal{B}(a, b)}\theta^{\alpha - 1}(1 - \theta)^{\beta - 1}\mathrm{d}\theta \\[1ex]
-         &\approx \frac{1}{N} \sum_{\theta \sim \text{Beta}(\alpha, \beta)}^N {20 \choose 15} \theta^{15} (1 - \theta)^{20 - 15} \hspace{3em} \text{Monte Carlo integration} \\[1ex]
+         &= \int_{\theta} {20 \choose 15} \theta^{15} (1 - \theta)^{20 - 15} \frac{1}{\text{Beta}(a, b)}\theta^{\alpha - 1}(1 - \theta)^{\beta - 1}\mathrm{d}\theta \\[1ex]
+         &\approx \frac{1}{N} \sum_{\theta \sim \mathcal{Beta}(\alpha, \beta)}^N {20 \choose 15} \theta^{15} (1 - \theta)^{20 - 15} \hspace{3em} \text{Monte Carlo integration} \\[1ex]
          &\approx 0.047
 \end{split}
 $$
@@ -954,7 +984,7 @@ ggplot(d, aes(x = m, y = p, fill = distribution)) +
     - $AIC = -2 \log p(\textbf{y}|\hat \theta) + 2\cdot k$
     - $BIC = -2 \log p(\textbf{y}|\hat \theta) + \log n \cdot k$
 
-## Bayes factor
+## Thermometer of evidence
 <center>
 <img src="images/bayes-factor-labels.png" />
 </center>
@@ -989,7 +1019,7 @@ $$
 \begin{split}
 p(y' = 1|d) &= \int_{\theta} p(y' = 1, \theta|d) \mathrm{d}\theta \\
             &= \int_{\theta} p(y' = 1|d, \theta) p(\theta|d) \mathrm{d}\theta \\[1ex]
-            &= \int_{\theta} \theta^{y'} (1 - \theta)^{1 - y'} \frac{1}{\mathcal{B}(y + \alpha, n - y + \beta)} \theta^{\alpha + y - 1}(1 - \theta)^{n - y + \beta - 1}\mathrm{d}\theta
+            &= \int_{\theta} \theta^{y'} (1 - \theta)^{1 - y'} \frac{1}{\text{Beta}(y + \alpha, n - y + \beta)} \theta^{\alpha + y - 1}(1 - \theta)^{n - y + \beta - 1}\mathrm{d}\theta
 \end{split}
 $$
 
@@ -1042,7 +1072,7 @@ shinyApp(
           tags$script("MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});", type = 'text/x-mathjax-config')
     ),
         sliderInput("rho", label = HTML('$$\\rho$$'),
-                    min = 0, max = .99, value = 0, step = 0.01)
+                    min = -1, max = 1, value = 0, step = 0.1)
         ),
       mainPanel(
         plotOutput("mvn_plot", height="500px", width="600px")
@@ -1086,6 +1116,7 @@ H_0&: \rho = 0 \\
 H_1&: \rho \sim \text{Beta}(1, 1)
 \end{split}
 $$
+
 
 - For $M_0$, this is just the simple likelihood for $\rho = 0$
 
