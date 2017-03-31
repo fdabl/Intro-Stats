@@ -149,3 +149,16 @@ b. Sketch how you would arrive at the posterior distribution.
 ## 3. Multivariate Gaussian
 Assume $X$ is a bivariate Gaussian random variable with $\mu = (0, 0)$ and $\Sigma = \begin{pmatrix} 1 & \rho \\ \rho & 1 \end{pmatrix}$. Draw the graphical model using an uninformative prior over $\rho$.
 
+
+# Data Analysis with JASP
+## 1. Correlation
+a. Load *Presidents.csv* into JASP. Run descriptive statistics and summarize what you find.
+b. Conduct a classical correlation test. Interpret the resulting *p*-value and confidence interval. Are these concepts valid for the current data set? *Hint:* think about the data generating process.
+c. Conduct a Bayesian correlation test. Estimate the posterior distribution and interpret the Bayes factor. Does the default prior in JASP make sense?
+
+## 1. t-test
+a. Load *KitchenRolls.csv* into JASP. Run descriptive statistics and summarize the data graphically.
+b. Conduct a classical t-test. Interpret the resulting *p*-value and confidence interval. Are these concepts valid for the current data set? *Hint:* think about the data generating process.
+c. Conduct a Bayesian t-test. Estimate the posterior distribution and interpret the Bayes factor. Does the default prior in JASP make sense?
+d. Conduct a Bayesian one-sided t-test. Is this approach justifiable?
+e. Run a robustness check and a sequential analysis. What do you conclude?

@@ -701,7 +701,7 @@ $$
 p(\theta|\alpha, \beta) = \frac{1}{\text{Beta}(\alpha, \beta)} \theta^{\alpha - 1}(1 - \theta)^{\beta - 1}
 $$
 
-## Beta distributions
+## Beta distributions and betting
 ```{r, echo = FALSE, height = 3, width = 3}
 shinyApp(
   options = list(width = "25%", height = "25%"),
@@ -728,7 +728,7 @@ shinyApp(
           stat_function(fun = function(x) dbeta(x, a, b)) +
           xlab(expression(theta)) +
           ylab('Density') +
-          ggtitle(paste0('Beta(', a, ', ', b, ')')) +
+          ggtitle(paste0('Beta(', a, ', ', b, ')', ' with mean ', round(a / (a + b), 2))) +
           theme(plot.title = element_text(hjust = .5))
       }
       
@@ -1219,9 +1219,9 @@ papaja::apa_table(
 ```{r, results = 'asis', echo = FALSE}
 analyses <- rbind(
   c('Binomial Test', 'Yes', 'Yes'),
-  c('Contingeny Tables', 'Yes', 'Yes'),
+  c('Contingency Tables', 'Yes', 'Yes'),
   c('Log-Linear Regression', 'Yes', 'Yes'),
-  c('Summary Stats', 'Yes', 'Not yet'),
+  c('Summary Stats', 'Yes', '-'),
   c('Reliability Analysis', 'Not yet', 'Yes'),
   c('Principal Component Analysis', 'Not yet', 'Yes'),
   c('Exploratory Factor Analysis', 'Not yet', 'Yes'),
@@ -1234,3 +1234,62 @@ papaja::apa_table(
   col.names = c('Analysis', 'Bayesian', 'Frequentist')
 )
 ```
+
+## Correlation in JASP
+<center>
+  <img src="images/jasp-correlation.png" />
+</center>
+
+## Correlation in JASP
+- **1** Load *Presidents.csv* into JASP. Run descriptive statistics and summarize what you find.
+
+<span style="color: white"></span>
+
+- **2** Conduct a classical correlation test.
+    - **2a** Interpret the resulting *p*-value and confidence interval.
+    - **2b** Are these concepts valid for the current data set? *Hint:* think about the data generating process.
+    
+<span style="color: white"></span>
+
+- **3** Conduct a Bayesian correlation test.
+    - **3a** Estimate the posterior distribution and interpret the Bayes factor.
+    - **3b** Does the default prior in JASP make sense?
+    - **3c** Run a robustness check. What do you conclude?
+    - **3d** Run a sequential analysis. What do you conclude?
+
+## t-test in JASP
+<div style = "float:left; width:45%;">
+    <img src="images/jasp-kitchen-rolls.png" />
+</div>
+<div style = "float:right; width:45%;">
+    <img src="images/jasp-t-test.png" />
+</div>
+
+
+## t-test in JASP
+- **1** Load *KitchenRolls.csv* into JASP. Run descriptive statistics and summarize the data graphically.
+
+<span style="color: white"></span>
+
+- **2** Conduct a classical t-test.
+    - **2a** Interpret the resulting *p*-value and confidence interval.
+    - **2b** Are these concepts valid for the current data set? *Hint:* think about the data generating process.
+    
+<span style="color: white"></span>
+    
+- **3** Conduct a Bayesian t-test.
+    - **3a** Estimate the posterior distribution and interpret the Bayes factor.
+    - **3b** Does the default prior in JASP make sense?
+    - **3c** Run a robustness check. What do you conclude?
+    - **3d** Run a sequential analysis. What do you conclude?
+    
+<span style="color: white"></span>
+
+- **4** Conduct a Bayesian one-sided t-test. Is this approach justifiable?
+
+## JASP wrap-up
+<center>
+  <img src="images/desiderata.png" />
+</center>
+
+# Final thoughts
