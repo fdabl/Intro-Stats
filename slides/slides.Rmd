@@ -21,6 +21,10 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, dev.args = 
 \newcommand{\cmark}{\ding{51}}
 \newcommand{\xmark}{\ding{55}}
 
+## Ouvre {.huge}
+<p style="font-size: .2em; line-height: 1em;">What is the probability that you, because you visited this workshop, will start using Bayesian inference in your work?</p>
+
+
 ## Motivation
 - How old is statistics?
 - Who invented the *p* value?
@@ -133,7 +137,7 @@ $$
 \begin{split}
 P(\mathcal{A}^c) &= 1 - P(\mathcal{A}^c) \\
 P(\mathcal{A \cup B}) &= P(\mathcal{A}) + P(\mathcal{B}) - P(\mathcal{A \cap B}) \\
-P(\mathcal{A}) &\leq P(\mathcal{B}) \, \, \, \, \, \, \, \text{  if   } \mathcal{A} \subset \mathcal{B}
+P(\mathcal{A}) &\leq P(\mathcal{B}) \, \, \, \, \, \, \, \text{  if   } \mathcal{A} \subseteq \mathcal{B}
 \end{split}
 $$
 
@@ -173,13 +177,12 @@ ggplot(d, aes(x = k, y = prob)) +
 
 
 ## Why most published research is false
-
 +--------------------------+---------------+------------------+
 |                          |$\mathcal{H}_0$|  $\mathcal{H}_1$ |
 +--------------------------+---------------+------------------+
-| reject $\mathcal{H}_0$   | $\alpha$      |    $1 - \beta$   |
+| reject $\mathcal{H}_0$   | $\alpha$      | $1 - \beta$      |
 +--------------------------+---------------+------------------+
-| keep $\mathcal{H}_0$     | 1 - $\alpha$  |      $\beta$     |
+| keep $\mathcal{H}_0$     | 1 - $\alpha$  | $\beta$          |
 +--------------------------+---------------+------------------+
 
 ## Why most published research is false
@@ -443,16 +446,6 @@ $$
 - Let's plot the likelihood of the data as a function of $\theta$
 
 ```{r, echo = FALSE}
-ggplot(data.frame(x = c(0, 1)), aes(x = x)) +
-  stat_function(fun = function(theta) dbinom(sum(x), length(x), prob = theta)) +
-  ylab('Likelihood') +
-  xlab(expression(theta)) +
-  annotate('text', x = .15, y = .18, label = 'y = 15\nn = 20', size = 6)
-```
-
-
-## Bread and butter
-```{r, echo = FALSE}
 p1 <- .75
 p2 <- .5
 llh.p1 <- dbinom(y, n, p1)
@@ -466,6 +459,7 @@ ggplot(data.frame(x = c(0, 1)), aes(x = x)) +
   geom_point(x = p2, y = llh.p2, size = 2) +
   scale_colour_manual(name = '', values = c('red', 'blue'),
                       labels = c(expression(hat(theta)[1]), expression(hat(theta)[2]))) +
+  annotate('text', x = .15, y = .18, label = 'y = 15\nn = 20', size = 6) +
   ylab('Likelihood') +
   xlab(expression(theta))
 ```
@@ -611,13 +605,22 @@ ggplot(data.frame(x = c(0, 1)), aes(x = x)) +
 ## Bread and Butter: Estimation
 - The main assumption of classical statistics in two sentences
 
-> We assume that we sample repeatedly from a population; each time we compute an estimate based on the sample. The distribution of these estimates --- the sampling distribution --- gives the precision of the specific estimate.
+<span style = "color: white"></span>
+
+<span style = "color: red">
+"We assume that we sample repeatedly from a population; each time we compute an estimate based on the sample. The distribution of these estimates --- the sampling distribution --- gives the precision of the specific estimate."
+</span>
+
+<span style = "color: white"></span>
 
 - In other words
 
-> We conduct an experiment. We then assume that we conduct exactly the same experiment over and over again. For
-> each such experiment, we compute a statistic (say the mean). Plotting these statistics yields the sampling distribution
-> (of the mean).
+<span style = "color: white"></span>
+
+<span style = "color: red">
+"We conduct an experiment. We then assume that we conduct exactly the same experiment over and over again. For
+each such experiment, we compute a statistic (say the mean). Plotting these statistics yields the sampling distribution (of the mean)."
+</span>
 
 ## Bread and Butter: Estimation
 ```{r}
@@ -695,11 +698,14 @@ $$
 p(y) = \int_{\theta} f(y; \theta)p(\theta) \mathrm{d}\theta
 $$
 
-- Use a Beta distribution as our prior
+## Beta distributions
 
 $$
 p(\theta|\alpha, \beta) = \frac{1}{\text{Beta}(\alpha, \beta)} \theta^{\alpha - 1}(1 - \theta)^{\beta - 1}
 $$
+<center>
+  <img src="images/beta_overview.png" width="600px" height="400px"/>
+</center>
 
 ## Beta distributions and betting
 ```{r, echo = FALSE, height = 3, width = 3}
@@ -996,6 +1002,11 @@ N <- 98451
 ```
 
 <div style = "float:left; width:45%;">
+$$
+H_0: \theta = .5 \\
+H_1: \theta \neq .5
+$$
+
 **$p$-value**
 
 ```{r, echo = FALSE}
@@ -1003,6 +1014,13 @@ binom.test(k, N)$p.value
 ```
 </div>
 <div style = "float:right; width:45%;">
+
+$$
+\begin{split}
+H_0&: \theta = .5 \\
+H_1&: \theta \sim \mathcal{Beta}(1, 1)
+\end{split}
+$$
 
 **$BF_{01}$**
 
@@ -1016,12 +1034,15 @@ dbeta(0.5, k + 1, N - k + 1)
 - What is the probability that the next slice of bread will fall butter down?
 
 $$
-\begin{split}
-p(y' = 1|d) &= \int_{\theta} p(y' = 1, \theta|d) \mathrm{d}\theta \\
-            &= \int_{\theta} p(y' = 1|d, \theta) p(\theta|d) \mathrm{d}\theta \\[1ex]
-            &= \int_{\theta} \theta^{y'} (1 - \theta)^{1 - y'} \frac{1}{\text{Beta}(y + \alpha, n - y + \beta)} \theta^{\alpha + y - 1}(1 - \theta)^{n - y + \beta - 1}\mathrm{d}\theta
-\end{split}
+\begin{align*}
+p(y' = 1|y)
+&= \int_0^1 p(y' = 1, \theta|y) \mathrm{d}\theta \\
+&= \int_0^1 p(y' = 1|\theta)p(\theta|y)\mathrm{d}\theta \\
+&= \int_0^1 \theta \cdot p(\theta|y)\mathrm{d}\theta \\
+&= \mathbb{E}[\theta|y] = \frac{16}{16 + 5} \approx .76
+\end{align*}
 $$
+
 
 # Some applications
 

@@ -6,17 +6,17 @@ This two hour workshop will be presented at the 31st EFPSA Congress in Qakh, Aze
 
 ## Further resources
 - Papers
+    - Bayesian Inference for Psychology. Part I and II ([2017](https://osf.io/m6bi8/)) by Wagenmakers et al.
     - Bayesian Benefits for the Pragmatic Researcher ([2016](http://journals.sagepub.com/doi/pdf/10.1177/0963721416643289)) by Wagenmakers, Morey, and Lee
     - How to become a Bayesian in eight easy steps ([2016](https://osf.io/8wkpd/)) by Etz, Gronau, Dablander, Edelsbrunner, and Baribault
-    - The philosophy of Bayes factors and the quantification of statistical evidence ([2016](https://www.sciencedirect.com/science/article/pii/S0022249615000723)) by Morey, Romeijn, and Rouder
 - Textbooks
     - Statistical Rethinking ([2016](http://andrewgelman.com/2016/01/15/mcelreaths-statistial-rethinking-a-bayesian-course-with-examples-in-r-and-stan/)) by McElreath
     - Introduction to Probability ([2014](https://www.crcpress.com/Introduction-to-Probability/Blitzstein-Hwang/p/book/9781466575578)) by Blitzstein & Hwang
     - Bayesian Cognitive Modeling ([2013](https://bayesmodels.com/)) by Lee & Wagenmakers
 - Popular Science Books
-    - The Theory that would not die ([2011](http://www.mcgrayne.com/the_theory_that_would_not_die__how_bayes__rule_cracked_the_enigma_code__hunted_d_107493.htm)) by McGrayne
-    - Superforecasting ([2016](https://www.goodreads.com/book/show/23995360-superforecasting)) by Tedlock & Gardner
     - Statistics Done Wrong ([2015](https://www.statisticsdonewrong.com/)) by Alex Reinhart
+    - Superforecasting ([2016](https://www.goodreads.com/book/show/23995360-superforecasting)) by Tedlock & Gardner
+    - The Theory that would not die ([2011](http://www.mcgrayne.com/the_theory_that_would_not_die__how_bayes__rule_cracked_the_enigma_code__hunted_d_107493.htm)) by McGrayne
 - Blogs
     - [The Etz-Files](https://alexanderetz.com/) by Alexander Etz
     - [The 20% Statistician](https://daniellakens.blogspot.de/) by Daniel Lakens

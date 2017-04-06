@@ -24,7 +24,7 @@ $$
 \begin{split}
 P(\mathcal{A}^c) &= 1 - P(\mathcal{A}^c) \\
 P(\mathcal{A \cup B}) &= P(\mathcal{A}) + P(\mathcal{B}) - P(\mathcal{A \cap B}) \\
-P(\mathcal{A}) &\leq P(\mathcal{B}) \, \, \, \, \, \, \, \text{  if   } \mathcal{A} \subset \mathcal{B}
+P(\mathcal{A}) &\leq P(\mathcal{B}) \, \, \, \, \, \, \, \text{  if   } \mathcal{A} \subseteq \mathcal{B}
 \end{split}
 $$
 
@@ -56,7 +56,7 @@ $$
 \end{center}
 
 ## 2. Marginal and Conditional Probability
-Consider the following two-dimensional matrix:
+Consider the following table
 
 ```{r, echo = FALSE, message = FALSE}
   # require('gtools')
@@ -111,11 +111,12 @@ Make a table listing the differences and commonalities of classical and Bayesian
 a. Define the *p*-value.
 b. Define a confidence interval, give a practical example.
 c. What is statistical power? How do you determine it?
+d. What is a sampling distribution?
 
 ## 3. Bayesian concepts
 a. What is Bayes' rule? How do you derive it?
-b. What is the difference between prior, likelihood, and posterior?
-c. What is a Bayes factor? How do you compute it?
+b. What is the difference between prior, likelihood, and posterior? Give an example!
+c. What is a Bayes factor? How do you compute it? What are the main differences compared to *p*-values?
 
 ## 4. Coin flips 
 Given three coin flips, all coming up heads, what is the probability that the next coin flip will show heads? Give the prediction via maximum likelihood and -- assuming an uninformative prior -- Bayesian inference (use the mean, median, and mode of the posterior). Discuss your findings.
