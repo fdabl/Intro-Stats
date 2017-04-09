@@ -4,10 +4,7 @@ This two hour workshop will be presented at the 31st EFPSA Congress in Qakh, Aze
 
 > Most students dislike statistics not because it's hard, but because it's unintuitive or even confusing. And it's true: classical statistical concepts such as the *p*-value and confidence intervals are exceptionally difficult to grasp; for students and statisticians alike. However, statistical inference is the universal tool of science, and a good scientist must have a good command of it. Eschewing the standard way of teaching statistics in psychology, i.e., introducing loosely connected tests in a cookbook-oriented fashion, in this workshop, I provide an introduction to statistics from "first principles". I discuss its exciting history, controversies, and enigmatic key players. After introducing probability as the means to quantify uncertainty, I focus on the role of statistical modeling. On a real-life example, I illuminate the problems of parameter estimation, hypothesis testing, and model prediction both from a classical and Bayesian perspective. This allows me to (re)introduce you to concepts such as maximum likelihood, confidence intervals, and *p*-values, as well as outline a more intuitive and powerful approach to statistics --- the Bayesian approach. In the last, practical segment we use JASP (https://jasp-stats.org) to apply Bayesian principles to data sets from real research. All materials including slides, code, and further resources will be made available at https://github.com/fdabl/Intro-Stats. Note that there are no prerequisites for this workshop. All that you need to bring is a laptop and a focused mind!
 
-## Folder structure
-You can find the code for the slides (**.Rmd**), the pdf and a html in the folder **slides/**. They are also hosted on [https://fdabl.shinyapps.io/](https://fdabl.shinyapps.io/).
-
-Under **exercises/**, there are some problems for you to test your understanding. If you are getting really stuck, or want to have the solutions, send me an email.
+You can view the slides on [https://fdabl.shinyapps.io/](https://fdabl.shinyapps.io/).
 
 ## Further resources
 - Papers
@@ -26,5 +23,7 @@ Under **exercises/**, there are some problems for you to test your understanding
     - [The Etz-Files](https://alexanderetz.com/) by Alexander Etz
     - [The 20% Statistician](https://daniellakens.blogspot.de/) by Daniel Lakens
     - [Statistical Modeling, Causal Inference, and Social Science](http://andrewgelman.com/) by Andrew Gelman
-- Online resources
+- Further resources
+    - [Exercises](https://github.com/fdabl/Intro-Stats/blob/master/exercises/exercises.pdf) for this workshop
     - [A First Lesson in Bayesian Inference](http://lmpp10e-mucesm.srv.mwn.de:3838/felix/BayesLessons/BayesianLesson1.Rmd) by Eric-Jan Wagenmakers
+    - [Improving your statistical inferences](https://www.coursera.org/learn/statistical-inferences/home/welcome) by Daniel Lakens

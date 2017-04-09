@@ -189,12 +189,124 @@ ggplot(d, aes(x = k, y = prob)) +
 - What is the probability that my hypothesis is true, given that I have observed $p < \alpha$?
 
 $$
-P(H_1|p < \alpha) = \frac{P(p < \alpha|H_1)P(H_1)}{P(p < \alpha|H_1)P(H_1) + P(p < \alpha|H_0)P(H_0)}
+\begin{split}
+P(H_1|p < \alpha) &= \frac{P(p < \alpha|H_1)P(H_1)}{P(p < \alpha)}
+&= \frac{P(p < \alpha|H_1)P(H_1)}{P(p < \alpha|H_1)P(H_1) + P(p < \alpha|H_0)P(H_0)}
+\end{split}
 $$
 
+<span style = "color:white"></span>
+- Plugging in $P(p < \alpha|H_1) = 1 - \beta$ and $P(p < \alpha|H_0) = \alpha$
+<span style = "color:white"></span>
+
+$$
+P(H_1|p < \alpha) = \frac{(1 - \beta) P(H_1)}{(1 - \beta) P(H_1) + \alpha (1 - P(H_1))}
+$$
+
+## Why most published research is false
+```{r, echo = FALSE}
+library('latex2exp')
+
+get_ppv <- function(power, prior, alpha) (power * prior) / (power * prior + alpha * (1 - prior))
+
+create_graph <- function(power, prior_h1, alpha = .5) {
+  n_power <- length(power)
+  n_ph1 <- length(prior_h1)
+  
+  g <- expand.grid(power, prior_h1)
+  v <- Vectorize(get_ppv)
+  
+  d <- data.frame(
+    prior_h1 = g[, 2],
+    power = g[, 1],
+    posterior_h1 = v(g[, 1], g[, 2], alpha)
+  )
+  
+  ggplot(d, aes(x = power, y = posterior_h1, linetype = factor(prior_h1))) +
+    geom_line() + 
+    xlim(c(0, 1)) +
+    ylim(c(0, 1)) +
+    ylab(TeX('$$P(H_1|p < a)$$')) +
+    xlab('Power') +
+    geom_vline(xintercept = .21, color = 'red', linetype = 'dashed') +
+    geom_vline(xintercept = .8, color = 'green', linetype = 'dashed') +
+    annotate('text', .213, 0, label = 'actual power') +
+    annotate('text', .794, 0, label = 'desired power') +
+    scale_linetype_discrete(name = TeX('$$P(H_1)$$')) +
+    scale_x_continuous(breaks = scales::pretty_breaks(n = 10)) +
+    scale_y_continuous(breaks = scales::pretty_breaks(n = 10))
+}
+
+power <- seq(.01, .99, .01)
+prior_h1 <- seq(.1, .9, .2)
+create_graph(power, prior_h1, .05)
+```
 
 ## Why most published research is false {.flexbox .vcenter .emphasize}
 [Demo](http://shinyapps.org/apps/PPV/)
+
+
+## Sequential analysis
+- I might have testicular cancer, so I'll go to the doctor to do a test
+- The test --- the experiment --- has two outcomes
+
+$$
+\begin{split}
+H_0 &: \text{no cancer} \\
+H_1 &: \text{cancer} \\
+\end{split}
+$$
+
+- $p < \alpha$ indicates a positive result, $p \geq \alpha$ indicates a negative result
+- assuming the following (data for the base rate from [here](https://seer.cancer.gov/statfacts/html/testis.html))
+
+$$
+\begin{split}
+P(H_1) &= .0016 \\
+P(\text{pos.}|H_0) &= .1 \\
+P(\text{pos.}|H_1) &= .999
+\end{split}
+$$
+- What is the probability that I have cancer, given that I test positively?
+
+## Sequential analysis
+```{r, echo = FALSE, eval = FALSE}
+get_ppv(.999, .0016, .1)
+```
+
+- We can plug it into Bayes' rule
+
+$$
+\begin{split}
+P(H_1|\text{pos.}) &= \frac{P(\text{pos.}|H_1)P(H_1)}{P(\text{pos.}|H_1)P(H_1) + P(\text{pos.}|H_0)P(H_0)} \\[1ex]
+&= \frac{.999 \cdot .0016}{.999 \cdot .0016 + .001 \cdot (1 - .0016)} \\[1ex]
+&\approx .01575
+\end{split}
+$$
+
+- Only about 1.5%!
+- Doing another test, I test positively again. Oh man!
+- What is the probability that I have cancer now?
+
+## Sequential analysis
+- I can --- and should! --- use the posterior of the first test as the prior for the second
+
+$$
+P(H_1|\text{pos.})_{\text{Test 1}} \Rightarrow P(H_1)_{\text{Test 2}}
+$$
+- We arrive at
+```{r, echo = FALSE, eval = FALSE}
+get_ppv(.999, get_ppv(.999, .0016, .1), .1)
+```
+
+$$
+\begin{split}
+P(H_1|\text{pos., pos.}) &= \frac{.999 \cdot .01575}{.999 \cdot .01575 + .001 \cdot (1 - .01575)} \\[1ex]
+&\approx .1379
+\end{split}
+$$
+- The probability that I have testicular cancer still is only about 13.8%
+
 
 ## Probability theory
 - It is a branch of mathematics based on set theory, and as such uncontroversial
@@ -367,7 +479,6 @@ ggplot(d, aes(x = x, y = y, group = theta)) +
 ## Binomial likelihood
 ```{r, echo = FALSE, height = 3, width = 3}
 library('shiny')
-library('latex2exp')
 
 mathjax_URL <- 'http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML-full'
 
@@ -1314,3 +1425,8 @@ papaja::apa_table(
 </center>
 
 # Final thoughts
+
+## Solidify your learning
+- [Exercises](https://github.com/fdabl/Intro-Stats/blob/master/exercises/exercises.pdf) for this workshop
+- [A First Lesson in Bayesian Inference](http://lmpp10e-mucesm.srv.mwn.de:3838/felix/BayesLessons/BayesianLesson1.Rmd) by Eric-Jan Wagenmakers
+- [Improving your statistical inferences](https://www.coursera.org/learn/statistical-inferences/home/welcome) by Daniel Lakens
