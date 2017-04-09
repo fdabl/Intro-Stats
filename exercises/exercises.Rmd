@@ -157,7 +157,7 @@ a. Load *Presidents.csv* into JASP. Run descriptive statistics and summarize wha
 b. Conduct a classical correlation test. Interpret the resulting *p*-value and confidence interval. Are these concepts valid for the current data set? *Hint:* think about the data generating process.
 c. Conduct a Bayesian correlation test. Estimate the posterior distribution and interpret the Bayes factor. Does the default prior in JASP make sense?
 
-## 1. t-test
+## 2. t-test
 a. Load *KitchenRolls.csv* into JASP. Run descriptive statistics and summarize the data graphically.
 b. Conduct a classical t-test. Interpret the resulting *p*-value and confidence interval. Are these concepts valid for the current data set? *Hint:* think about the data generating process.
 c. Conduct a Bayesian t-test. Estimate the posterior distribution and interpret the Bayes factor. Does the default prior in JASP make sense?
