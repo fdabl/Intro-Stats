@@ -2,6 +2,7 @@
 title: "Bayesian Statistics"
 subtitle: "A Conceptual and Practical Introduction"
 author: "Fabian Dablander"
+date: 25th April, 2017
 runtime: shiny
 bibliography: bibliography.bib
 output:
@@ -20,21 +21,6 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, dev.args = 
 \newcommand{\dat}{\textbf{y}}
 \newcommand{\cmark}{\ding{51}}
 \newcommand{\xmark}{\ding{55}}
-
-## Ouvre {.huge}
-<p style="font-size: .2em; line-height: 1em;">What is the probability that you, because you visited this workshop, will start using Bayesian inference in your work?</p>
-
-
-## Motivation
-- How old is statistics?
-- Who invented the *p* value?
-- What is Bayes' theorem?
-- add a picture of stats tests (rethinking)
-- add a picture of wansink
-- add some stuff about the post-factual world
-- statistics and drawing sound inferences from data is important as ever!
-- create an exercise sheet
-
 
 ## Motivation
 ![](images/statistical-tests.png)
@@ -60,32 +46,38 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, dev.args = 
 
 - **1b.** Introduction to probability
     - Why most published research is false
-    - Frequentist versus Bayesian interpretation
+    - Do I have testicular cancer?
+    - Frequentist versus Bayesian view on probability
 
 <span style = "color:white"></span>
     
 - **2.** Statistical models
     - Bread and butter
-    - (Re)introduction *p*-values, confidence intervals, statistical power
+    - A history of misconceptions: *p*-values and confidence intervals
     
 
 ## Outline
 - **3.** Introduction to Bayesian statistics
-    - Parameter estimation, model comparison, model prediction
+    - Parameter estimation
+    - Model comparison
+    - Model prediction
     
 <span style = "color:white"></span>
 
-- **4a.** Some applications
+- **4a.** Some applications of Bayesian principles
     - Simulator sickness and age
     - Harry Potter and Personality
     - Markov chain Monte Carlo with People
     
 <span style = "color:white"></span>
 
-- **4b.** Outlook
-    - Where is Bayes going?
-    - Where is JASP going?
-    - Where are *you* going?
+- **4b.** Practical examples using JASP
+    - Is height associated with being president?
+    - *~ ~ tralala ~ ~ ... Wish we could turn back time .. ~ ~ tralala ~ ~*
+    
+<span style = "color:white"></span>
+    
+- **5.** Final thoughts and further resources
 
 # History of statistics
 ## Overview
@@ -749,6 +741,10 @@ title <- TeX(paste0('Sampling distribution of ', '$\\theta$'))
 hist(sampling_distribution, col = 'grey70', xlab = expression(theta), main = title, xlim = c(0, 1))
 ```
 
+## Confidence intervals
+```{r}
+binom::binom.confint(y, n)
+```
 
 ## Confidence intervals
 ```{r, echo = FALSE}
@@ -1315,7 +1311,19 @@ $$
 - Trick to compute the Bayes factor ...
 
 ## Markov chain Monte Carlo with People
-![](images/MCMCP-model.png)
+<center>
+<img src="images/MCMCP-trial.png" />
+</center>
+
+
+## Markov chain Monte Carlo with People {.flexbox .vcenter .emphasize}
+[Interactive Exploration of Data](https://fdabl.shinyapps.io/MCMCP/)
+
+
+## Markov chain Monte Carlo with People
+<center>
+<img src="images/MCMCP-model.png" />
+</center>
 
 
 # Practicals with JASP
