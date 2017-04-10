@@ -3,7 +3,7 @@ title: "Bayesian Statistics"
 subtitle: "A Conceptual and Practical Introduction"
 author: "Fabian Dablander"
 date: 25th April, 2017
-runtime: shiny
+# runtime: shiny
 bibliography: bibliography.bib
 output:
   ioslides_presentation:
@@ -518,6 +518,78 @@ shinyApp(
 )
 ```
 
+## Two corners of (frequentist) statistics
+- Law of the large number
+$$
+\begin{split}
+\overline{X}_n &= \frac{1}{n}(X_1 + \ldots + X_n) \\[2ex]
+\overline{X}_n &\rightarrow \mu \qquad \text{for} \qquad n \rightarrow \infty
+\end{split}
+$$
+- Computing the mean of a random variable $X$ (requires sufficiently large $N$)
+
+$$
+\begin{split}
+\mathbb{E}[X] &= \int \theta \cdot f(x;\theta) \mathrm{d}\theta \\
+              &= \frac{1}{N} \sum_{x_i \sim P}^{N} x_i
+\end{split}
+$$
+
+## Law of large numbers
+- More broadly: the accuracy of the empirical statistic increases with sample size
+
+```{r, echo = FALSE}
+N <- seq(2, 10000, 10)
+roll_dice <- function(n) mean(sample(1:6, n, replace = TRUE))
+
+d <- data.frame(
+  N = N,
+  estimate = sapply(Vectorize(roll_dice)(N), mean)
+)
+
+ggplot(d, aes(x = N, y = estimate)) +
+  geom_point(colour = 'grey70') +
+  ylab('Sample mean') +
+  xlab('Sample size') +
+  stat_function(fun = function(N) (1/sqrt(N)) + 3.5, colour = 'blue') +
+  stat_function(fun = function(N) (-1/sqrt(N)) + 3.5, colour = 'blue') +
+  geom_hline(yintercept = 3.5, colour = 'red', linetype = 'dashed')
+```
+
+
+##
+```{r, echo = FALSE, fig.width = 9, fig.height = 6.5}
+library('dplyr')
+library('tidyr')
+
+ng <- 50
+nt <- 10000
+
+d <- data.frame(
+  Beta = replicate(nt, mean(rbeta(ng, 1, 1))),
+  Poisson = replicate(nt, mean(rpois(ng, lambda = 10))),
+  Exponential = replicate(nt, mean(rexp(ng))),
+  Gamma = replicate(nt, mean(rgamma(ng, 1, 1))),
+  Weibull = replicate(nt, mean(rweibull(ng, 1, 1))),
+  Chisq = replicate(nt, mean(rchisq(ng, 1))),
+  Gaussian = replicate(nt, mean(rnorm(ng))),
+  Student.t = replicate(nt, mean(rt(ng, 20))),
+  Cauchy = replicate(nt, mean(rcauchy(ng, 1)))
+)
+
+dg <- gather(d, dist, value) %>%
+  mutate(dist = factor(dist, levels = c('Beta', 'Poisson', 'Exponential',
+                                        'Gamma', 'Weibull', 'Chisq',
+                                        'Gaussian', 'Student.t', 'Cauchy')))
+
+ggplot(dg, aes(x = value)) +
+  geom_histogram() +
+  xlab('') +
+  ylab('') +
+  ggtitle('Central Limit Theorem') +
+  theme(plot.title = element_text(hjust = .5)) +
+  facet_wrap(~ dist, scales = 'free')
+```
     
 ## Bread and butter
 - I want to learn $\theta$ --- what are good values for it, given the data below?

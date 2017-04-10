@@ -19,6 +19,7 @@ You can view the slides on [https://fdabl.shinyapps.io/](https://fdabl.shinyapps
     - Statistics Done Wrong ([2015](https://www.statisticsdonewrong.com/)) by Alex Reinhart
     - Superforecasting ([2016](https://www.goodreads.com/book/show/23995360-superforecasting)) by Tedlock & Gardner
     - The Theory that would not die ([2011](http://www.mcgrayne.com/the_theory_that_would_not_die__how_bayes__rule_cracked_the_enigma_code__hunted_d_107493.htm)) by McGrayne
+    - The Seven Pillars of Statistical Wisdom ([2016](https://www.goodreads.com/book/show/27311742-the-seven-pillars-of-statistical-wisdom)) by Stephen Stigler
 - Blogs
     - [The Etz-Files](https://alexanderetz.com/) by Alexander Etz
     - [The 20% Statistician](https://daniellakens.blogspot.de/) by Daniel Lakens
