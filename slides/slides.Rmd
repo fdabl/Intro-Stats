@@ -51,11 +51,10 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, dev.args = 
 
 <span style = "color:white"></span>
     
-- **2.** Statistical models
-    - Bread and butter
+- **2.** Foundation: Statistical models
+    - Bread and butter example
     - A history of misconceptions: *p*-values and confidence intervals
     
-
 ## Outline
 - **3.** Introduction to Bayesian statistics
     - Parameter estimation
@@ -80,7 +79,10 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, dev.args = 
 - **5.** Final thoughts and further resources
 
 # History of statistics
+
 ## Overview
+
+## 
 
 # Introduction to Probability
 
@@ -133,7 +135,7 @@ P(\mathcal{A}) &\leq P(\mathcal{B}) \, \, \, \, \, \, \, \text{  if   } \mathcal
 \end{split}
 $$
 
-## How likely is it that today is somebody's birthday?
+## How likely is today somebody's birthday?
 - The sample space is $\mathcal{S} = \{1, 2, \ldots, 365\}$
 - There are $k$ people in the room; therefore
 
@@ -142,10 +144,9 @@ P(\text{somebody's birthday}) = k \cdot \frac{1}{365}
 $$
 
 - How likely is it that at least two people share birthdays?
-
-## Birthday Problem
 - Use $P(A^c) = 1 - P(A)$ to simplify the problem
 
+## Birthday Problem
 $$
 \begin{split}
 P(\text{two or more people share birthdays}) &= 1 - P(\text{nobody shares birthdays}) \\[1ex]
@@ -180,6 +181,8 @@ ggplot(d, aes(x = k, y = prob)) +
 ## Why most published research is false
 - What is the probability that my hypothesis is true, given that I have observed $p < \alpha$?
 
+<span style = "color:white"></span>
+
 $$
 \begin{split}
 P(H_1|p < \alpha) &= \frac{P(p < \alpha|H_1)P(H_1)}{P(p < \alpha)}
@@ -188,7 +191,9 @@ P(H_1|p < \alpha) &= \frac{P(p < \alpha|H_1)P(H_1)}{P(p < \alpha)}
 $$
 
 <span style = "color:white"></span>
+
 - Plugging in $P(p < \alpha|H_1) = 1 - \beta$ and $P(p < \alpha|H_0) = \alpha$
+
 <span style = "color:white"></span>
 
 $$
@@ -240,7 +245,6 @@ create_graph(power, prior_h1, .05)
 
 ## Sequential analysis
 - I might have testicular cancer, so I'll go to the doctor to do a test
-- The test --- the experiment --- has two outcomes
 
 $$
 \begin{split}
@@ -249,7 +253,6 @@ H_1 &: \text{cancer} \\
 \end{split}
 $$
 
-- $p < \alpha$ indicates a positive result, $p \geq \alpha$ indicates a negative result
 - assuming the following (data for the base rate from [here](https://seer.cancer.gov/statfacts/html/testis.html))
 
 $$
@@ -276,7 +279,7 @@ P(H_1|\text{pos.}) &= \frac{P(\text{pos.}|H_1)P(H_1)}{P(\text{pos.}|H_1)P(H_1) +
 \end{split}
 $$
 
-- Only about 1.5%!
+- Only about 1.5%
 - Doing another test, I test positively again. Oh man!
 - What is the probability that I have cancer now?
 
@@ -305,6 +308,17 @@ $$
 - However, there are different interpretations of probability
     - *Frequentist view:* Probability is long-running frequency
     - *Bayesian view:* Probability as degree of belief
+    
+<span style = "color: white"></span>
+- What is the probability that Marine le Pen wins the election?
+- What is the probability of a global temperature rise of 2°C in the 30 years?
+
+
+## Frequentist interpretation
+"The rational concept of probability, which is the only basis of probability calculus, applies only to problems in which either the same event repeats itself again and again ... [In] order to apply the theory of probability we must have a practically unlimited sequence of observations." - Richard von Mises (quoted in Jackman, 2009, p. 5)
+
+
+## Bayesian interpretation
 
 
 # Statistical models
@@ -539,7 +553,8 @@ $$
 - More broadly: the accuracy of the empirical statistic increases with sample size
 
 ```{r, echo = FALSE}
-N <- seq(2, 10000, 10)
+set.seed(174)
+N <- seq(2, 1000, 10)
 roll_dice <- function(n) mean(sample(1:6, n, replace = TRUE))
 
 d <- data.frame(
@@ -548,11 +563,12 @@ d <- data.frame(
 )
 
 ggplot(d, aes(x = N, y = estimate)) +
-  geom_point(colour = 'grey70') +
+  geom_line() +
   ylab('Sample mean') +
   xlab('Sample size') +
-  stat_function(fun = function(N) (1/sqrt(N)) + 3.5, colour = 'blue') +
-  stat_function(fun = function(N) (-1/sqrt(N)) + 3.5, colour = 'blue') +
+  ylim(c(0, 6)) +
+  # stat_function(fun = function(N) (1/sqrt(N)) + 3.5, colour = 'blue') +
+  # stat_function(fun = function(N) (-1/sqrt(N)) + 3.5, colour = 'blue') +
   geom_hline(yintercept = 3.5, colour = 'red', linetype = 'dashed')
 ```
 
@@ -591,6 +607,8 @@ ggplot(dg, aes(x = value)) +
   facet_wrap(~ dist, scales = 'free')
 ```
     
+# Statistical models
+
 ## Bread and butter
 - I want to learn $\theta$ --- what are good values for it, given the data below?
 
@@ -1105,8 +1123,6 @@ $$
 
 - Now both models make predictions!
 - Bayesian model comparison pits the predictive accuracy of two models against each other
-
-- For $M_0$, this results in
 $$
 \begin{split}
 p(y|M_0) &= \int_{\theta} p(y, \theta|M_0)\mathrm{d}\theta \\[1ex]
