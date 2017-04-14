@@ -253,7 +253,7 @@ $$
 $$
 \begin{align*}
 P(\mathcal{S}) = 1, \,  P(\emptyset) = 0 \\
-P(\bigcup^{\infty}_{i = 1}\mathcal{A}_i) = \sum^{\infty}_{i=1}\mathcal{A}_i
+P(\bigcup^{\infty}_{i = 1}\mathcal{A}_i) = \sum^{\infty}_{i=1}P(\mathcal{A}_i)
 \end{align*}
 $$
 <center>

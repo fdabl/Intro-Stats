@@ -15,7 +15,7 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, dev.args = 
 $$
 \begin{split}
 P(\mathcal{S}) = 1, \,  P(\emptyset) = 0 \\
-P(\bigcup^{\infty}_{i = 1}\mathcal{A}_i) = \sum^{\infty}_{i=1}\mathcal{A}_i
+P(\bigcup^{\infty}_{i = 1}\mathcal{A}_i) = \sum^{\infty}_{i=1}P(\mathcal{A}_i)
 \end{split}
 $$
 From these two axioms, three important properties can be deduced.
