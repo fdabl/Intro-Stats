@@ -3,8 +3,7 @@ title: "Bayesian Statistics"
 subtitle: "A Conceptual and Practical Introduction"
 author: "Fabian Dablander"
 date: 25th April, 2017
-# runtime: shiny
-bibliography: bibliography.bib
+runtime: shiny
 output:
   ioslides_presentation:
     css: styles.css
@@ -25,22 +24,22 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, dev.args = 
 ## Motivation
 ![](images/statistical-tests.png)
 
-## Learning outcome
+## Learning outcomes
 - **Oblique**
     - Get a feeling for *statistical modeling*
     - Get a feeling for statistics as a (young) discipline
 - **Concrete**
     - Be able to state the differences between classical and Bayesian statistics
     - Be able to apply simple Bayesian models to your data
-- **Wish for**
+- **Wishful**
     - Become hungry for statistical developments
     - Read the linked resources at https://github.com/fdabl/Intro-Stats to dive deeper
 
 
 ## Outline
 - **1a.** History of statistics
-    - Relation to science
     - Controversies and enigmatic key players
+    - The superego, ego, and the id in statistical reasoning
     
 <span style = "color:white"></span>
 
@@ -81,13 +80,79 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, dev.args = 
 # History of statistics
 
 ## Overview
+- Before 1940, significance testing was virtually non-existant
+- By 1955, 80% of empirical articles reported significance tests
+- Today, the figure is close to 100% (see Gigerenzer, 1993)
 
-## 
+<span style="color: white;"></span>
+
+<span style = "font-size: 1.5em; line-height: 120%; margin-top: -800px;">
+"[Statisticians] have already overrun every branch of science with a rapidity of conquest rivalled only by Atilla, Mohammed, and the Colorado beetle."
+
+- Kendall (1942, p.69)
+</span>
+
+
+## History
+- Fienberg (1992) identifies four periods:
+- **1660 - 1750**: Pascal, Fermat, Bernoulli, De Moivre
+- **1750 - 1820**: Bayes, Laplace, Legendre, Gauss
+- **1820 - 1900**: Quetelet, Galton, Edgeworth, Yule, K. Pearson
+- **1900 - 1950**: Gosset, Fisher, Neyman, E. Pearson, Ramsey, Kolmogorov, de Finetti, Jeffreys, Wald, Savage
+
+
+## Ronald Fisher
+
+<div style = "float:left; width:40%;">
+![](images/fisher.png)
+</div>
+<div style = "float:right; width:55%;">
+- Father of modern statistical inference
+- Randomization, design of experiments
+- $p$-value, $\alpha$, null hypothesis, analysis of variance
+- maximum likelihood, sufficient statistics
+- parametric modeling, distributional theory
+- founded population genetics
+- sexy son hypothesis
+</div>
+
+## Ronald Fisher: Evidential statistics
+<span style = "font-size: 1.5em; line-height: 120%; margin-top: -800px;">
+"... no scientific worker has a fixed level of significance at which from year to year, and in all
+circumstances, he rejects hypotheses; he rather gives his mind to each particular case in the light of his evidence and his ideas."
+
+- Sir Ronald A. Fisher (1956)
+</span>
+
+
+## Neyman-Pearson
+- Jerzy Neyman (1894 - 1981) was a polish man who did much of his work in the United States
+- Egon Pearson (1895 - 1980) was the son of the eminent Karl Pearson
+- Together, they put Fisher's ideas on a rigorous mathematical basis
+- Fisher didn't like it, and a personal feud began that lasted until his death
+
+<span style = "color: white;"></span>
+
+- Some concepts they introduced were
+    - The alternative hypothesis
+    - Type I ($\alpha$) and Type II ($\beta$) errors
+    - Statistical power
+    - Decision theoretic foundation of hypothesis testing
+
+## Neyman-Pearson: Behavioural statistics
+
+<span style = "font-size: 1.5em; line-height: 120%; margin-top: -500px;">
+"We are inclined to think that as far as a particular hypothesis is concerned, no test based upon the the-
+ory of probability can by itself provide any valuable evidence of the truth or falsehood of that hypothesis. But we may look at the purpose of tests from another view-point. Without hoping to know whether each separate hypothesis is true or false, we may search for rules to govern our behaviour with regard to them, in following which we insure that, in the long run of experience, we shall not be too often wrong".
+
+- Jerzy Neyman & Egon Pearson (1933, pp. 290-291)
+</span>
+
 
 # Introduction to Probability
 
 ## Probability theory
-- Is based on set theory
+- Is based on set theory (Kolmogorov, 1933)
 - $\mathcal{S} = \{0, 1, 2, 3\}$ denotes the *sample space*
 - $\mathcal{A} = \{0, 1\}$ and $\mathcal{B} = \{1, 2\}$ denote events; $\mathcal{A}, \mathcal{B} \subset \mathcal{S}$
 
@@ -167,6 +232,128 @@ ggplot(d, aes(x = k, y = prob)) +
   ylab('Probability') +
   geom_hline(yintercept = .5, linetype = 'dashed')
 ```
+
+
+## A murder mistery
+- A scream wakes you
+- You run in the kitchen and see a dead body --- who killed your husband?
+
+<span style = "color:white"></span>
+
+- There are three possible perpetrators
+    - Your husband himself
+    - The person he had an affair with
+    - The butler
+
+<span style = "color:white"></span>
+
+- There are three possible murder weapons
+    - An axe
+    - A knife
+    - A pistol
+    
+- How should you proceed?
+- Instinctively, you sketch a probability table
+
+## A murder mistery
++-----------------------+-------------------------------+--------------------------+-----------------------------+
+|                       |$\text{He killed himself}$     |  $\text{She killed him}$ | $\text{Butler killed him}$  |
++-----------------------+-------------------------------+--------------------------+-----------------------------+
+| $\text{Used axe}$     |  $\frac{1}{12}$               | $\frac{1}{12}$           | $\frac{2}{12}$              |
++-----------------------+-------------------------------+--------------------------+-----------------------------+
+| $\text{Used knife}$   |  $\frac{1}{12}$               | $\frac{3}{12}$           | $\frac{1}{12}$              |
++-----------------------+-------------------------------+--------------------------+-----------------------------+
+| $\text{Used pistol}$  |  $\frac{2}{12}$               | $0$                      | $\frac{1}{12}$              |
++-----------------------+-------------------------------+--------------------------+-----------------------------+
+| $\text{Sum (Prior)}$  |  $\frac{1}{3}$                | $\frac{1}{3}$            | $\frac{1}{3}$               |
++-----------------------+-------------------------------+--------------------------+-----------------------------+
+
+
+## Two types of probability
+- **Joint probability**
+
+$$
+P(\text{Axe}, \text{Suicide}) = \frac{1}{12}
+$$
+- **Marginal probability**
+
+$$
+\begin{split}
+P(\text{Suicide}) &= \frac{1}{3} \\[1ex]
+                            &= P(\text{Axe}, \text{Suicide}) +  P(\text{Knife}, \text{Suicide}) + P(\text{Pistol}, \text{Suicide}) \\[1ex]
+                            &= \frac{1}{12} + \frac{1}{12} + \frac{2}{12} \\[2ex]
+                            &\Rightarrow \sum_{W}^{3} P(W, \text{Suicide}) \qquad \text{Sum rule}
+\end{split}
+$$
+
+
+## A murder mistery
+- You estimated that each person was equally likely to be the perpetrator
+- Now the police has indentified the murder weapon --- an axe, of course
+- You does that change your beliefs?
+- Who is the most likely person to have killed your husband?
+
+
+## A murder mistery: Prior beliefs
++-----------------------+-------------------------------+--------------------------+-----------------------------+
+|                       |$\text{He killed himself}$     |  $\text{She killed him}$ | $\text{Butler killed him}$  |
++-----------------------+-------------------------------+--------------------------+-----------------------------+
+| $\text{Used axe}$     |  $\frac{1}{12}$               | $\frac{1}{12}$           | $\frac{2}{12}$              |
++-----------------------+-------------------------------+--------------------------+-----------------------------+
+| $\text{Used knife}$   |  $\frac{1}{12}$               | $\frac{3}{12}$           | $\frac{1}{12}$              |
++-----------------------+-------------------------------+--------------------------+-----------------------------+
+| $\text{Used pistol}$  |  $\frac{2}{12}$               | $0$                      | $\frac{1}{12}$              |
++-----------------------+-------------------------------+--------------------------+-----------------------------+
+| $\text{Sum (Prior)}$  |  $\frac{1}{3}$                | $\frac{1}{3}$            | $\frac{1}{3}$               |
++-----------------------+-------------------------------+--------------------------+-----------------------------+
+
+
+## A murder mistery: Data arrive
++-----------------------+-------------------------------+--------------------------+-----------------------------+
+|                       |$\text{He killed himself}$     |  $\text{She killed him}$ | $\text{Butler killed him}$  |
++-----------------------+-------------------------------+--------------------------+-----------------------------+
+| $\text{Used axe}$     |  $\frac{1}{12}$               | $\frac{1}{12}$           | $\frac{2}{12}$              |
++-----------------------+-------------------------------+--------------------------+-----------------------------+
+| $\text{Used knife}$   |  $0$                          | $0$                      | $0$                         |
++-----------------------+-------------------------------+--------------------------+-----------------------------+
+| $\text{Used pistol}$  |  $0$                          | $0$                      | $0$                         |
++-----------------------+-------------------------------+--------------------------+-----------------------------+
+| $\text{Sum (Error!)}$ |  $\frac{1}{12}$               | $\frac{1}{12}$           | $\frac{2}{12}$              |
++-----------------------+-------------------------------+--------------------------+-----------------------------+
+
+
+## A murder mistery: Posterior beliefs
++--------------------------+----------------------------+--------------------------+-----------------------------+
+|                          |$\text{He killed himself}$  |  $\text{She killed him}$ | $\text{Butler killed him}$  |
++--------------------------+----------------------------+--------------------------+-----------------------------+
+| $\text{Used axe}$        |  $\frac{1}{4}$             | $\frac{1}{4}$            | $\frac{2}{4}$               |
++--------------------------+----------------------------+--------------------------+-----------------------------+
+| $\text{Sum (Posterior)}$ |  $\frac{1}{4}$             | $\frac{1}{4}$            | $\frac{2}{4}$               |
++--------------------------+-----------------------------+-------------------------+-----------------------------+
+
+
+## A murder mistery: Formally
+- We need to renormalize by dividing by $P(\text{Axe})$
+
+$$
+P(\text{Suicide}|\text{Axe}) = \frac{P(\text{Axe}, \text{Suicide})}{P(\text{Axe})} \\
+$$
+
+- This is Bayes' rule!
+- In addition to the **Sum rule**
+
+$$
+\begin{split}
+P(\text{Axe}) &= P(\text{Axe}, \text{Suicide}) +  P(\text{Knife}, \text{Suicide}) + P(\text{Pistol}, \text{Suicide}) \\[1ex]
+              &= \sum_{H}^{3} P(\text{Axe}, H)
+\end{split}
+$$
+
+- We find the **Multiplication rule**
+
+$$
+P(\text{Suicide}|\text{Axe})P(\text{Axe}) = P(\text{Axe}, \text{Suicide})
+$$
 
 
 ## Why most published research is false
@@ -310,16 +497,35 @@ $$
     - *Bayesian view:* Probability as degree of belief
     
 <span style = "color: white"></span>
-- What is the probability that Marine le Pen wins the election?
+
+- What is the probability that Angela Merkel wins the German election?
 - What is the probability of a global temperature rise of 2°C in the 30 years?
 
 
 ## Frequentist interpretation
-"The rational concept of probability, which is the only basis of probability calculus, applies only to problems in which either the same event repeats itself again and again ... [In] order to apply the theory of probability we must have a practically unlimited sequence of observations." - Richard von Mises (quoted in Jackman, 2009, p. 5)
 
+<span style = "font-size: 2em; line-height: 120%; margin-top: -500px;">
+"The rational concept of probability, which is the only basis of probability calculus, applies only to problems in which either the same event repeats itself again and again ... [In] order to apply the theory of probability we must have a practically unlimited sequence of observations."
+
+- Richard von Mises (quoted in Jackman, 2009, p. 5)
+</span>
 
 ## Bayesian interpretation
 
+<span style = "font-size: 1.5em; line-height: 120%; margin-top: -500px;">
+The abandonment of superstitious beliefs about...Fairies and Witches was an
+essential step along the road to scientific thinking. Probability, too, if regarded
+as something endowed with some kind of objective existence, is not less a
+misleading misconception, an illusory attempt to exteriorize or materialize
+our true probabilistic beliefs. In investigating the reasonableness of our own
+modes of thought and behaviour under uncertainty, all we require, and all that
+we are reasonably entitled to, is consistency among these beliefs, and their
+reasonable relation to any kind of relevant objective data (‘relevant’ in as
+much as subjectively deemed to be so). This is Probability Theory (de Finetti
+1974, 1975, x).
+
+- Bruno de Finetti (quoted in Jackman, 2009, p. 7)
+</span>
 
 # Statistical models
 ## Statistical models
@@ -532,6 +738,8 @@ shinyApp(
 )
 ```
 
+# Fundamental theorems
+
 ## Two corners of (frequentist) statistics
 - Law of the large number
 $$
@@ -540,12 +748,12 @@ $$
 \overline{X}_n &\rightarrow \mu \qquad \text{for} \qquad n \rightarrow \infty
 \end{split}
 $$
-- Computing the mean of a random variable $X$ (requires sufficiently large $N$)
+- Computing the mean of a random variable $X$
 
 $$
 \begin{split}
 \mathbb{E}[X] &= \int \theta \cdot f(x;\theta) \mathrm{d}\theta \\
-              &= \frac{1}{N} \sum_{x_i \sim P}^{N} x_i
+              &= \lim_{N \to \infty} \frac{1}{N} \sum_{x_i \sim P}^{N} x_i
 \end{split}
 $$
 
@@ -828,7 +1036,18 @@ sampling_distribution <- apply(replicate(10000, conduct_experiment(y, n)), 2, me
 
 ```{r, echo = FALSE, fig.width = 7, fig.height = 5}
 title <- TeX(paste0('Sampling distribution of ', '$\\theta$'))
-hist(sampling_distribution, col = 'grey70', xlab = expression(theta), main = title, xlim = c(0, 1))
+
+p <- y / n
+pse <- sqrt((p * (1 - p)) / n)
+s <- data.frame(theta = sampling_distribution)
+
+ggplot(s, aes(x = theta)) +
+  geom_histogram(aes(y = ..density..), bins = 21, color = 'grey70') +
+  xlim(c(0, 1)) +
+  ggtitle(title) +
+  xlab(expression(theta)) +
+  theme(plot.title = element_text(hjust = .5)) +
+  stat_function(fun = function(theta) dnorm(theta, p, pse), color = 'red')
 ```
 
 ## Confidence intervals
@@ -881,6 +1100,31 @@ plot_cis(cis, times)
 ## Confidence intervals {.flexbox .vcenter .emphasize}
 [Demo](http://rpsychologist.com/d3/CI/)
 
+
+## $p$-values
+<center>
+<img src="images/pvalue.png" />
+</center>
+
+## $p$-values
+- We replicate data under the assumption that $H_0$ is true, i.e, $\theta = .5$
+```{r}
+conduct_experiment_h0 <- function(n) sum(rbinom(n, 1, prob = .5))
+yrep <- replicate(5000, conduct_experiment_h0(n))
+
+head(yrep, 10) # peak at some experiment outcomes
+```
+
+- Then we compute the probability that these data are at least as extreme as the one we observed
+```{r}
+mean(yrep >= y) * 2
+```
+
+## $p$-values
+```{r}
+binom.test(y, n)
+```
+
 # Bayesian statistics
 
 ## Bayesian estimation
@@ -889,7 +1133,7 @@ $$
 \underbrace{p(\theta|y)}_{\text{Posterior}} = \frac{\overbrace{f(y; \theta)}^{\text{Likelihood}}\overbrace{p(\theta)}^{\text{Prior}}}{\underbrace{p(y)}_{\text{Marginal Likelihood}}}
 $$
 
-- where, applying the law of total probability
+- where, applying the sum rule of probability
 
 $$
 p(y) = \int_{\theta} f(y; \theta)p(\theta) \mathrm{d}\theta
@@ -1384,10 +1628,25 @@ $$
 <img src="images/simulator-sickness-jasp.png" />
 </center>
 
+
+## Simulator sickness and age
+- The model I suggested is actually wrong (just look at the distribution of age)
+- Additionally, Pearson correlation does not require Gaussian random variables
+- It only requires continuous random variables
+
+
 ## Harry Potter Sorting Hat Quiz
 ![](images/descriptives-big5.png)
 
 ## Harry Potter Sorting Hat Quiz
+- Previous research has used a t-test comparing, say
+    - Mean extraversion of Gryffindor with Mean extraversion of Ravenclaw, Hufflepuff, Slytherin
+    - This is not what we want!
+    
+<span style="color: white"></span>
+    
+- Using Bayesian inference, we can compare models with order-constraints on the mean
+    
 $$
 \begin{split}
 M_0 &: \mu_{\text{G}} = \mu_{\text{S}} = \mu_{\text{R}} = \mu_{\text{H}} \\
@@ -1395,8 +1654,7 @@ M_f &: \mu_{\text{G}}, \, \mu_{\text{S}} , \, \mu_{\text{R}} , \, \mu_{\text{H}}
 M_r &: \mu_{\text{G}} > (\mu_{\text{S}} , \, \mu_{\text{R}} , \, \mu_{\text{H}})
 \end{split}
 $$
-
-- Trick to compute the Bayes factor ...
+    
 
 ## Markov chain Monte Carlo with People
 <center>
@@ -1484,13 +1742,14 @@ papaja::apa_table(
     - **3b** Does the default prior in JASP make sense?
     - **3c** Run a robustness check. What do you conclude?
     - **3d** Run a sequential analysis. What do you conclude?
-
+    
+    
 ## t-test in JASP
 <div style = "float:left; width:45%;">
-    <img src="images/jasp-kitchen-rolls.png" />
+![](images/jasp-kitchen-rolls.png)
 </div>
 <div style = "float:right; width:45%;">
-    <img src="images/jasp-t-test.png" />
+![](images/jasp-t-test.png)
 </div>
 
 
