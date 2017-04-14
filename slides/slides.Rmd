@@ -46,36 +46,40 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, dev.args = 
 - **1b.** Introduction to probability
     - Why most published research is false
     - Do I have testicular cancer?
-    - Frequentist versus Bayesian view on probability
+    - Frequentist versus Bayesian interpretation of probability
 
 <span style = "color:white"></span>
     
 - **2.** Foundation: Statistical models
     - Bread and butter example
-    - A history of misconceptions: *p*-values and confidence intervals
+    - Likelihoods, law of large number, central limit theorem
     
+- **3.** Classical statistics
+    - Maximum likelihood, sampling distributions, bootstrapping
+    - Confidence intervals, $p$-values
+
 ## Outline
-- **3.** Introduction to Bayesian statistics
+- **4.** Introduction to Bayesian statistics
     - Parameter estimation
     - Model comparison
     - Model prediction
     
 <span style = "color:white"></span>
 
-- **4a.** Some applications of Bayesian principles
+- **5.** Some applications of Bayesian principles
     - Simulator sickness and age
     - Harry Potter and Personality
     - Markov chain Monte Carlo with People
     
 <span style = "color:white"></span>
 
-- **4b.** Practical examples using JASP
+- **6.** Practical examples using JASP
     - Is height associated with being president?
     - *~ ~ tralala ~ ~ ... Wish we could turn back time .. ~ ~ tralala ~ ~*
     
 <span style = "color:white"></span>
     
-- **5.** Final thoughts and further resources
+- **7.** Final thoughts and further resources
 
 # History of statistics
 
@@ -86,7 +90,7 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, dev.args = 
 
 <span style="color: white;"></span>
 
-<span style = "font-size: 1.5em; line-height: 120%; margin-top: -800px;">
+<span style = "font-size: 1.4em; line-height: 120%; margin-top: -800px;">
 "[Statisticians] have already overrun every branch of science with a rapidity of conquest rivalled only by Atilla, Mohammed, and the Colorado beetle."
 
 - Kendall (1942, p.69)
@@ -102,7 +106,6 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, dev.args = 
 
 
 ## Ronald Fisher
-
 <div style = "float:left; width:40%;">
 ![](images/fisher.png)
 </div>
@@ -110,11 +113,19 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, dev.args = 
 - Father of modern statistical inference
 - Randomization, design of experiments
 - $p$-value, $\alpha$, null hypothesis, analysis of variance
-- maximum likelihood, sufficient statistics
-- parametric modeling, distributional theory
-- founded population genetics
-- sexy son hypothesis
+- Maximum likelihood, sufficient statistics
+- Parametric modeling, distributional theory
+- Founder of population genetics
+- Sexy son hypothesis
 </div>
+
+
+## Fisher's approach to testing
+1) Setup a null hypothesis.
+2) Report the exact level of significance (e.g., $p = .051$ or $p = .049$). Do not use a conventional 5% level, and
+do not talk about accepting or rejecting hypotheses.
+3) Use this procedure only if you know very little about the problem at hand
+
 
 ## Ronald Fisher: Evidential statistics
 <span style = "font-size: 1.5em; line-height: 120%; margin-top: -800px;">
@@ -139,14 +150,74 @@ circumstances, he rejects hypotheses; he rather gives his mind to each particula
     - Statistical power
     - Decision theoretic foundation of hypothesis testing
 
-## Neyman-Pearson: Behavioural statistics
 
+## Neyman-Pearson's approach to testing
+1) Setup two statistical hypotheses, $H_1$ and $H_2$, and decide about $\alpha$, $\beta$, and sample size before the experiment, based on subjective cost-benefit considerations. These define a rejection region for each hypothesis.
+
+2) If the data falls into the rejection region of $H_1$, accept $H_2$; otherwise accept $H_1$. Note that accepting a hypothesis does not mean that you believe in it, but only that you act is if it were true. Report only $p < \alpha$ or $p \geq \alpha$.
+
+3) The usefulness of the procedure is limited among others to situations where you have a disjunction of hypotheses (e.g., either $\mu_1 = 8$ or $\mu_2 = 10$ is true) and where you can make meaningful cost-benefit trade-offs for choosing $\alpha$ and $\beta$.
+
+
+## Neyman-Pearson: Behavioural statistics
 <span style = "font-size: 1.5em; line-height: 120%; margin-top: -500px;">
-"We are inclined to think that as far as a particular hypothesis is concerned, no test based upon the the-
-ory of probability can by itself provide any valuable evidence of the truth or falsehood of that hypothesis. But we may look at the purpose of tests from another view-point. Without hoping to know whether each separate hypothesis is true or false, we may search for rules to govern our behaviour with regard to them, in following which we insure that, in the long run of experience, we shall not be too often wrong".
+"We are inclined to think that as far as a particular hypothesis is concerned, no test based upon the theory of probability can by itself provide any valuable evidence of the truth or falsehood of that hypothesis. But we may look at the purpose of tests from another viewpoint. Without hoping to know whether each separate hypothesis is true or false, we may search for rules to govern our behaviour with regard to them, in following which we insure that, in the long run of experience, we shall not be too often wrong".
 
 - Jerzy Neyman & Egon Pearson (1933, pp. 290-291)
 </span>
+
+
+## Current statistical practice
+- Is a hybrid between the approaches of Fisher and Neyman-Pearson
+- Gigerenzer (2004) introduces the term ''null ritual'' to specify current practices
+
+<span style = "color:white"></span>
+
+    1) Setup a statistical null hypothesis, but do not specifiy your own hypothesis nor any alternative
+    2) use the 5% significance level for rejecting the null and accepting your hypothesis
+    3) always perform this procedure
+    
+    
+## Current statistical practice
+- This is in part due to considerable misunderstandings of statistics
+- **[Discuss results of the pre-workshop questionnaire here]**
+
+<span style = "color:white"></span>
+
+- See Oakes, 1986; Haller & Krauss, 2002; Hoekstra et al., 2014
+
+
+## Bayes-Laplace-Jeffreys
+- Thomas Bayes (1701 - 1761) was a Presbyterian minister whose "An essay towards solving a Problem in the Doctrine of Chances" used inverse probability
+
+<span style = "color:white"></span>
+
+- Pierre-Simon Laplace was "the Newton of France"
+    - Among many other things, generalized Bayes' rule and proved the central limit theorem
+
+<span style = "color:white"></span>
+
+- Harold Jeffreys (1891 - 1989) revived the Bayesian view of probability
+    - Developed the Bayes factor and Jeffreys priors
+    
+<span style = "color:white"></span>
+
+- Use Bayes' rule to make uncertainty statements about parameters, models, and hypotheses
+- (This is not possible in any other statistical approach)
+
+
+## Jeffreys' approach to testing
+- Jeffreys had four convictions (see Ly, Verhagen, Wagenmakers, 2016)
+    - Inference is inductive
+    - Induction requires a logic of partial belief
+    - The test of a general law requires it be given a prior probability
+    - Classical tests are inadequate
+
+
+##
+<center>
+  <img src="images/super-ego-id.png" />
+</center>
 
 
 # Introduction to Probability
@@ -165,7 +236,7 @@ $$
 \end{align*}
 $$
 
-## Probability theory
+## Naive definition
 - Naive view assumes equally likely outcomes, resulting in 
 
 $$
@@ -176,7 +247,7 @@ $$
 - In order to be a valid probability function, the function must satisfy certain constraints
 
 
-## Probability theory
+## Non-naive definition
 - Kolmogorov's axioms (1933)
 
 $$
@@ -189,7 +260,7 @@ $$
 <img src="images/venn-diagram.png" </img>
 </center>
 
-## Probability theory
+## Non-naive definition
 - Some neat properties result
 
 $$
@@ -294,7 +365,7 @@ $$
 - Who is the most likely person to have killed your husband?
 
 
-## A murder mistery: Prior beliefs
+## Model specification
 +-----------------------+-------------------------------+--------------------------+-----------------------------+
 |                       |$\text{He killed himself}$     |  $\text{She killed him}$ | $\text{Butler killed him}$  |
 +-----------------------+-------------------------------+--------------------------+-----------------------------+
@@ -308,7 +379,7 @@ $$
 +-----------------------+-------------------------------+--------------------------+-----------------------------+
 
 
-## A murder mistery: Data arrive
+## It was an axe! --- data arrive
 +-----------------------+-------------------------------+--------------------------+-----------------------------+
 |                       |$\text{He killed himself}$     |  $\text{She killed him}$ | $\text{Butler killed him}$  |
 +-----------------------+-------------------------------+--------------------------+-----------------------------+
@@ -322,7 +393,7 @@ $$
 +-----------------------+-------------------------------+--------------------------+-----------------------------+
 
 
-## A murder mistery: Posterior beliefs
+## Renormalizing yields posterior beliefs
 +--------------------------+----------------------------+--------------------------+-----------------------------+
 |                          |$\text{He killed himself}$  |  $\text{She killed him}$ | $\text{Butler killed him}$  |
 +--------------------------+----------------------------+--------------------------+-----------------------------+
@@ -427,7 +498,10 @@ create_graph(power, prior_h1, .05)
 ```
 
 ## Why most published research is false {.flexbox .vcenter .emphasize}
+
+<span style = "font-size: 3em; margin-top: -500px;">
 [Demo](http://shinyapps.org/apps/PPV/)
+</span>
 
 
 ## Sequential analysis
@@ -504,7 +578,7 @@ $$
 
 ## Frequentist interpretation
 
-<span style = "font-size: 2em; line-height: 120%; margin-top: -500px;">
+<span style = "font-size: 1.5em; line-height: 120%; margin-top: -500px;">
 "The rational concept of probability, which is the only basis of probability calculus, applies only to problems in which either the same event repeats itself again and again ... [In] order to apply the theory of probability we must have a practically unlimited sequence of observations."
 
 - Richard von Mises (quoted in Jackman, 2009, p. 5)
@@ -815,7 +889,7 @@ ggplot(dg, aes(x = value)) +
   facet_wrap(~ dist, scales = 'free')
 ```
     
-# Statistical models
+# Statistical models cont'd
 
 ## Bread and butter
 - I want to learn $\theta$ --- what are good values for it, given the data below?
@@ -1004,7 +1078,7 @@ ggplot(data.frame(x = c(0, 1)), aes(x = x)) +
 
 
 ## Bread and Butter: Estimation
-- The main assumption of classical statistics in two sentences
+- The main approach of classical statistics in two sentences
 
 <span style = "color: white"></span>
 
@@ -1098,7 +1172,10 @@ plot_cis(cis, times)
 ```
 
 ## Confidence intervals {.flexbox .vcenter .emphasize}
+
+<span style = "font-size: 3em; margin-top: -500px;">
 [Demo](http://rpsychologist.com/d3/CI/)
+</span>
 
 
 ## $p$-values
@@ -1188,7 +1265,9 @@ shinyApp(
 
 
 ## Bayesian graphical model
-![](images/binomial-model-bayes.png)
+<center>
+  <img src="images/binomial-model-bayes.png" />
+</center>
 
 
 ## Bayesian estimation
@@ -1428,6 +1507,7 @@ ggplot(d, aes(x = m, y = p, fill = distribution)) +
 - looks at the functional form of the model, compared to
     - $AIC = -2 \log p(\textbf{y}|\hat \theta) + 2\cdot k$
     - $BIC = -2 \log p(\textbf{y}|\hat \theta) + \log n \cdot k$
+- which penalize just based on the number of parameters $k$
 
 ## Thermometer of evidence
 <center>
@@ -1481,6 +1561,22 @@ p(y' = 1|y)
 &= \mathbb{E}[\theta|y] = \frac{16}{16 + 5} \approx .76
 \end{align*}
 $$
+
+
+## Bayesian prediction
+- The prior regularizes and avoids embarrassing inference and prediction
+- For $y = 3, n = 3$ the maximum likelihood estimate is $\theta_{\text{MLE}} = 1$ and predicts $p(y' = 1|y)$ with 100% certainty
+
+<span style="color: white"></span>
+
+- This has consequences for a host of more complicated models and is termed *overfitting*
+
+<span style="color: white"></span>
+
+- Bayesian prediction safeguards against this
+- Classical methods achieving the same thing are called **penalized likelihood** methods, such as
+    - the lasso (which corresponds to Bayesian regression with Laplace priors)
+    - ridge regression (which corresponds to Bayesian regression with Gaussian priors)
 
 
 # Some applications
@@ -1630,8 +1726,8 @@ $$
 
 
 ## Simulator sickness and age
-- The model I suggested is actually wrong (just look at the distribution of age)
-- Additionally, Pearson correlation does not require Gaussian random variables
+- The model I suggested is actually wrong (just look at the population distribution of age)
+- Moreover, Pearson correlation does not require Gaussian random variables
 - It only requires continuous random variables
 
 
@@ -1663,7 +1759,10 @@ $$
 
 
 ## Markov chain Monte Carlo with People {.flexbox .vcenter .emphasize}
+
+<span style = "font-size: 2em; margin-top: -500px;">
 [Interactive Exploration of Data](https://fdabl.shinyapps.io/MCMCP/)
+</span>
 
 
 ## Markov chain Monte Carlo with People
@@ -1774,7 +1873,7 @@ papaja::apa_table(
 
 - **4** Conduct a Bayesian one-sided t-test. Is this approach justifiable?
 
-## JASP wrap-up
+## Wrap-up
 <center>
   <img src="images/desiderata.png" />
 </center>
