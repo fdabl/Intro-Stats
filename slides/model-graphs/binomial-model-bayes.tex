@@ -19,10 +19,9 @@
   \draw[->] (theta)--(y);
   \draw[->] (n)--(y);
    
-  \begin{scope}[xshift = 4.5cm, node distance = 1cm]
+  \begin{scope}[xshift = 4.5cm, yshift = -2cm, node distance = 1cm]
       \node[] at(0, 0) (a) {$\alpha = \beta = 1$};
-      \node[below of = a] (n) {$n = 20$};
-      \node[below of = n] (theta) {$\theta \sim \mbox{Beta}(\alpha, \beta)$};
+      \node[below of = a] (theta) {$\theta \sim \mbox{Beta}(\alpha, \beta)$};
       \node[below of = theta] (y) {$y \sim \mbox{Binomial}(\theta, n)$};
    \end{scope}
     
