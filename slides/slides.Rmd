@@ -273,14 +273,33 @@ $$
 
 ## How likely is today somebody's birthday?
 - The sample space is $\mathcal{S} = \{1, 2, \ldots, 365\}$
-- There are $k$ people in the room; therefore
+- There are $k = 35$ people in the room
+- We assume that no people share birthdays, i.e., sampling without replacement ($k \leq 365$)
+- Then
 
 $$
 P(\text{somebody's birthday}) = k \cdot \frac{1}{365}
 $$
 
+```{r}
+k <- 35
+S <- seq(365)
+today <- 31 + 28 + 31 + 25
+
+mean(
+  replicate(100000, any(sample(S, k, replace = FALSE) == today))
+)
+```
+
+## How likely is today somebody's birthday?
+- Used the law of large numbers to approximate the result (more later)
+- But clearly our assumption that people don't share birthdays is wrong
+
+<span style = "color:white"></span>
+
 - How likely is it that at least two people share birthdays?
 - Use $P(A^c) = 1 - P(A)$ to simplify the problem
+
 
 ## Birthday Problem
 $$
@@ -1884,3 +1903,10 @@ papaja::apa_table(
 - [Exercises](https://github.com/fdabl/Intro-Stats/blob/master/exercises/exercises.pdf) for this workshop
 - [A First Lesson in Bayesian Inference](http://lmpp10e-mucesm.srv.mwn.de:3838/felix/BayesLessons/BayesianLesson1.Rmd) by Eric-Jan Wagenmakers
 - [Improving your statistical inferences](https://www.coursera.org/learn/statistical-inferences/home/welcome) by Daniel Lakens
+
+## Thanks to
+- EJ Wagenmakers and his lab for writing the wittiest exposures to Bayesian statistics and providing user-friendly, open-source, free statistical software
+- Richard Morey (and Jeffrey Rouder) for the BayesFactor R package, doing much of the heavy lifting in JASP (see [here](https://bayesfactor.blogspot.de/))
+- Michael Franke for allowing me to help him create a course on Bayesian statistics and cognitive modeling (see [here](http://www.sfs.uni-tuebingen.de/~mfranke/bda+cm2015/))
+- All the people on Twitter engaging in fruitful discussions, creating an atmosphere of learning unparalleled in University curricula
+- All the people who blog about open science and methods
