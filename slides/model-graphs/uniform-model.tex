@@ -8,8 +8,8 @@
 \begin{document}
 
 \begin{tikzpicture}[node distance = 2cm, double distance = 2pt, minimum size=.8cm, thick]
-  \node[circle, draw=black, fill=lightgray] (a) {$a$};
-  \node[circle, draw=black, fill=lightgray, right of=a] (b) {$b$};
+  \node[circle, draw=black] (a) {$a$};
+  \node[circle, draw=black, right of=a] (b) {$b$};
   \node[rectangle, below of=a, draw=black, fill=lightgray, xshift = 1cm] (x) {$x_i$};
   
   \draw[->] (a)--(x);

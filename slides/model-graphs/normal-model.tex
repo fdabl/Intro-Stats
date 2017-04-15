@@ -8,8 +8,8 @@
 \begin{document}
 
 \begin{tikzpicture}[node distance = 2cm, double distance = 2pt, minimum size=.8cm, thick]
-  \node[circle, draw=black, double] (mu) {$\hat \mu$};
-  \node[circle, draw=black, double, right of=mu] (sigma) {$\hat \sigma$};
+  \node[circle, draw=black] (mu) {$\hat \mu$};
+  \node[circle, draw=black, right of=mu] (sigma) {$\hat \sigma$};
   \node[rectangle, below of=mu, draw=black, fill=lightgray, xshift = 1cm] (x) {$x_i$};
   
   \draw[->] (mu)--(x);
@@ -28,8 +28,8 @@
    
    \begin{scope}[xshift = 4.5cm, node distance = 1cm]
        \node[] at(0, 0) (mu) {$\hat \mu = \frac{1}{n} \sum_{i=1}^n x_i$};
-       \node[below of = mu] (sigma) {$\hat \sigma = \frac{1}{n} \sum_{i=1}^n (x_i - \mu)^2$};
-       \node[below of = sigma] (x) {$x_i \sim \mbox{Norm(}\hat \mu, \hat \sigma)$};
+       \node[below of = mu] (sigma) {$\hat \sigma = \frac{1}{n} \sum_{i=1}^n (x_i - \hat \mu)^2$};
+       \node[below of = sigma] (x) {$x_i \sim \mbox{Normal(}\hat \mu, \hat \sigma)$};
     \end{scope}
     
 \end{tikzpicture}

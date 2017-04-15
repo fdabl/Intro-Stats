@@ -14,7 +14,7 @@ This two hour workshop will be presented at the 31st EFPSA Congress in Qakh, Aze
     - Bayesian Benefits for the Pragmatic Researcher ([2016](http://journals.sagepub.com/doi/pdf/10.1177/0963721416643289)) by Wagenmakers, Morey, and Lee
     - How to become a Bayesian in eight easy steps ([2016](https://osf.io/8wkpd/)) by Etz, Gronau, Dablander, Edelsbrunner, and Baribault
     - The philosophy of Bayes factors and the quantification of statistical evidence ([2016](https://www.sciencedirect.com/science/article/pii/S0022249615000723)) by Morey, Romeijn, & Rouder
-    - Statistical tests, $p$-values, confidence intervals, and power: a guide to misinterpretations ([2016](https://link.springer.com/article/10.1007/s10654-016-0149-3)) by Greenland et al.
+    - Statistical tests, *p*-values, confidence intervals, and power: a guide to misinterpretations ([2016](https://link.springer.com/article/10.1007/s10654-016-0149-3)) by Greenland et al.
 - Textbooks
     - Statistical Rethinking ([2016](http://andrewgelman.com/2016/01/15/mcelreaths-statistial-rethinking-a-bayesian-course-with-examples-in-r-and-stan/)) by McElreath
     - Introduction to Probability ([2014](https://www.crcpress.com/Introduction-to-Probability/Blitzstein-Hwang/p/book/9781466575578)) by Blitzstein & Hwang

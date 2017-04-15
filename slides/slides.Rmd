@@ -54,6 +54,8 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, dev.args = 
     - Bread and butter example
     - Likelihoods, law of large number, central limit theorem
     
+<span style = "color:white"></span>
+    
 - **3.** Classical statistics
     - Maximum likelihood, sampling distributions, bootstrapping
     - Confidence intervals, $p$-values
@@ -112,7 +114,7 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, dev.args = 
 <div style = "float:right; width:55%;">
 - Father of modern statistical inference
 - Randomization, design of experiments
-- $p$-value, $\alpha$, null hypothesis, analysis of variance
+- $p$-value, $\alpha$ level, null hypothesis, analysis of variance
 - Maximum likelihood, sufficient statistics
 - Parametric modeling, distributional theory
 - Founder of population genetics
@@ -148,6 +150,7 @@ circumstances, he rejects hypotheses; he rather gives his mind to each particula
     - The alternative hypothesis
     - Type I ($\alpha$) and Type II ($\beta$) errors
     - Statistical power
+    - Confidence intervals
     - Decision theoretic foundation of hypothesis testing
 
 
@@ -163,7 +166,7 @@ circumstances, he rejects hypotheses; he rather gives his mind to each particula
 <span style = "font-size: 1.5em; line-height: 120%; margin-top: -500px;">
 "We are inclined to think that as far as a particular hypothesis is concerned, no test based upon the theory of probability can by itself provide any valuable evidence of the truth or falsehood of that hypothesis. But we may look at the purpose of tests from another viewpoint. Without hoping to know whether each separate hypothesis is true or false, we may search for rules to govern our behaviour with regard to them, in following which we insure that, in the long run of experience, we shall not be too often wrong".
 
-- Jerzy Neyman & Egon Pearson (1933, pp. 290-291)
+- Jerzy Neyman & Egon Pearson (1933, pp. 290-291, as quoted in Johansson, 2011)
 </span>
 
 
@@ -188,7 +191,7 @@ circumstances, he rejects hypotheses; he rather gives his mind to each particula
 
 
 ## Bayes-Laplace-Jeffreys
-- Thomas Bayes (1701 - 1761) was a Presbyterian minister whose "An essay towards solving a Problem in the Doctrine of Chances" used inverse probability
+- Thomas Bayes (1701 - 1761) was a Presbyterian minister whose "An essay towards solving a Problem in the Doctrine of Chances" used inverse probability --- Bayes' rule
 
 <span style = "color:white"></span>
 
@@ -198,7 +201,7 @@ circumstances, he rejects hypotheses; he rather gives his mind to each particula
 <span style = "color:white"></span>
 
 - Harold Jeffreys (1891 - 1989) revived the Bayesian view of probability
-    - Developed the Bayes factor and Jeffreys priors
+    - Developed the Bayes factor, default Bayesian tests, and Jeffreys priors
     
 <span style = "color:white"></span>
 
@@ -207,11 +210,13 @@ circumstances, he rejects hypotheses; he rather gives his mind to each particula
 
 
 ## Jeffreys' approach to testing
-- Jeffreys had four convictions (see Ly, Verhagen, Wagenmakers, 2016)
+- Jeffreys had four convictions
     - Inference is inductive
     - Induction requires a logic of partial belief
     - The test of a general law requires it be given a prior probability
     - Classical tests are inadequate
+    
+- (For an excellent account, see Ly, Verhagen, Wagenmakers, 2016)
 
 
 ##
@@ -379,8 +384,8 @@ $$
 ## A murder mistery
 - You estimated that each person was equally likely to be the perpetrator
 - Now the police has indentified the murder weapon --- an axe, of course
-- You does that change your beliefs?
-- Who is the most likely person to have killed your husband?
+- How does that change your beliefs?
+- Who is most likely to have killed your husband?
 
 
 ## Model specification
@@ -438,7 +443,7 @@ P(\text{Axe}) &= P(\text{Axe}, \text{Suicide}) +  P(\text{Knife}, \text{Suicide}
 \end{split}
 $$
 
-- We find the **Multiplication rule**
+- We find the **Product rule**
 
 $$
 P(\text{Suicide}|\text{Axe})P(\text{Axe}) = P(\text{Axe}, \text{Suicide})
@@ -476,7 +481,7 @@ $$
 P(H_1|p < \alpha) = \frac{(1 - \beta) P(H_1)}{(1 - \beta) P(H_1) + \alpha (1 - P(H_1))}
 $$
 
-## Why most published research is false
+## Why most published is false
 ```{r, echo = FALSE}
 library('latex2exp')
 
@@ -844,13 +849,14 @@ $$
 
 $$
 \begin{split}
-\mathbb{E}[X] &= \int \theta \cdot f(x;\theta) \mathrm{d}\theta \\
+\mathbb{E}[X] &= \int x \cdot P(x) \mathrm{d}x \\
               &= \lim_{N \to \infty} \frac{1}{N} \sum_{x_i \sim P}^{N} x_i
 \end{split}
 $$
 
 ## Law of large numbers
-- More broadly: the accuracy of the empirical statistic increases with sample size
+- Computing the mean of rolling a six-sided die
+- The accuracy of the empirical statistic (the mean) increases with sample size
 
 ```{r, echo = FALSE}
 set.seed(174)
@@ -1223,7 +1229,63 @@ binom.test(y, n)
 # Bayesian statistics
 
 ## Bayesian estimation
-- Use Bayes' rule
+- Recap of the murder mistery
+- **Joint probability**
+
+$$
+P(\text{Axe}, \text{Suicide}) = \frac{1}{12}
+$$
+- **Marginal probability**
+
+$$
+\begin{split}
+P(\text{Suicide}) &= \frac{1}{3} \\[1ex]
+                            &= P(\text{Axe}, \text{Suicide}) +  P(\text{Knife}, \text{Suicide}) + P(\text{Pistol}, \text{Suicide}) \\[1ex]
+                            &= \frac{1}{12} + \frac{1}{12} + \frac{2}{12} \\[2ex]
+                            &\Rightarrow \sum_{W}^{3} P(W, \text{Suicide}) \qquad \text{Sum rule}
+\end{split}
+$$
+
+
+
+## Bayesian estimation
++-----------------------+-------------------------------+--------------------------+-----------------------------+
+|                       |$\text{He killed himself}$     |  $\text{She killed him}$ | $\text{Butler killed him}$  |
++-----------------------+-------------------------------+--------------------------+-----------------------------+
+| $\text{Used axe}$     |  $\frac{1}{12}$               | $\frac{1}{12}$           | $\frac{2}{12}$              |
++-----------------------+-------------------------------+--------------------------+-----------------------------+
+| $\text{Used knife}$   |  $\frac{1}{12}$               | $\frac{3}{12}$           | $\frac{1}{12}$              |
++-----------------------+-------------------------------+--------------------------+-----------------------------+
+| $\text{Used pistol}$  |  $\frac{2}{12}$               | $0$                      | $\frac{1}{12}$              |
++-----------------------+-------------------------------+--------------------------+-----------------------------+
+| $\text{Sum (Prior)}$  |  $\frac{1}{3}$                | $\frac{1}{3}$            | $\frac{1}{3}$               |
++-----------------------+-------------------------------+--------------------------+-----------------------------+
+
+
+## Bayesian estimation
+- Recap of why most published research is wrong
+- What is the probability that my hypothesis is true, given that I have observed $p < \alpha$?
+
+$$
+\begin{split}
+P(H_1|p < \alpha) &= \frac{P(p < \alpha|H_1)P(H_1)}{P(p < \alpha)}
+&= \frac{P(p < \alpha|H_1)P(H_1)}{P(p < \alpha|H_1)P(H_1) + P(p < \alpha|H_0)P(H_0)}
+\end{split}
+$$
+
+<span style = "color:white"></span>
+
+- Recap of testicular cancer
+$$
+\begin{split}
+P(H_1|\text{pos.}) &= \frac{P(\text{pos.}|H_1)P(H_1)}{P(\text{pos.}|H_1)P(H_1) + P(\text{pos.}|H_0)P(H_0)} \\[1ex]
+&= \frac{.999 \cdot .0016}{.999 \cdot .0016 + .001 \cdot (1 - .0016)} \\[1ex]
+&\approx .01575
+\end{split}
+$$
+
+## Bayesian estimation
+- Uses Bayes' rule
 $$
 \underbrace{p(\theta|y)}_{\text{Posterior}} = \frac{\overbrace{f(y; \theta)}^{\text{Likelihood}}\overbrace{p(\theta)}^{\text{Prior}}}{\underbrace{p(y)}_{\text{Marginal Likelihood}}}
 $$
