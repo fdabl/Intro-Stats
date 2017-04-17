@@ -22,9 +22,20 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, dev.args = 
 \newcommand{\cmark}{\ding{51}}
 \newcommand{\xmark}{\ding{55}}
 
-## Motivation
+## Motivation: Against teaching standards
 ![](images/statistical-tests.png)
 
+## Motivation: Against null rituals
+- Current statistical practice is a hybrid between the approaches of Fisher and Neyman-Pearson
+- Gigerenzer (2004) introduces the term "null ritual" to specify current practices
+
+<span style = "color:white"></span>
+
+- **(1)** Setup a statistical null hypothesis, but do not specifiy your own hypothesis nor any alternative.
+- **(2)** Use the 5% significance level for rejecting the null and accepting your hypothesis.
+- **(3)** Always perform this procedure.
+    
+    
 ## Learning outcomes
 - **Oblique**
     - Get a feeling for *statistical modeling*
@@ -38,22 +49,21 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, dev.args = 
 
 
 ## Outline
-- **1a.** History of statistics
-    - Controversies and enigmatic key players
+- **1a.** Historical context for statistics
+    - Different statistical philosophies
     - The superego, ego, and the id in statistical reasoning
     
 <span style = "color:white"></span>
 
-- **1b.** Introduction to probability
+- **1b.** Examples in probability
+    - A murder mystery
     - Why most published research is false
     - Do I have testicular cancer?
-    - Frequentist versus Bayesian interpretation of probability
 
 <span style = "color:white"></span>
     
 - **2.** Foundation: Statistical models
-    - Bread and butter example
-    - Likelihoods, law of large number, central limit theorem
+    - Breakfast example
     
 <span style = "color:white"></span>
     
@@ -69,22 +79,15 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, dev.args = 
     
 <span style = "color:white"></span>
 
-- **5.** Some applications of Bayesian principles
-    - Simulator sickness and age
-    - Harry Potter and Personality
-    - Markov chain Monte Carlo with People
-    
-<span style = "color:white"></span>
-
-- **6.** Practical examples using JASP
+- **5.** Practical examples using JASP
     - Is height associated with being president?
     - *~ ~ tralala ~ ~ ... Wish we could turn back time .. ~ ~ tralala ~ ~*
     
 <span style = "color:white"></span>
     
-- **7.** Final thoughts and further resources
+- **6.** Final thoughts and further resources
 
-# History of statistics
+# Historical context
 
 ## Overview
 - Before 1940, significance testing was virtually non-existant
@@ -100,14 +103,6 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, dev.args = 
 </span>
 
 
-## History
-- Fienberg (1992) identifies four periods:
-- **1660 - 1750**: Pascal, Fermat, Bernoulli, De Moivre
-- **1750 - 1820**: Bayes, Laplace, Legendre, Gauss
-- **1820 - 1900**: Quetelet, Galton, Edgeworth, Yule, K. Pearson
-- **1900 - 1950**: Gosset, Fisher, Neyman, E. Pearson, Ramsey, Kolmogorov, de Finetti, Jeffreys, Wald, Savage
-
-
 ## Ronald Fisher
 <div style = "float:left; width:40%;">
 ![](images/fisher.png)
@@ -116,18 +111,8 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, dev.args = 
 - Father of modern statistical inference
 - Randomization, design of experiments
 - $p$-value, $\alpha$ level, null hypothesis, analysis of variance
-- Maximum likelihood, sufficient statistics
-- Parametric modeling, distributional theory
-- Founder of population genetics
-- Sexy son hypothesis
+- Maximum likelihood, sexy son hypothesis
 </div>
-
-
-## Fisher's approach to testing
-1) Setup a null hypothesis.
-2) Report the exact level of significance (e.g., $p = .051$ or $p = .049$). Do not use a conventional 5% level, and
-do not talk about accepting or rejecting hypotheses.
-3) Use this procedure only if you know very little about the problem at hand
 
 
 ## Ronald Fisher: Evidential statistics
@@ -155,13 +140,6 @@ circumstances, he rejects hypotheses; he rather gives his mind to each particula
     - Decision theoretic foundation of hypothesis testing
 
 
-## Neyman-Pearson's approach to testing
-1) Setup two statistical hypotheses, $H_1$ and $H_2$, and decide about $\alpha$, $\beta$, and sample size before the experiment, based on subjective cost-benefit considerations. These define a rejection region for each hypothesis.
-
-2) If the data falls into the rejection region of $H_1$, accept $H_2$; otherwise accept $H_1$. Note that accepting a hypothesis does not mean that you believe in it, but only that you act is if it were true. Report only $p < \alpha$ or $p \geq \alpha$.
-
-3) The usefulness of the procedure is limited among others to situations where you have a disjunction of hypotheses (e.g., either $\mu_1 = 8$ or $\mu_2 = 10$ is true) and where you can make meaningful cost-benefit trade-offs for choosing $\alpha$ and $\beta$.
-
 
 ## Neyman-Pearson: Behavioural statistics
 <span style = "font-size: 1.5em; line-height: 120%; margin-top: -500px;">
@@ -171,18 +149,8 @@ circumstances, he rejects hypotheses; he rather gives his mind to each particula
 </span>
 
 
-## Current statistical practice
-- Is a hybrid between the approaches of Fisher and Neyman-Pearson
-- Gigerenzer (2004) introduces the term ''null ritual'' to specify current practices
-
-<span style = "color:white"></span>
-
-    1) Setup a statistical null hypothesis, but do not specifiy your own hypothesis nor any alternative
-    2) use the 5% significance level for rejecting the null and accepting your hypothesis
-    3) always perform this procedure
-    
-    
-## Current statistical practice
+## Current statistical practice: Hybrid
+- The "null ritual" (Gigerenzer, 2004)
 - This is in part due to considerable misunderstandings of statistics
 - **[Discuss results of the pre-workshop questionnaire here]**
 
@@ -210,124 +178,13 @@ circumstances, he rejects hypotheses; he rather gives his mind to each particula
 - (This is not possible in any other statistical approach)
 
 
-## Jeffreys' approach to testing
-- Jeffreys had four convictions
-    - Inference is inductive
-    - Induction requires a logic of partial belief
-    - The test of a general law requires it be given a prior probability
-    - Classical tests are inadequate
-    
-- (For an excellent account, see Ly, Verhagen, Wagenmakers, 2016)
-
-
 ##
 <center>
   <img src="images/super-ego-id.png" />
 </center>
 
 
-# Introduction to Probability
-
-## Probability theory
-- Is based on set theory (Kolmogorov, 1933)
-- $\mathcal{S} = \{0, 1, 2, 3\}$ denotes the *sample space*
-- $\mathcal{A} = \{0, 1\}$ and $\mathcal{B} = \{1, 2\}$ denote events; $\mathcal{A}, \mathcal{B} \subset \mathcal{S}$
-
-$$
-\begin{align*}
-\mathcal{A^c} &= \{2, 3\} \\
-\mathcal{B^c} &= \{0, 3\} \\
-\mathcal{A} \cap \mathcal{B} &= \{1\} \\
-\mathcal{A} \cup \mathcal{B} &= \{0, 1, 2\}
-\end{align*}
-$$
-
-## Naive definition
-- Naive view assumes equally likely outcomes, resulting in 
-
-$$
-P(A) = \frac{|A|}{|S|}
-$$
-
-- where $P(.)$ is a function that takes a set and returns a real number on the interval [0, 1]
-- In order to be a valid probability function, the function must satisfy certain constraints
-
-
-## Non-naive definition
-- Kolmogorov's axioms (1933)
-
-$$
-\begin{align*}
-&P(\mathcal{S}) = 1, \,  P(\emptyset) = 0 \\
-&P(\bigcup^{\infty}_{i = 1}\mathcal{A}_i) = \sum^{\infty}_{i=1}P(\mathcal{A}_i) \qquad A_1, A_2, \ldots \text{are disjoint}
-\end{align*}
-$$
-<center>
-<img src="images/venn-diagram.png" </img>
-</center>
-
-## Non-naive definition
-- Some neat properties result
-
-$$
-\begin{split}
-P(\mathcal{A}^c) &= 1 - P(\mathcal{A}^c) \\
-P(\mathcal{A \cup B}) &= P(\mathcal{A}) + P(\mathcal{B}) - P(\mathcal{A \cap B}) \\
-P(\mathcal{A}) &\leq P(\mathcal{B}) \, \, \, \, \, \, \, \text{  if   } \mathcal{A} \subseteq \mathcal{B}
-\end{split}
-$$
-
-## How likely is today somebody's birthday?
-- There are $k = 35$ people in the room
-- We assume that no people share birthdays, i.e., sampling without replacement ($k \leq 365$)
-- Then
-
-$$
-P(\text{somebody's birthday}) = k \cdot \frac{1}{365}
-$$
-
-```{r}
-k <- 35
-S <- seq(365)
-today <- 31 + 28 + 31 + 25
-
-mean(
-  replicate(100000, any(sample(S, k, replace = FALSE) == today))
-)
-```
-
-## How likely is today somebody's birthday?
-- Used the law of large numbers to approximate the result (more later)
-- But clearly our assumption that people don't share birthdays is wrong
-
-<span style = "color:white"></span>
-
-- How likely is it that at least two people share birthdays?
-- Use $P(A^c) = 1 - P(A)$ to simplify the problem
-
-
-## Birthday Problem
-$$
-\begin{split}
-P(\text{two or more people share birthdays}) &= 1 - P(\text{nobody shares birthdays}) \\[1ex]
-                                             &= 1 - \frac{365 \cdot (365 - 1) \cdot \ldots \cdot (365 - k + 1)}{365^k}
-\end{split}
-$$
-
-```{r, echo = FALSE, fig.width = 6, fig.height = 4}
-library('ggplot2')
-theme_set(papaja::theme_apa())
-
-k <- seq(0, 50)
-f <- function(k) 1 - ((choose(365, k) * factorial(k)) / 365^k)
-d <- data.frame(k = k, prob = f(k))
-
-ggplot(d, aes(x = k, y = prob)) +
-  geom_line() +
-  ylab('Probability') +
-  geom_hline(yintercept = .5, linetype = 'dashed')
-```
-
+# Examples in Probability
 
 ## A murder mystery
 - A scream wakes you
@@ -486,7 +343,11 @@ $$
 
 ## Why most published is false
 ```{r, echo = FALSE}
+library('papaja')
+library('ggplot2')
 library('latex2exp')
+theme_set(theme_apa())
+
 
 get_ppv <- function(power, prior, alpha) (power * prior) / (power * prior + alpha * (1 - prior))
 
@@ -522,12 +383,6 @@ power <- seq(.01, .99, .01)
 prior_h1 <- seq(.1, .9, .2)
 create_graph(power, prior_h1, .05)
 ```
-
-## Why most published research is false {.flexbox .vcenter .emphasize}
-
-<span style = "font-size: 3em; margin-top: -500px;">
-[Demo](http://shinyapps.org/apps/PPV/)
-</span>
 
 
 ## Sequential analysis
@@ -602,31 +457,6 @@ $$
 - What is the probability of a global temperature rise of 2°C in the 30 years?
 
 
-## Frequentist interpretation
-
-<span style = "font-size: 1.5em; line-height: 120%; margin-top: -500px;">
-"The rational concept of probability, which is the only basis of probability calculus, applies only to problems in which either the same event repeats itself again and again ... [In] order to apply the theory of probability we must have a practically unlimited sequence of observations."
-
-- Richard von Mises (quoted in Jackman, 2009, p. 5)
-</span>
-
-## Bayesian interpretation
-
-<span style = "font-size: 1.5em; line-height: 120%; margin-top: -500px;">
-The abandonment of superstitious beliefs about...Fairies and Witches was an
-essential step along the road to scientific thinking. Probability, too, if regarded
-as something endowed with some kind of objective existence, is not less a
-misleading misconception, an illusory attempt to exteriorize or materialize
-our true probabilistic beliefs. In investigating the reasonableness of our own
-modes of thought and behaviour under uncertainty, all we require, and all that
-we are reasonably entitled to, is consistency among these beliefs, and their
-reasonable relation to any kind of relevant objective data (‘relevant’ in as
-much as subjectively deemed to be so). This is Probability Theory (de Finetti
-1974, 1975, x).
-
-- Bruno de Finetti (quoted in Jackman, 2009, p. 7)
-</span>
-
 # Statistical models
 ## Statistical models
 - Say I have a set of $n = 100$ observations $d = \{x_1, x_2, x_3, \ldots, x_n\}$
@@ -680,15 +510,6 @@ ggplot(data.frame(x = x), aes(x = x)) +
   stat_function(fun = function(y) dunif(y, min = 50, max = 150), col = 'firebrick', size = 1.5)
 ```
 
-## Statistical models: Notation
-- Statistical models can be specified as **directed acyclic graphs**
-
-<span style = "color: white"></span>
-
-<center>
-<img src="images/uniform-normal-models.png" />
-</center>
-
 
 ## Bread and butter
 - A slice of bread with butter falls on the floor
@@ -715,12 +536,40 @@ $$
 
 
 ## Statistical models: Bread and butter
-- How do I describe $n$ events?
-- I make a <span style = "color:red">very contentious assumption</span>: **independent and identically distributed samples**
-- Assume I have $n = 20$ data points $d = \{x_1, x_2, x_3, \ldots, x_n\}$
+- You like having breakfast, and you're clumsy
+- Thus, bread with butter falling down happens often to you
+- After a few days of having breakfast, you have observed the following outcomes
+
+```{r, echo = FALSE, fig.width = 4, figh.height = 2}
+set.seed(1774)
+
+x <- rbinom(20, 1, prob = .7)
+y <- sum(x)
+n <- length(x)
+
+ggplot(data.frame(x = x), aes(x = x)) +
+  geom_bar()
+```
+
+
 
 ## Statistical models: Bread and butter
+- We described a statistical model for one outcome, $n = 1$
+- How do we describe $n > 1$ events?
 
+<span style="color:white;"></span>
+
+- We make a <span style = "color:red">very contentious assumption</span>: **independent and identically distributed samples**
+- This allows us to write
+
+$$
+\begin{split}
+p(x_1, x_2, \ldots, x_n) &\stackrel{\text{i.i.d.}}{=} p(x_1)\cdot p(x_2) \cdot \ldots \cdot p(x_n) \\
+                         &= \prod_{i=1}^n p(x_i)
+\end{split}
+$$
+
+## Statistical models: Bread and butter
 $$
 \begin{align*}
 f(x; \theta) &\stackrel{\text{i.i.d.}}{=} f(x_1; \theta) \cdot f(x_2; \theta) \cdot \ldots \cdot f(x_n; \theta) \\
@@ -730,12 +579,22 @@ f(x; \theta) &\stackrel{\text{i.i.d.}}{=} f(x_1; \theta) \cdot f(x_2; \theta) \c
 \end{align*}
 $$
 
-- We don't care about the outcome order; e.g., whether $x = \{1, 0 \}$ or $x = \{0, 1\}$
+- Also, we don't care about the order of the outcomes, e.g., whether
+
+$$
+\begin{split}
+d_1 &= \{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1\} \\
+d_2 &= \{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1\} \\
+d_3 &= \{1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0\} \\
+\vdots
+\end{split}
+$$
+
 
 
 ## Binomial likelihood
 - Neglecting the order, we only model the number of falls with butter on the floor
-- Introducing a new random variable $Y$
+- Introducing a new random variable $Y$ (note that $x_i = 1$ indicates butter down)
 
 $$
 Y = \sum_{i=1}^n x_i
@@ -762,9 +621,6 @@ f(y; \theta, n) &= {n \choose y} \theta^{\sum^n_{i = 1} x_i} (1 - \theta)^{\sum^
                 &= {n \choose y} \theta^{y} (1 - \theta)^{n - y} \hspace{7em} \text{Introducing  } Y = \sum^n_{i=1} x_i \\
 \end{align*}
 $$
-
-## Binomial likelihood
-![](images/binomial-model.png)
 
 
 ## Binomial likelihood
@@ -838,101 +694,7 @@ shinyApp(
 )
 ```
 
-# Fundamental theorems
-
-## Two corners of (frequentist) statistics
-- Law of the large number
-$$
-\begin{split}
-\overline{X}_n &= \frac{1}{n}(X_1 + \ldots + X_n) \\[2ex]
-\overline{X}_n &\rightarrow \mu \qquad \text{for} \qquad n \rightarrow \infty
-\end{split}
-$$
-- Computing the mean of a random variable $X$
-
-$$
-\begin{split}
-\mathbb{E}[X] &= \int x \cdot P(x) \mathrm{d}x \\
-              &= \lim_{N \to \infty} \frac{1}{N} \sum_{x_i \sim P}^{N} x_i
-\end{split}
-$$
-
-## Law of large numbers
-- Computing the mean of rolling a six-sided die
-- The accuracy of the empirical statistic (the mean) increases with sample size
-
-```{r, echo = FALSE}
-set.seed(174)
-N <- seq(2, 1000, 10)
-roll_dice <- function(n) mean(sample(1:6, n, replace = TRUE))
-
-d <- data.frame(
-  N = N,
-  estimate = sapply(Vectorize(roll_dice)(N), mean)
-)
-
-ggplot(d, aes(x = N, y = estimate)) +
-  geom_line() +
-  ylab('Sample mean') +
-  xlab('Sample size') +
-  ylim(c(0, 6)) +
-  # stat_function(fun = function(N) (1/sqrt(N)) + 3.5, colour = 'blue') +
-  # stat_function(fun = function(N) (-1/sqrt(N)) + 3.5, colour = 'blue') +
-  geom_hline(yintercept = 3.5, colour = 'red', linetype = 'dashed')
-```
-
-
-##
-```{r, echo = FALSE, fig.width = 9, fig.height = 6.5}
-library('dplyr')
-library('tidyr')
-
-ng <- 50
-nt <- 10000
-
-d <- data.frame(
-  Beta = replicate(nt, mean(rbeta(ng, 1, 1))),
-  Poisson = replicate(nt, mean(rpois(ng, lambda = 10))),
-  Exponential = replicate(nt, mean(rexp(ng))),
-  Gamma = replicate(nt, mean(rgamma(ng, 1, 1))),
-  Weibull = replicate(nt, mean(rweibull(ng, 1, 1))),
-  Chisq = replicate(nt, mean(rchisq(ng, 1))),
-  Gaussian = replicate(nt, mean(rnorm(ng))),
-  Student.t = replicate(nt, mean(rt(ng, 20))),
-  Cauchy = replicate(nt, mean(rcauchy(ng, 1)))
-)
-
-dg <- gather(d, dist, value) %>%
-  mutate(dist = factor(dist, levels = c('Beta', 'Poisson', 'Exponential',
-                                        'Gamma', 'Weibull', 'Chisq',
-                                        'Gaussian', 'Student.t', 'Cauchy')))
-
-ggplot(dg, aes(x = value)) +
-  geom_histogram() +
-  xlab('') +
-  ylab('') +
-  ggtitle('Sampling distribution of the Mean') +
-  theme(plot.title = element_text(hjust = .5)) +
-  facet_wrap(~ dist, scales = 'free')
-```
     
-# Statistical models cont'd
-
-## Bread and butter
-- I want to learn $\theta$ --- what are good values for it, given the data below?
-
-```{r, echo = FALSE, fig.width = 4, figh.height = 2}
-set.seed(1774)
-
-x <- rbinom(20, 1, prob = .7)
-y <- sum(x)
-n <- length(x)
-
-ggplot(data.frame(x = x), aes(x = x)) +
-  geom_bar()
-```
-
-
 ## Bread and butter
 - A natural question to ask is: **How likely is the data given certain parameter values?**
 - Let's compare $\theta = .5$ and $\theta = .75$ on our flipping data ($y = 15, n = 20$)
@@ -1042,35 +804,7 @@ shinyApp(
 )
 ```
 
-
-# Classical and Bayesian statistics
-## A neutral Bird's eye view
-  Ronald Fisher                     Neyman-Pearson                       Bayesian
-----------------------              ---------------------------          ---------------------------
-Probability as long-run frequency   Probability as long-run frequency    Probability as degree of belief
-*p*-value                           *p*-value                            Bayes factors
-$\alpha$                            $\alpha, \beta$                      -
-Parameters are fixed                Parameters are fixed                 Parameters are random
-Pre-data                            Pre-data                             Post-data
-Epistemic approach                  Behavioural approach                 Epistemic approach
-Various estimators                  Various estimators                   Bayes' rule
--                                   Confidence Intervals                 Credible intervals
-Point estimates                     Point estimates                      Posterior distributions
-
-
-## A polemic Bird's eye view
- Classical Statistics |     Bayesian Statistics
----------------------:|:---------------------------
-Ad-hoc                |    Axiomatic
-Incoherent            |    Coherent
-Paradoxical           |    Intuitive
-Irrational            |    Rational
-Ugly                  |    Pretty
-Irrelevant            |    Relevant
-what's taught         |    what's not taught
-
-<div id="contrast">borrowed from [EJ Wagenmakers](https://docs.google.com/file/d/0B-Ww24m3ZkEyMEpudlVsX3pRVzA/edit)</div>
-
+  
 ## Practical example
 - **Data example**
     - We observe $n = 20$ pieces of bread with butter falling down
@@ -1090,7 +824,8 @@ Prediction        Plug-in Estimate         Account for uncertainty using **Bayes
 # Classical statistics
 
 ## Bread and Butter: Estimation
-- Many different estimators, but most popluar is maximum likelihood estimate; $\hat{\theta} = \frac{y}{n}$
+- Given the data, what ist the most likely value for $\theta$?
+- Many different estimators, but most popluar is maximum likelihood estimate: $\hat{\theta} = \frac{y}{n}$
 
 ```{r, echo = FALSE}
 y <- 15
@@ -1152,6 +887,41 @@ ggplot(s, aes(x = theta)) +
   stat_function(fun = function(theta) dnorm(theta, p, pse), color = 'red')
 ```
 
+##
+```{r, echo = FALSE, fig.width = 9, fig.height = 6.5}
+library('dplyr')
+library('tidyr')
+
+ng <- 50
+nt <- 10000
+
+d <- data.frame(
+  Beta = replicate(nt, mean(rbeta(ng, 1, 1))),
+  Poisson = replicate(nt, mean(rpois(ng, lambda = 10))),
+  Exponential = replicate(nt, mean(rexp(ng))),
+  Gamma = replicate(nt, mean(rgamma(ng, 1, 1))),
+  Weibull = replicate(nt, mean(rweibull(ng, 1, 1))),
+  Chisq = replicate(nt, mean(rchisq(ng, 1))),
+  Gaussian = replicate(nt, mean(rnorm(ng))),
+  Student.t = replicate(nt, mean(rt(ng, 20))),
+  Cauchy = replicate(nt, mean(rcauchy(ng, 1)))
+)
+
+dg <- gather(d, dist, value) %>%
+  mutate(dist = factor(dist, levels = c('Beta', 'Poisson', 'Exponential',
+                                        'Gamma', 'Weibull', 'Chisq',
+                                        'Gaussian', 'Student.t', 'Cauchy')))
+
+ggplot(dg, aes(x = value)) +
+  geom_histogram() +
+  xlab('') +
+  ylab('') +
+  ggtitle('Sampling distribution of the Mean') +
+  theme(plot.title = element_text(hjust = .5)) +
+  facet_wrap(~ dist, scales = 'free')
+```
+
+
 ## Confidence intervals
 ```{r}
 binom::binom.confint(y, n)
@@ -1199,12 +969,6 @@ cis <- simulate_cis(y, n, times = times)
 plot_cis(cis, times)
 ```
 
-## Confidence intervals {.flexbox .vcenter .emphasize}
-
-<span style = "font-size: 3em; margin-top: -500px;">
-[Demo](http://rpsychologist.com/d3/CI/)
-</span>
-
 
 ## $p$-values
 <center>
@@ -1241,10 +1005,25 @@ binom.test(y, n)
 - Is rather obscure and frequently misinterpreted
     - Which can have serious consequences (e.g., Sally Clark, medicine)
     
-- Inference using $p$-values can't distinguish between being underpowered or $H_1$ being true
+- Inference using $p$-values does not distinguish between being underpowered or $H_1$ being true
 
-    
+
+
 # Bayesian statistics
+## A polemic Bird's eye view
+ Classical Statistics |     Bayesian Statistics
+---------------------:|:---------------------------
+Ad-hoc                |    Axiomatic
+Incoherent            |    Coherent
+Paradoxical           |    Intuitive
+Irrational            |    Rational
+Ugly                  |    Pretty
+Irrelevant            |    Relevant
+what's taught         |    what's not taught
+
+<div id="contrast">borrowed from [EJ Wagenmakers](https://docs.google.com/file/d/0B-Ww24m3ZkEyMEpudlVsX3pRVzA/edit)</div>
+
+
 ## Bayesian estimation
 - Recap of the murder mystery
 - **Joint probability**
@@ -1280,18 +1059,6 @@ $$
 
 
 ## Bayesian estimation
-- Recap of why most published research is wrong
-- What is the probability that my hypothesis is true, given that I have observed $p < \alpha$?
-
-$$
-\begin{split}
-P(H_1|p < \alpha) &= \frac{P(p < \alpha|H_1)P(H_1)}{P(p < \alpha)}
-&= \frac{P(p < \alpha|H_1)P(H_1)}{P(p < \alpha|H_1)P(H_1) + P(p < \alpha|H_0)P(H_0)}
-\end{split}
-$$
-
-<span style = "color:white"></span>
-
 - Recap of testicular cancer
 $$
 \begin{split}
@@ -1312,6 +1079,8 @@ $$
 $$
 p(y) = \int_{\theta} f(y; \theta)p(\theta) \mathrm{d}\theta
 $$
+
+- Think of $\int$ as $\sum$
 
 ## Prior: Beta distribution
 
@@ -1361,12 +1130,6 @@ shinyApp(
 ```
 
 
-## Bayesian graphical model
-<center>
-  <img src="images/binomial-model-bayes.png" />
-</center>
-
-
 ## Bayesian estimation
 - Need to multiply the likelihood with the prior, and renormalize
 $$
@@ -1383,7 +1146,6 @@ $$
 $$
 p(\theta|y) = \frac{1}{\text{Beta}(y + \alpha, n - y + \beta)} \theta^{y + \alpha - 1}(1 - \theta)^{n - y + \beta - 1}
 $$
-
 
 ## Bayesian updating
 ```{r, echo = FALSE, height = 3, width = 3}
@@ -1616,6 +1378,21 @@ ggplot(d, aes(x = m, y = p, fill = distribution)) +
 <img src="images/bayes-factor-labels.png" />
 </center>
 
+## Bayesian prediction
+- What is the probability that the next slice of bread will fall butter down?
+
+$$
+\begin{align*}
+p(y' = 1|y)
+&= \int_0^1 p(y' = 1, \theta|y) \mathrm{d}\theta \\
+&= \int_0^1 p(y' = 1|\theta)p(\theta|y)\mathrm{d}\theta \\
+&= \int_0^1 \theta \cdot p(\theta|y)\mathrm{d}\theta \\
+&= \mathbb{E}[\theta|y] = \frac{16}{16 + 5} \approx .76
+\end{align*}
+$$
+
+
+
 ## Lindley's Paradox
 ```{r}
 k <- 49581
@@ -1651,230 +1428,7 @@ dbeta(0.5, k + 1, N - k + 1)
 </div>
 
 
-## Bayesian prediction
-- What is the probability that the next slice of bread will fall butter down?
-
-$$
-\begin{align*}
-p(y' = 1|y)
-&= \int_0^1 p(y' = 1, \theta|y) \mathrm{d}\theta \\
-&= \int_0^1 p(y' = 1|\theta)p(\theta|y)\mathrm{d}\theta \\
-&= \int_0^1 \theta \cdot p(\theta|y)\mathrm{d}\theta \\
-&= \mathbb{E}[\theta|y] = \frac{16}{16 + 5} \approx .76
-\end{align*}
-$$
-
-
-## Bayesian prediction
-- The prior regularizes and avoids embarrassing inference and prediction
-- For $y = 3, n = 3$ the maximum likelihood estimate is $\theta_{\text{MLE}} = 1$ and predicts $p(y' = 1|y)$ with 100% certainty
-
-<span style="color: white"></span>
-
-- This has consequences for a host of more complicated models and is termed *overfitting*
-
-<span style="color: white"></span>
-
-- Bayesian prediction safeguards against this
-- Classical methods achieving the same thing are called **penalized likelihood** methods, such as
-    - the lasso (which corresponds to Bayesian regression with Laplace priors)
-    - ridge regression (which corresponds to Bayesian regression with Gaussian priors)
-
-
-# Some applications
-
-## Simulator sickness and age
-```{r, echo = FALSE}
-ss_dat <- read.csv('../data/ss_dat.csv')
-
-ggplot(ss_dat, aes(x = age, y = diff_ssq)) +
-  geom_smooth(method = 'lm', se = FALSE, color = 'skyblue') +
-  geom_point() +
-  xlab('Age') +
-  ylab('Simulator Sickness Score (Post - Pre)')
-```
-
-## Simulator sickness and age
-
-<center>
-<img src="images/simulator-sickness-jasp.png" />
-</center>
-
-- What did we actually do? What is our <span style="color: red">statistical model?</span>
-
-## Simulator sickness and age
-- Propose as statistical model a multivariate Gaussian distribution for the standardized variable $X = [x_1, x_2]$
-
-$$
-f(x|\Sigma) = \frac{1}{\sqrt{2\pi}} |\Sigma|^{-1} \exp \big (\frac{1}{2}x^T\Sigma^{-1}x \big)
-$$
-
-```{r}
-X <- ss_dat[, c('age', 'diff_ssq')]
-Xs <- scale(X)
-head(cbind(X, Xs))
-```
-
-
-## Bivariate Gaussian Distribution
-```{r, echo = FALSE}
-library('mvtnorm')
-
-shinyApp(
-  options = list(width = "25%", height = "25%"),
-  ui = shinyUI(fluidPage(
-    sidebarLayout(
-      sidebarPanel(
-        tags$head(
-          tags$script(src = mathjax_URL, type = 'text/javascript'),
-          tags$script("MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});", type = 'text/x-mathjax-config')
-    ),
-        sliderInput("rho", label = HTML('$$\\rho$$'),
-                    min = -1, max = 1, value = 0, step = 0.1)
-        ),
-      mainPanel(
-        plotOutput("mvn_plot", height="500px", width="600px")
-        )
-      )
-   )),
-   server = function(input, output) {
-      plot_dat <- function(rho) {
-        mu <- c(0, 0)
-        sigma <- matrix(c(1, rho, rho, 1), nrow = 2)
-        X <- expand.grid(x1 = seq(-3, 3, length.out = 300), x2 = seq(-3, 3, length.out = 300))
-        d <- cbind(X, prob = dmvnorm(X, mean = mu, sigma = sigma))
-
-        ggplot(d, aes(x = x1, y = x2, z = prob)) +
-          geom_contour() +
-          coord_fixed(xlim = c(-3, 3), ylim = c(-3, 3), ratio = 1) +
-          xlab(TeX('X_1')) +
-          ylab(TeX('X_2')) +
-          ggtitle(TeX(paste0('$\\rho = $', round(rho, 2)))) +
-          theme(plot.title = element_text(hjust = .5))
-      }
-      
-      output$mvn_plot <- renderPlot({
-        plot_dat(input$rho)
-      })
-    }
-)
-```
-
-## Simulator sickness and age
-- The shape of the multivariate Gaussian is determined by the correlation matrix
-
-$$
-\Sigma = \begin{pmatrix} 1 & \rho \\ \rho & 1 \end{pmatrix}
-$$
-- We want to compare
-
-$$
-\begin{split}
-H_0&: \rho = 0 \\
-H_1&: \rho \sim \text{Beta}(1, 1)
-\end{split}
-$$
-
-
-- For $M_0$, this is just the simple likelihood for $\rho = 0$
-
-$$
-\begin{split}
-p(d|M_0) &= \frac{1}{\sqrt{2\pi}} \exp \big (-\frac{1}{2}x^T\begin{pmatrix} 1 & 0 \\ 0 & 1 \end{pmatrix} ^{-1}x \big) \\[1ex]
-         &\approx 8.414\mathrm{e}^{-35}
-\end{split}
-$$
-
-```{r, echo = FALSE, eval = FALSE}
-prod(dmvnorm(Xs, mean = c(0, 0), sigma = matrix(c(1, 0, 0, 1), nrow = 2)))
-```
-
-## Simulator sickness and age
-- Again, for $M_1$ it's a bit more complicated as it involves integration over $\rho$
-
-$$
-\begin{split}
-p(d|M_1) &= \int_{\rho} p(d, \rho|M_1)\mathrm{d}\rho \\[1ex]
-         &= \int_{\rho} p(d|M_1, \rho)p(\rho|M_1)\mathrm{d}\rho \\[1ex]
-         &= \int_{\rho} f(x;\Sigma)\text{Unif}(-1, 1)\mathrm{d}\rho \\[1ex]
-         &= \int_{\rho} \frac{1}{\sqrt{2\pi}} |\Sigma|^{-1} \exp \big (\frac{1}{2}x^T\Sigma^{-1}x \big) \frac{1}{2} \mathrm{d}\rho \\[1ex]
-         &\approx \frac{1}{N} \sum_{\rho_i \sim \text{Unif}(-1, 1)} ^N \frac{1}{\sqrt{2\pi}} |\Sigma|^{-1} \exp \big (\frac{1}{2}x^T\begin{pmatrix} 1 & \rho_i \\ \rho_i & 1 \end{pmatrix}^{-1}x \big) \\[1ex]
-         &\approx 4.278\mathrm{e}^{-35}
-\end{split}
-$$
-
-```{r, echo = FALSE, eval = FALSE}
-N <- 100000
-rho <- runif(N, -1, 1)
-f <- function(x, rho) dmvnorm(x, mean = c(0, 0), sigma = matrix(c(1, rho, rho, 1), nrow = 2))
-
-marginal_likelihood <- 0
-for (i in seq(N)) {
-  rho_i <- rho[i]
-  marginal_likelihood <- marginal_likelihood + prod(f(Xs, rho_i))
-}
-
-marginal_likelihood / N
-```
-
-## Simulator sickness and age
-$$
-\text{BF}_{01} = \frac{8.414\mathrm{e}^{-35}}{4.278\mathrm{e}^{-35}} = 1.966
-$$
-
-<center>
-<img src="images/simulator-sickness-jasp.png" />
-</center>
-
-
-## Simulator sickness and age
-- The model I suggested is actually wrong (just look at the population distribution of age)
-- Moreover, Pearson correlation does not require Gaussian random variables
-- It only requires continuous random variables
-
-
-## Harry Potter Sorting Hat Quiz
-![](images/descriptives-big5.png)
-
-## Harry Potter Sorting Hat Quiz
-- Previous research has used a t-test comparing, say
-    - Mean extraversion of Gryffindor with Mean extraversion of Ravenclaw, Hufflepuff, Slytherin
-    - This is not what we want!
-    
-<span style="color: white"></span>
-    
-- Using Bayesian inference, we can compare models with order-constraints on the mean
-    
-$$
-\begin{split}
-M_0 &: \mu_{\text{G}} = \mu_{\text{S}} = \mu_{\text{R}} = \mu_{\text{H}} \\
-M_f &: \mu_{\text{G}}, \, \mu_{\text{S}} , \, \mu_{\text{R}} , \, \mu_{\text{H}} \\
-M_r &: \mu_{\text{G}} > (\mu_{\text{S}} , \, \mu_{\text{R}} , \, \mu_{\text{H}})
-\end{split}
-$$
-    
-
-## Markov chain Monte Carlo with People
-<center>
-<img src="images/MCMCP-trial.png" />
-</center>
-
-
-## Markov chain Monte Carlo with People {.flexbox .vcenter .emphasize}
-
-<span style = "font-size: 2em; margin-top: -500px;">
-[Interactive Exploration of Data](https://fdabl.shinyapps.io/MCMCP/)
-</span>
-
-
-## Markov chain Monte Carlo with People
-<center>
-<img src="images/MCMCP-model.png" />
-</center>
-
-
 # Practicals with JASP
-
 ## JASP
 - Undergoes rapid development in Eric-Jan Wagenmakers' lab in Amsterdam
 - Has over 20 team members coming from psychology, statistics, and computer science
@@ -1990,6 +1544,8 @@ papaja::apa_table(
 - reviewed maximum likelihood, sampling distributions, confidence intervals, $p$-values
 - seen how Bayes unifies estimation, comparison, and prediction
 - used a beautiful, feature-rich, free statistical software to carry out Bayesian computations
+
+
 
 ## Solidify your learning
 - [Exercises](https://github.com/fdabl/Intro-Stats/blob/master/exercises/exercises.pdf) for this workshop
