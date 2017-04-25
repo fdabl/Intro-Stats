@@ -27,7 +27,7 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, dev.args = 
 
 ## Motivation: Against null rituals
 - Current statistical practice is a hybrid between the approaches of Fisher and Neyman-Pearson
-- Gigerenzer (2004) introduces the term "null ritual" to specify current practices
+- Gigerenzer (2004) introduces the term "null ritual" to denote current practices
 
 <span style = "color:white"></span>
 
@@ -90,7 +90,7 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, dev.args = 
 # Historical context
 
 ## Overview
-- Before 1940, significance testing was virtually non-existant
+- Before 1940, significance testing was virtually non-existent
 - By 1955, 80% of empirical articles reported significance tests
 - Today, the figure is close to 100% (see Gigerenzer, 1993)
 
@@ -152,11 +152,12 @@ circumstances, he rejects hypotheses; he rather gives his mind to each particula
 ## Current statistical practice: Hybrid
 - The "null ritual" (Gigerenzer, 2004)
 - This is in part due to considerable misunderstandings of statistics
-- **[Discuss results of the pre-workshop questionnaire here]**
+- Oakes (1986); Wulff et al. (1987); Haller & Krauss (2002); Lecoutre et al. (2003); Hoekstra et al. (2014)
 
-<span style = "color:white"></span>
+<center>
+  <img src="images/haller-kraus-results.png" />
+</center>
 
-- See Oakes, 1986; Haller & Krauss, 2002; Hoekstra et al., 2014
 
 
 ## Bayes-Laplace-Jeffreys
@@ -164,13 +165,13 @@ circumstances, he rejects hypotheses; he rather gives his mind to each particula
 
 <span style = "color:white"></span>
 
-- Pierre-Simon Laplace was "the Newton of France"
+- Pierre-Simon Laplace was the "Newton of France"
     - Among many other things, generalized Bayes' rule and proved the central limit theorem
 
 <span style = "color:white"></span>
 
 - Harold Jeffreys (1891 - 1989) revived the Bayesian view of probability
-    - Developed the Bayes factor, default Bayesian tests, and Jeffreys priors
+    - Developed the Bayes factor, default Bayesian hypotheses tests, and Jeffreys priors
     
 <span style = "color:white"></span>
 
@@ -319,19 +320,27 @@ $$
 
 ## Why most published research is false
 - What is the probability that my hypothesis is true, given that I have observed $p < \alpha$?
+- Recall the product rule
 
 <span style = "color:white"></span>
+$$
+\begin{split}
+P(H_1|p < \alpha)P(p < \alpha) = P(H_1, p < \alpha) &= P(p < \alpha|H_1)P(H_1)
+\end{split}
+$$
+
+- which leads to Bayes' rule
 
 $$
 \begin{split}
-P(H_1|p < \alpha) &= \frac{P(p < \alpha|H_1)P(H_1)}{P(p < \alpha)}
+P(H_1|p < \alpha) &= \frac{P(p < \alpha|H_1)P(H_1)}{P(p < \alpha)} \\[1.5ex]
 &= \frac{P(p < \alpha|H_1)P(H_1)}{P(p < \alpha|H_1)P(H_1) + P(p < \alpha|H_0)P(H_0)}
 \end{split}
 $$
 
 <span style = "color:white"></span>
 
-<div style="margin-top: 100px;">
+<div style="margin-top: 75px;">
 - Plugging in $P(p < \alpha|H_1) = 1 - \beta$ and $P(p < \alpha|H_0) = \alpha$
 
 <span style = "color:white"></span>
@@ -448,7 +457,7 @@ $$
 ## Probability theory
 - It is a branch of mathematics based on set theory, and as such uncontroversial
 - However, there are different interpretations of probability
-    - *Frequentist view:* Probability is long-running frequency
+    - *Frequentist view:* Probability is long-running relative frequency
     - *Bayesian view:* Probability as degree of belief
     
 <span style = "color: white"></span>
@@ -475,7 +484,7 @@ x
 - A statistical model describes the relationship of one or more **latent parameters** to the observations
 
 $$
-f(x; \mu, \sigma) = \frac{1}{\sqrt{2\pi\sigma^2}} \exp \big (-\frac{1}{2\sigma} (x - \mu)^2 \big)
+f(x; \mu, \sigma) = \frac{1}{\sqrt{2\pi\sigma^2}} \exp \left(-\frac{1}{2\sigma} (x - \mu)^2 \right)
 $$
 
 ```{r, echo = FALSE}
@@ -699,12 +708,14 @@ shinyApp(
 - A natural question to ask is: **How likely is the data given certain parameter values?**
 - Let's compare $\theta = .5$ and $\theta = .75$ on our flipping data ($y = 15, n = 20$)
 
+<div style="margin-top: 75px;">
 $$
 \begin{align*}
 f(Y = 15|n = 20, \theta = .5)  &= {20 \choose 15} .50^{15} (1 - .50)^{20 - 15} \approx 0.0147 \\[1ex]
 f(Y = 15|n = 20, \theta = .75) &= {20 \choose 15} .75^{15} (1 - .75)^{20 - 15} \approx 0.2033
 \end{align*}
 $$
+</div>
 
 
 ## Bread and butter
@@ -821,8 +832,21 @@ Testing           *p*-value                Bayes factor (**Bayes' rule**)
 Prediction        Plug-in Estimate         Account for uncertainty using **Bayes' rule**
 
 
-# Classical statistics
+## A polemic Bird's eye view
+ Classical Statistics |     Bayesian Statistics
+---------------------:|:---------------------------
+Ad-hoc                |    Axiomatic
+Incoherent            |    Coherent
+Paradoxical           |    Intuitive
+Irrational            |    Rational
+Ugly                  |    Pretty
+Irrelevant            |    Relevant
+what's taught         |    what's not taught
 
+<div id="contrast" style="font-size: .6em;">borrowed from [EJ Wagenmakers](https://docs.google.com/file/d/0B-Ww24m3ZkEyMEpudlVsX3pRVzA/edit)</div>
+
+
+# Classical statistics
 ## Bread and Butter: Estimation
 - Given the data, what ist the most likely value for $\theta$?
 - Many different estimators, but most popluar is maximum likelihood estimate: $\hat{\theta} = \frac{y}{n}$
@@ -995,35 +1019,27 @@ binom.test(y, n)
 ```
 
 ## Some issues with $p$-values
-- Are uniformly distributed under $H_0$
-    - By design, in order to have $\alpha$ number of rejections under $H_0$
-    - But therefore does not allow stating evidence in favour of $H_0$
+- $p$-values are uniformly distributed under $H_0$
+    - This is by design, in order to have $\alpha$ percent of rejections under $H_0$
+    - Therefore, however, $p$-values do not allow stating evidence in favour of $H_0$
     
-- Is not really a means to compare models, but to check models
+<span style="color: white"></span>
+
+- $p$-values are not really a means to compare models, but rather to check models
     - Conditional on the model (e.g., $H_0$), are the data surprising?
     
-- Is rather obscure and frequently misinterpreted
+<span style="color: white"></span>
+
+- $p$-values are rather obscure and frequently misinterpreted
     - Which can have serious consequences (e.g., Sally Clark, medicine)
+    
+<span style="color: white"></span>
     
 - Inference using $p$-values does not distinguish between being underpowered or $H_1$ being true
 
 
 
 # Bayesian statistics
-## A polemic Bird's eye view
- Classical Statistics |     Bayesian Statistics
----------------------:|:---------------------------
-Ad-hoc                |    Axiomatic
-Incoherent            |    Coherent
-Paradoxical           |    Intuitive
-Irrational            |    Rational
-Ugly                  |    Pretty
-Irrelevant            |    Relevant
-what's taught         |    what's not taught
-
-<div id="contrast">borrowed from [EJ Wagenmakers](https://docs.google.com/file/d/0B-Ww24m3ZkEyMEpudlVsX3pRVzA/edit)</div>
-
-
 ## Bayesian estimation
 - Recap of the murder mystery
 - **Joint probability**
@@ -1085,7 +1101,7 @@ $$
 ## Prior: Beta distribution
 
 $$
-p(\theta|\alpha, \beta) = \frac{1}{\text{Beta}(\alpha, \beta)} \theta^{\alpha - 1}(1 - \theta)^{\beta - 1}
+f(\theta;\alpha, \beta) = \frac{1}{\text{Beta}(\alpha, \beta)} \theta^{\alpha - 1}(1 - \theta)^{\beta - 1}
 $$
 <center>
   <img src="images/beta_overview.png" width="600px" height="400px"/>
@@ -1103,9 +1119,9 @@ shinyApp(
           tags$script("MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});", type = 'text/x-mathjax-config')
     ),
         sliderInput("a", label = 'a',
-                    min = .5, max = 20, value = 1, step = .5),
+                    min = .5, max = 20, value = 1, step = 1),
         sliderInput("b", label = "b",
-                    min = .5, max = 20, value = 1, step = .5)
+                    min = .5, max = 20, value = 1, step = 1)
         ),
       mainPanel(
         plotOutput("LRplot", height="400px")
@@ -1138,7 +1154,7 @@ $$
 - which, for our example, yields
 $$
 \begin{split}
-p(\theta|y) &= \frac{{n \choose y} \theta^y (1 - \theta)^{n - y} \frac{1}{\mathcal{B}(a, b)} \theta^{\alpha - 1}(1 - \theta)^{\beta - 1}}{\int_{\theta}{n \choose y} \theta^y (1 - \theta)^{n - y} \frac{1}{\mathcal{B}(a, b)} \theta^{\alpha - 1}(1 - \theta)^{\beta - 1}\mathrm{d}\theta}
+p(\theta|y) &= \frac{{n \choose y} \theta^y (1 - \theta)^{n - y} \frac{1}{\text{Beta}(a, b)} \theta^{\alpha - 1}(1 - \theta)^{\beta - 1}}{\int_{\theta}{n \choose y} \theta^y (1 - \theta)^{n - y} \frac{1}{\text{Beta}(a, b)} \theta^{\alpha - 1}(1 - \theta)^{\beta - 1}\mathrm{d}\theta}
 \end{split}
 $$
 - with some rearranging, we find that
@@ -1328,7 +1344,7 @@ p(y|M_1) &= \int_{\theta} p(y, \theta|M_1)\mathrm{d}\theta \\[1ex]
          &= \int_{\theta} p(y|M_1, \theta)p(\theta|M_1)\mathrm{d}\theta \\[1ex]
          &= \int_{\theta} {20 \choose 15} \theta^{15} (1 - \theta)^{20 - 15} \frac{1}{\text{Beta}(a, b)}\theta^{\alpha - 1}(1 - \theta)^{\beta - 1}\mathrm{d}\theta \\[1ex]
          &\approx \frac{1}{N} \sum_{\theta \sim \mathcal{Beta}(\alpha, \beta)}^N {20 \choose 15} \theta^{15} (1 - \theta)^{20 - 15} \hspace{3em} \text{Monte Carlo integration} \\[1ex]
-         &\approx 0.047
+         &\approx 0.0477
 \end{split}
 $$
 
@@ -1363,15 +1379,15 @@ ggplot(d, aes(x = m, y = p, fill = distribution)) +
 ## Bayes factor
 - is the non-plus-ultra of model comparison
     - complex models can predict many data patterns
-    - thus spread out their prior probability
-    - this gets factored into the marginal likelihood and decreases it
+    - thus spread out their prior probability, $p(\theta)$
+    - this gets factored into the marginal likelihood, $\int f(x;\theta)p(\theta)\mathrm{d}\theta$, and decreases it
     - instantiates an **automatic Ockham's razor**
 \
 \
-- looks at the functional form of the model, compared to
+- Bayes factors look at the functional form of the model, compared to
     - $AIC = -2 \log p(\textbf{y}|\hat \theta) + 2\cdot k$
     - $BIC = -2 \log p(\textbf{y}|\hat \theta) + \log n \cdot k$
-- which penalize just based on the number of parameters $k$
+- which penalize model complexity solely based on the number of parameters $k$
 
 ## Thermometer of evidence
 <center>
@@ -1558,3 +1574,28 @@ papaja::apa_table(
 - Michael Franke for allowing me to help him create a course on Bayesian statistics and cognitive modeling (see [here](http://www.sfs.uni-tuebingen.de/~mfranke/bda+cm2015/))
 - All the people on Twitter engaging in fruitful discussions, creating an atmosphere of learning unparalleled in University curricula
 - All the people who blog about open science and methods
+
+
+# Appendix
+## Current confusion: *p*-values
+<center>
+  <img src="images/oakes-questions.png" />
+</center>
+
+
+## Current confusion: *p*-values
+<center>
+  <img src="images/haller-kraus-results.png" />
+</center>
+
+
+## Current confusion: confidence intervals
+<center>
+  <img src="images/hoekstra-questions.png" />
+</center>
+
+
+## Current confusion: confidence intervals
+<center>
+  <img src="images/hoekstra-results.png" />
+</center>

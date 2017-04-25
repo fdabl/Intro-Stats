@@ -87,7 +87,7 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, dev.args = 
 # History of statistics
 
 ## Overview
-- Before 1940, significance testing was virtually non-existant
+- Before 1940, significance testing was virtually non-existent
 - By 1955, 80% of empirical articles reported significance tests
 - Today, the figure is close to 100% (see Gigerenzer, 1993)
 
@@ -173,7 +173,7 @@ circumstances, he rejects hypotheses; he rather gives his mind to each particula
 
 ## Current statistical practice
 - Is a hybrid between the approaches of Fisher and Neyman-Pearson
-- Gigerenzer (2004) introduces the term ''null ritual'' to specify current practices
+- Gigerenzer (2004) introduces the term ''null ritual'' to denote current practices
 
 <span style = "color:white"></span>
 
