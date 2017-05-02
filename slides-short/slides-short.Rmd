@@ -13,14 +13,14 @@ output:
 ---
 
 ```{r setup, include=FALSE, echo = FALSE, message = FALSE}
-knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, dev.args = list(bg = 'transparent'), fig.align = 'center')
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, dev.args = list(bg = 'transparent'), fig.split = 'center')
 ```
 
-\usepackages{csquotes}
-\newcommand{\param}{\mathbf{\theta}}
-\newcommand{\dat}{\textbf{y}}
-\newcommand{\cmark}{\ding{51}}
-\newcommand{\xmark}{\ding{55}}
+<!-- \usepackage{csquotes} -->
+<!-- \newcommand{\param}{\mathbf{\theta}} -->
+<!-- \newcommand{\dat}{\textbf{y}} -->
+<!-- \newcommand{\cmark}{\ding{51}} -->
+<!-- \newcommand{\xmark}{\ding{55}} -->
 
 ## Motivation: Against teaching standards
 ![](images/statistical-tests.png)
@@ -536,10 +536,10 @@ ggplot(data.frame(x = x), aes(x = x)) +
 - A good, tried suggestion would be the following statistical model
 
 $$
-\begin{align*}
+\begin{split}
 f(x; \theta) &= \theta^x (1 - \theta)^{1 - x} \\[2ex]
              &= \begin{cases} \theta & \text{if } x = 1 \\ 1 - \theta & \text{otherwise} \end{cases}
-\end{align*}
+\end{split}
 $$
 - where $\theta$ is the latent parameter whose value influences the outcome
 
@@ -580,12 +580,12 @@ $$
 
 ## Statistical models: Bread and butter
 $$
-\begin{align*}
+\begin{split}
 f(x; \theta) &\stackrel{\text{i.i.d.}}{=} f(x_1; \theta) \cdot f(x_2; \theta) \cdot \ldots \cdot f(x_n; \theta) \\
              &= \prod^n_{i=1} f(x_i; \theta) \\
              &= \prod^n_{i=1} \theta^{x_i} (1 - \theta)^{1 - x_i} \\
              &= \theta^{\sum^n_{i = 1} x_i} (1 - \theta)^{\sum^n_{i = 1} 1 - x_i}
-\end{align*}
+\end{split}
 $$
 
 - Also, we don't care about the order of the outcomes, e.g., whether
@@ -621,14 +621,14 @@ $$
 ## Binomial likelihood
 
 $$
-\begin{align*}
+\begin{split}
 f(x; \theta) &\stackrel{\text{i.i.d.}}{=} f(x_1; \theta) \cdot f(x_2; \theta) \cdot \ldots \cdot f(x_n; \theta) \\
              &= \prod^n_{i=1} f(x_i; \theta) \\
              &= \prod^n_{i=1} \theta^{x_i} (1 - \theta)^{1 - x_i} \\
              &= \theta^{\sum^n_{i = 1} x_i} (1 - \theta)^{\sum^n_{i = 1} 1 - x_i} \\[4ex]
 f(y; \theta, n) &= {n \choose y} \theta^{\sum^n_{i = 1} x_i} (1 - \theta)^{\sum^n_{i = 1} 1 - x_i} \hspace{3em} \text{Neglecting order} \\[1ex]
                 &= {n \choose y} \theta^{y} (1 - \theta)^{n - y} \hspace{7em} \text{Introducing  } Y = \sum^n_{i=1} x_i \\
-\end{align*}
+\end{split}
 $$
 
 
@@ -710,10 +710,10 @@ shinyApp(
 
 <div style="margin-top: 75px;">
 $$
-\begin{align*}
+\begin{split}
 f(Y = 15|n = 20, \theta = .5)  &= {20 \choose 15} .50^{15} (1 - .50)^{20 - 15} \approx 0.0147 \\[1ex]
 f(Y = 15|n = 20, \theta = .75) &= {20 \choose 15} .75^{15} (1 - .75)^{20 - 15} \approx 0.2033
-\end{align*}
+\end{split}
 $$
 </div>
 
@@ -1398,13 +1398,13 @@ ggplot(d, aes(x = m, y = p, fill = distribution)) +
 - What is the probability that the next slice of bread will fall butter down?
 
 $$
-\begin{align*}
+\begin{split}
 p(y' = 1|y)
 &= \int_0^1 p(y' = 1, \theta|y) \mathrm{d}\theta \\
 &= \int_0^1 p(y' = 1|\theta)p(\theta|y)\mathrm{d}\theta \\
 &= \int_0^1 \theta \cdot p(\theta|y)\mathrm{d}\theta \\
 &= \mathbb{E}[\theta|y] = \frac{16}{16 + 5} \approx .76
-\end{align*}
+\end{split}
 $$
 
 
