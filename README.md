@@ -33,3 +33,6 @@ This two hour workshop will be presented at the 31st EFPSA Congress in Qakh, Aze
     - [Exercises](https://github.com/fdabl/Intro-Stats/blob/master/exercises/exercises.pdf) for this workshop
     - [A First Lesson in Bayesian Inference](http://lmpp10e-mucesm.srv.mwn.de:3838/felix/BayesLessons/BayesianLesson1.Rmd) by Eric-Jan Wagenmakers
     - [Improving your statistical inferences](https://www.coursera.org/learn/statistical-inferences/home/welcome) by Daniel Lakens
+    
+# Licence
+<a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.
